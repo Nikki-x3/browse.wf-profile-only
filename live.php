@@ -152,6 +152,7 @@
 								<p class="mb-1">Ayatan Treasure Hunt <span id="maroo-check"></span></p>
 								<p class="mb-1">The Circuit (Normal): <b id="circuit-frames">Loading...</b> <span id="circuit-frames-check"></span></p>
 								<p class="mb-1">The Circuit (Steel Path): <b id="circuit-weapons"></b> <span id="circuit-weapons-check"></span></p>
+								<p class="mb-1">Netracells <span id="netracell-checks"></span></p>
 								<p class="mb-0">Break Narmer <span id="kahl-checks"></span></p>
 							</div>
 						</div>
@@ -1356,6 +1357,14 @@
 			document.getElementById("circuit-weapons-check").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
 			document.getElementById("circuit-weapons-check").innerHTML = "";
 			document.getElementById("circuit-weapons-check").appendChild(createCompletionToggle("circuit-hard-" + week));
+
+			document.getElementById("netracell-checks").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+			document.getElementById("netracell-checks").innerHTML = "";
+			document.getElementById("netracell-checks").appendChild(createCompletionToggle("netracell1-" + week));
+			document.getElementById("netracell-checks").appendChild(createCompletionToggle("netracell2-" + week));
+			document.getElementById("netracell-checks").appendChild(createCompletionToggle("netracell3-" + week));
+			document.getElementById("netracell-checks").appendChild(createCompletionToggle("netracell4-" + week));
+			document.getElementById("netracell-checks").appendChild(createCompletionToggle("netracell5-" + week));
 
 			document.getElementById("kahl-checks").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
 			document.getElementById("kahl-checks").innerHTML = "";
