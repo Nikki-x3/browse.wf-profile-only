@@ -17,7 +17,7 @@
 <body data-bs-theme="dark">
 	<?php require "components/navbar.php"; ?>
 	<div class="container p-3">
-		<p>It's like a search engine, but for space ninjas.</p>
+		<p id="results-status" class="mb-2">It's like a search engine, but for space ninjas.</p>
 		<input id="query" class="form-control" autofocus />
 		<div id="results" class="mt-3"></div>
 	</div>
@@ -28,12 +28,12 @@
 		if (params.has("q"))
 		{
 			document.getElementById("query").value = params.get("q");
-			document.getElementById("results").textContent = "Loading...";
+			document.getElementById("results-status").textContent = "Loading...";
 		}
 
 		document.getElementById("query").oninput = function()
 		{
-			document.getElementById("results").textContent = "Sorry, data is still downloading. Your query will be processed ASAP.";
+			document.getElementById("results-status").textContent = "Sorry, data is still downloading. Your query will be processed ASAP.";
 		};
 
 		Promise.all([
@@ -108,7 +108,7 @@
 			}
 
 			window.ExportWarframes_entries = Object.entries(ExportWarframes);
-			window.ExportWeapons_entries = Object.entries(ExportWeapons);
+			window.ExportWeapons_entries = Object.entries(ExportWeapons).filter(([uniqueName, item]) => item.totalDamage != 0);
 			window.ExportUpgrades_entries = Object.entries(ExportUpgrades);
 			window.ExportArcanes_entries = Object.entries(ExportArcanes);
 			window.ExportResources_entries = Object.entries(ExportResources);
@@ -118,6 +118,19 @@
 			window.ExportSentinels_entries = Object.entries(ExportSentinels)
 			window.ExportRewards_entries = Object.entries(ExportRewards);
 			window.ExportAbilities_entries = Object.entries(ExportAbilities);
+
+			window.meta_entries = {
+				warframe: ExportWarframes_entries,
+				weapon: ExportWeapons_entries,
+				upgrade: ExportUpgrades_entries,
+				arcane: ExportArcanes_entries,
+				resource: ExportResources_entries,
+				flavour: ExportFlavour_entries,
+				custom: ExportCustoms_entries,
+				gear: ExportGear_entries,
+				sentinel: ExportSentinels_entries,
+				ability: ExportAbilities_entries,
+			};
 
 			window.itemToRecipeMap = {};
 			Object.entries(ExportRecipes).forEach(([uniqueName, recipe]) => {
@@ -136,6 +149,7 @@
 				if (this.value == "")
 				{
 					history.replaceState({}, undefined, "/");
+					document.getElementById("results-status").textContent = "It's like a search engine, but for space ninjas.";
 					document.getElementById("results").innerHTML = "";
 				}
 				else
@@ -212,35 +226,39 @@
 			results = resolveTagsToUses(results);
 			console.timeEnd("resolveTagsToUses");
 
+			console.time("addUniqueNameResults");
+			addUniqueNameResults(results, query);
+			console.timeEnd("addUniqueNameResults");
+
 			console.time("Sort results");
 			results.sort((a, b) => {
+				// Warframes first
 				if (a.type == "warframe" && b.type != "warframe") {
 					return -1;
 				}
 				if (a.type != "warframe" && b.type == "warframe") {
 					return 1;
 				}
+				// Tags last
 				return (a.type == "tag") - (b.type == "tag");
 			});
 			console.timeEnd("Sort results");
 
-			console.time("Try for direct result");
-			{
-				const direct_result = getResultFromUniqueName(query);
-				if (direct_result)
-				{
-					results.unshift(direct_result);
-				}
-			}
-			console.timeEnd("Try for direct result");
-
+			console.time("Commit to DOM");
 			const tags_shown = {};
-			document.getElementById("results").textContent = results.length == 0 ? "Found 0 results." : "";
-			results.forEach(result =>
+			document.getElementById("results-status").textContent = "Found " + results.length + " results.";
+			const MAX_RESULTS = 200;
+			if (results.length > MAX_RESULTS)
+			{
+				document.getElementById("results-status").textContent += " Showing the first 100.";
+			}
+			document.getElementById("results").innerHTML = "";
+			let results_shown = 0;
+			for (const result of results)
 			{
 				if (result.type == "tag" && (result.key in tags_shown))
 				{
-					return;
+					continue;
 				}
 
 				let root = document.createElement("div");
@@ -279,7 +297,7 @@
 				{
 					const title = document.createElement("h5");
 					title.className = "card-title";
-					title.innerHTML = resolveTextIcons(dict[result.value.name]) + " ";
+					title.innerHTML = resolveTextIcons(dict[result.value.name] ?? result.value.name) + " ";
 					{
 						const a = document.createElement("a");
 						a.textContent = "📖";
@@ -671,7 +689,13 @@
 						root.appendChild(ul);
 					}
 				}
-			});
+
+				if (++results_shown == MAX_RESULTS)
+				{
+					break;
+				}
+			}
+			console.timeEnd("Commit to DOM");
 		}
 
 		function getDictEntriesFromQuery(query)
@@ -695,69 +719,18 @@
 		function resolveTagsToUses(results)
 		{
 			const res = [];
-			for (const result of results)
+			outer: for (const result of results)
 			{
 				if (result.type == "tag")
 				{
-					let entry = ExportWarframes_entries.find(([uniqueName, item]) => item.name == result.key);
-					if (entry)
+					for (const [type, entries] of Object.entries(meta_entries))
 					{
-						res.push({ type: "warframe", key: entry[0], value: entry[1] });
-						continue;
-					}
-					entry = ExportWeapons_entries.find(([uniqueName, item]) => item.name == result.key && item.totalDamage != 0);
-					if (entry)
-					{
-						res.push({ type: "weapon", key: entry[0], value: entry[1] });
-						continue;
-					}
-					entry = ExportUpgrades_entries.find(([uniqueName, item]) => item.name == result.key);
-					if (entry)
-					{
-						res.push({ type: "upgrade", key: entry[0], value: entry[1] });
-						continue;
-					}
-					entry = ExportArcanes_entries.find(([uniqueName, item]) => item.name == result.key);
-					if (entry)
-					{
-						res.push({ type: "arcane", key: entry[0], value: entry[1] });
-						continue;
-					}
-					entry = ExportResources_entries.find(([uniqueName, item]) => item.name == result.key);
-					if (entry)
-					{
-						res.push({ type: "resource", key: entry[0], value: entry[1] });
-						continue;
-					}
-					entry = ExportFlavour_entries.find(([uniqueName, item]) => item.name == result.key);
-					if (entry)
-					{
-						res.push({ type: "flavour", key: entry[0], value: entry[1] });
-						continue;
-					}
-					entry = ExportCustoms_entries.find(([uniqueName, item]) => item.name == result.key);
-					if (entry)
-					{
-						res.push({ type: "custom", key: entry[0], value: entry[1] });
-						continue;
-					}
-					entry = ExportGear_entries.find(([uniqueName, item]) => item.name == result.key);
-					if (entry)
-					{
-						res.push({ type: "gear", key: entry[0], value: entry[1] });
-						continue;
-					}
-					entry = ExportSentinels_entries.find(([uniqueName, item]) => item.name == result.key);
-					if (entry)
-					{
-						res.push({ type: "sentinel", key: entry[0], value: entry[1] });
-						continue;
-					}
-					entry = ExportAbilities_entries.find(([uniqueName, item]) => item.name == result.key);
-					if (entry)
-					{
-						res.push({ type: "ability", key: entry[0], value: entry[1] });
-						continue;
+						const entry = entries.find(([uniqueName, item]) => item.name == result.key);
+						if (entry)
+						{
+							res.push({ type: type, key: entry[0], value: entry[1] });
+							continue outer;
+						}
 					}
 				}
 				res.push(result);
@@ -765,57 +738,18 @@
 			return res;
 		}
 
-		function getResultFromUniqueName(uniqueName)
+		function addUniqueNameResults(res, query)
 		{
-			let entry = ExportWarframes[uniqueName];
-			if (entry)
+			query = query.toLowerCase();
+			for (const [type, entries] of Object.entries(meta_entries))
 			{
-				return { type: "warframe", key: uniqueName, value: entry };
-			}
-			entry = ExportWeapons[uniqueName];
-			if (entry)
-			{
-				return { type: "weapon", key: uniqueName, value: entry };
-			}
-			entry = ExportUpgrades[uniqueName];
-			if (entry)
-			{
-				return { type: "upgrade", key: uniqueName, value: entry };
-			}
-			entry = ExportArcanes[uniqueName];
-			if (entry)
-			{
-				return { type: "arcane", key: uniqueName, value: entry };
-			}
-			entry = ExportResources[uniqueName];
-			if (entry)
-			{
-				return { type: "resource", key: uniqueName, value: entry };
-			}
-			entry = ExportFlavour[uniqueName];
-			if (entry)
-			{
-				return { type: "flavour", key: uniqueName, value: entry };
-			}
-			entry = ExportCustoms[uniqueName];
-			if (entry)
-			{
-				return { type: "custom", key: uniqueName, value: entry };
-			}
-			entry = ExportGear[uniqueName];
-			if (entry)
-			{
-				return { type: "gear", key: uniqueName, value: entry };
-			}
-			entry = ExportSentinels[uniqueName];
-			if (entry)
-			{
-				return { type: "sentinel", key: uniqueName, value: entry };
-			}
-			entry = ExportAbilities[uniqueName];
-			if (entry)
-			{
-				return { type: "ability", key: uniqueName, value: entry };
+				for (const [uniqueName, item] of entries)
+				{
+					if (uniqueName.toLowerCase().indexOf(query) != -1)
+					{
+						res.push({ type: type, key: uniqueName, value: item });
+					}
+				}
 			}
 		}
 	</script>
