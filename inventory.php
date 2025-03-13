@@ -13,7 +13,7 @@
 		<h3>Upload your lastData.dat</h3>
 		<ul>
 			<li>If you use AlecaFrame, you can find this in the <code>%localappdata%/AlecaFrame</code> folder.</li>
-			<li>Alternatively, you can get a fresh copy by running the <a href="https://github.com/Sainan/warframe-api-helper/releases/download/2123bfd/warframe-api-helper.exe" download>warframe-api-helper</a> while the game is running & you're logged in.</li>
+			<li>Alternatively, you can get a fresh copy by running the <a href="https://github.com/Sainan/warframe-api-helper/releases/latest/download/warframe-api-helper.exe" download>warframe-api-helper</a> while the game is running & you're logged in.</li>
 		</ul>
 		<input type="file" class="form-control" />
 		<p id="status" class="d-none mt-2 mb-0">Your inventory data is currently as of <b id="sync-time"></b>. <a href="#" onclick="event.preventDefault();localStorage.removeItem('inventory');location.reload();">Want to remove it again?</a></p>
