@@ -26,34 +26,63 @@
 	}
 
 	const chatroom_to_username = {
+		"AoiDialogue_rom.dialogue": "xX GLIMMER Xx",
 		"ArthurDialogue_rom.dialogue": "Broadsword",
 		"EleanorDialogue_rom.dialogue": "Salem",
-		"LettieDialogue_rom.dialogue": "Belladona ~{@",
-		"JabirDialogue_rom.dialogue": "H16h V0l7463",
-		"AoiDialogue_rom.dialogue": "xX GLIMMER Xx",
-		"QuincyDialogue_rom.dialogue": "Soldja1Shot1kil",
+		"FlareDialogue_rom.dialogue": "Liminus_Star",
 		"HexDialogue_rom.dialogue": "The Hex",
+		"JabirDialogue_rom.dialogue": "H16h V0l7463",
+		"KayaDialogue_rom.dialogue": "KOLTrial_5115",
+		"LettieDialogue_rom.dialogue": "Belladona ~{@",
+		"MinervaDialogue_rom.dialogue": "MomToxicated",
+		"MinervaVelemirDialogue_rom.dialogue": "Minerva, Velimir",
+		"QuincyDialogue_rom.dialogue": "Soldja1Shot1kil",
+		"VelimirDialogue_rom.dialogue": "PapaPolar",
 	};
 
 	Promise.all([
-		fetch("https://kim.browse.wf/dicts/" + (localStorage.getItem("lang") ?? "en") + ".json").then(res => res.json()),
+		fetch("https://kim.browse.wf/AoiDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/ArthurDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/EleanorDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/LettieDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/FlareDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/HexDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/JabirDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/AoiDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/KayaDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/LettieDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/MinervaDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/MinervaVelemirDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/QuincyDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/HexDialogue_rom.dialogue.json").then(res => res.json())
-	]).then(([ dict, ArthurDialogue_rom, EleanorDialogue_rom, LettieDialogue_rom, JabirDialogue_rom, AoiDialogue_rom, QuincyDialogue_rom, HexDialogue_rom ]) => {
+		fetch("https://kim.browse.wf/VelimirDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/dicts/" + (localStorage.getItem("lang") ?? "en") + ".json").then(res => res.json())
+	]).then(([
+		AoiDialogue_rom,
+		ArthurDialogue_rom,
+		EleanorDialogue_rom,
+		FlareDialogue_rom,
+		HexDialogue_rom,
+		JabirDialogue_rom,
+		KayaDialogue_rom,
+		LettieDialogue_rom,
+		MinervaDialogue_rom,
+		MinervaVelemirDialogue_rom,
+		QuincyDialogue_rom,
+		VelimirDialogue_rom,
+		dict
+	]) => {
 		window.kim_dict = dict;
 		window.chatrooms = {
+			"AoiDialogue_rom.dialogue": { nodes: AoiDialogue_rom, convos: {} },
 			"ArthurDialogue_rom.dialogue": { nodes: ArthurDialogue_rom, convos: {} },
 			"EleanorDialogue_rom.dialogue": { nodes: EleanorDialogue_rom, convos: {} },
-			"LettieDialogue_rom.dialogue": { nodes: LettieDialogue_rom, convos: {} },
-			"JabirDialogue_rom.dialogue": { nodes: JabirDialogue_rom, convos: {} },
-			"AoiDialogue_rom.dialogue": { nodes: AoiDialogue_rom, convos: {} },
-			"QuincyDialogue_rom.dialogue": { nodes: QuincyDialogue_rom, convos: {} },
+			"FlareDialogue_rom.dialogue": { nodes: FlareDialogue_rom, convos: {} },
 			"HexDialogue_rom.dialogue": { nodes: HexDialogue_rom, convos: {} },
+			"JabirDialogue_rom.dialogue": { nodes: JabirDialogue_rom, convos: {} },
+			"KayaDialogue_rom.dialogue": { nodes: KayaDialogue_rom, convos: {} },
+			"LettieDialogue_rom.dialogue": { nodes: LettieDialogue_rom, convos: {} },
+			"MinervaDialogue_rom.dialogue": { nodes: MinervaDialogue_rom, convos: {} },
+			"MinervaVelemirDialogue_rom.dialogue": { nodes: MinervaVelemirDialogue_rom, convos: {} },
+			"QuincyDialogue_rom.dialogue": { nodes: QuincyDialogue_rom, convos: {} },
+			"VelimirDialogue_rom.dialogue": { nodes: VelimirDialogue_rom, convos: {} },
 		};
 		for (const [chatroom_name, chatroom] of Object.entries(chatrooms))
 		{

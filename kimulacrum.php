@@ -48,13 +48,18 @@
 					<label class="form-label"><b>Chat Controls</b></label><br/>
 					<select id="chatroom" class="form-control d-inline-block w-auto" style="min-width:200px">
 						<option>SELECT A CHATROOM</option>
+						<option value="AoiDialogue_rom.dialogue">xX GLIMMER Xx (Aoi)</option>
 						<option value="ArthurDialogue_rom.dialogue">Broadsword (Arthur)</option>
 						<option value="EleanorDialogue_rom.dialogue">Salem (Eleanor)</option>
-						<option value="LettieDialogue_rom.dialogue">Belladona ~{@ (Lettie)</option>
-						<option value="JabirDialogue_rom.dialogue">H16h V0l7463 (Amir)</option>
-						<option value="AoiDialogue_rom.dialogue">xX GLIMMER Xx (Aoi)</option>
-						<option value="QuincyDialogue_rom.dialogue">Soldja1Shot1kil (Quincy)</option>
+						<option value="FlareDialogue_rom.dialogue">Liminus_Star (Flare)</option>
 						<option value="HexDialogue_rom.dialogue">The Hex</option>
+						<option value="JabirDialogue_rom.dialogue">H16h V0l7463 (Amir)</option>
+						<option value="KayaDialogue_rom.dialogue">KOLTrial_5115 (Kaya)</option>
+						<option value="LettieDialogue_rom.dialogue">Belladona ~{@ (Lettie)</option>
+						<option value="MinervaDialogue_rom.dialogue">MomToxicated (Minerva)</option>
+						<option value="MinervaVelemirDialogue_rom.dialogue">Minerva, Velimir</option>
+						<option value="QuincyDialogue_rom.dialogue">Soldja1Shot1kil (Quincy)</option>
+						<option value="VelimirDialogue_rom.dialogue">PapaPolar (Velimir)</option>
 					</select>
 					<select id="dialogue" class="form-control d-inline-block w-auto" style="min-width:200px">
 						<option>SELECT A DIALOGUE</option>
@@ -294,11 +299,11 @@
 		else if (node.type == "/EE/Types/Engine/CheckBooleanScriptDialogueNode")
 		{
 			document.getElementById("choices").innerHTML = "";
-			presentChoice("$ " + node.script_name + " says " + node.arg1 + " is true", function()
+			presentChoice("$ " + node.script_name + " says " + (node.arg1 ?? "unknown boolean") + " is true", function()
 			{
 				processChoices(node.true_choices);
 			});
-			presentChoice("$ " + node.script_name + " says " + node.arg1 + " is false", function()
+			presentChoice("$ " + node.script_name + " says " + (node.arg1 ?? "unknown boolean") + " is false", function()
 			{
 				processChoices(node.false_choices);
 			});
@@ -432,6 +437,18 @@
 
 	addToHistory("System", "Loading data...");
 	Promise.all([
+		fetch("https://kim.browse.wf/AoiDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/ArthurDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/EleanorDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/FlareDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/HexDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/JabirDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/KayaDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/LettieDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/MinervaDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/MinervaVelemirDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/QuincyDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/VelimirDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/dicts/en.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/dicts/de.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/dicts/es.json").then(res => res.json()),
@@ -446,17 +463,21 @@
 		fetch("https://kim.browse.wf/dicts/th.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/dicts/tr.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/dicts/uk.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/zh.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/ArthurDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/EleanorDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/LettieDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/JabirDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/AoiDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/QuincyDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/HexDialogue_rom.dialogue.json").then(res => res.json())
+		fetch("https://kim.browse.wf/dicts/zh.json").then(res => res.json())
 	]).then(([
-		dict_en, dict_de, dict_es, dict_fr, dict_it, dict_ja, dict_ko, dict_pl, dict_pt, dict_ru, dict_tc, dict_th, dict_tr, dict_uk, dict_zh,
-		ArthurDialogue_rom, EleanorDialogue_rom, LettieDialogue_rom, JabirDialogue_rom, AoiDialogue_rom, QuincyDialogue_rom, HexDialogue_rom
+		AoiDialogue_rom,
+		ArthurDialogue_rom,
+		EleanorDialogue_rom,
+		FlareDialogue_rom,
+		HexDialogue_rom,
+		JabirDialogue_rom,
+		KayaDialogue_rom,
+		LettieDialogue_rom,
+		MinervaDialogue_rom,
+		MinervaVelemirDialogue_rom,
+		QuincyDialogue_rom,
+		VelimirDialogue_rom,
+		dict_en, dict_de, dict_es, dict_fr, dict_it, dict_ja, dict_ko, dict_pl, dict_pt, dict_ru, dict_tc, dict_th, dict_tr, dict_uk, dict_zh
 	]) => {
 		window.dicts = {
 			en: dict_en,
@@ -476,13 +497,18 @@
 			zh: dict_zh,
 		};
 		window.chatrooms = {
+			"AoiDialogue_rom.dialogue": AoiDialogue_rom,
 			"ArthurDialogue_rom.dialogue": ArthurDialogue_rom,
 			"EleanorDialogue_rom.dialogue": EleanorDialogue_rom,
-			"LettieDialogue_rom.dialogue": LettieDialogue_rom,
-			"JabirDialogue_rom.dialogue": JabirDialogue_rom,
-			"AoiDialogue_rom.dialogue": AoiDialogue_rom,
-			"QuincyDialogue_rom.dialogue": QuincyDialogue_rom,
+			"FlareDialogue_rom.dialogue": FlareDialogue_rom,
 			"HexDialogue_rom.dialogue": HexDialogue_rom,
+			"JabirDialogue_rom.dialogue": JabirDialogue_rom,
+			"KayaDialogue_rom.dialogue": KayaDialogue_rom,
+			"LettieDialogue_rom.dialogue": LettieDialogue_rom,
+			"MinervaDialogue_rom.dialogue": MinervaDialogue_rom,
+			"MinervaVelemirDialogue_rom.dialogue": MinervaVelemirDialogue_rom,
+			"QuincyDialogue_rom.dialogue": QuincyDialogue_rom,
+			"VelimirDialogue_rom.dialogue": VelimirDialogue_rom,
 		};
 
 		clearChat();
