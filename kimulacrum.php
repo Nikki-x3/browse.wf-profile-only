@@ -56,10 +56,10 @@
 						<option value="JabirDialogue_rom.dialogue">H16h V0l7463 (Amir)</option>
 						<option value="KayaDialogue_rom.dialogue">KOLTrial_5115 (Kaya)</option>
 						<option value="LettieDialogue_rom.dialogue">Belladona ~{@ (Lettie)</option>
-						<option value="MinervaDialogue_rom.dialogue">MomToxicated (Minerva)</option>
+						<!-- <option value="MinervaDialogue_rom.dialogue">MomToxicated (Minerva)</option> -->
 						<option value="MinervaVelemirDialogue_rom.dialogue">Minerva, Velimir</option>
 						<option value="QuincyDialogue_rom.dialogue">Soldja1Shot1kil (Quincy)</option>
-						<option value="VelimirDialogue_rom.dialogue">PapaPolar (Velimir)</option>
+						<!-- <option value="VelimirDialogue_rom.dialogue">PapaPolar (Velimir)</option> -->
 					</select>
 					<select id="dialogue" class="form-control d-inline-block w-auto" style="min-width:200px">
 						<option>SELECT A DIALOGUE</option>
@@ -445,10 +445,10 @@
 		fetch("https://kim.browse.wf/JabirDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/KayaDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/LettieDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/MinervaDialogue_rom.dialogue.json").then(res => res.json()),
+		//fetch("https://kim.browse.wf/MinervaDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/MinervaVelemirDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/QuincyDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/VelimirDialogue_rom.dialogue.json").then(res => res.json()),
+		//fetch("https://kim.browse.wf/VelimirDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/dicts/en.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/dicts/de.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/dicts/es.json").then(res => res.json()),
@@ -473,10 +473,10 @@
 		JabirDialogue_rom,
 		KayaDialogue_rom,
 		LettieDialogue_rom,
-		MinervaDialogue_rom,
+		//MinervaDialogue_rom,
 		MinervaVelemirDialogue_rom,
 		QuincyDialogue_rom,
-		VelimirDialogue_rom,
+		//VelimirDialogue_rom,
 		dict_en, dict_de, dict_es, dict_fr, dict_it, dict_ja, dict_ko, dict_pl, dict_pt, dict_ru, dict_tc, dict_th, dict_tr, dict_uk, dict_zh
 	]) => {
 		window.dicts = {
@@ -505,10 +505,10 @@
 			"JabirDialogue_rom.dialogue": JabirDialogue_rom,
 			"KayaDialogue_rom.dialogue": KayaDialogue_rom,
 			"LettieDialogue_rom.dialogue": LettieDialogue_rom,
-			"MinervaDialogue_rom.dialogue": MinervaDialogue_rom,
+			//"MinervaDialogue_rom.dialogue": MinervaDialogue_rom,
 			"MinervaVelemirDialogue_rom.dialogue": MinervaVelemirDialogue_rom,
 			"QuincyDialogue_rom.dialogue": QuincyDialogue_rom,
-			"VelimirDialogue_rom.dialogue": VelimirDialogue_rom,
+			//"VelimirDialogue_rom.dialogue": VelimirDialogue_rom,
 		};
 
 		clearChat();

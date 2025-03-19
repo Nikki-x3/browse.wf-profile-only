@@ -34,10 +34,10 @@
 		"JabirDialogue_rom.dialogue": "H16h V0l7463",
 		"KayaDialogue_rom.dialogue": "KOLTrial_5115",
 		"LettieDialogue_rom.dialogue": "Belladona ~{@",
-		"MinervaDialogue_rom.dialogue": "MomToxicated",
+		//"MinervaDialogue_rom.dialogue": "MomToxicated",
 		"MinervaVelemirDialogue_rom.dialogue": "Minerva, Velimir",
 		"QuincyDialogue_rom.dialogue": "Soldja1Shot1kil",
-		"VelimirDialogue_rom.dialogue": "PapaPolar",
+		//"VelimirDialogue_rom.dialogue": "PapaPolar",
 	};
 
 	Promise.all([
@@ -49,10 +49,10 @@
 		fetch("https://kim.browse.wf/JabirDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/KayaDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/LettieDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/MinervaDialogue_rom.dialogue.json").then(res => res.json()),
+		//fetch("https://kim.browse.wf/MinervaDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/MinervaVelemirDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/QuincyDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/VelimirDialogue_rom.dialogue.json").then(res => res.json()),
+		//fetch("https://kim.browse.wf/VelimirDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/dicts/" + (localStorage.getItem("lang") ?? "en") + ".json").then(res => res.json())
 	]).then(([
 		AoiDialogue_rom,
@@ -63,10 +63,10 @@
 		JabirDialogue_rom,
 		KayaDialogue_rom,
 		LettieDialogue_rom,
-		MinervaDialogue_rom,
+		//MinervaDialogue_rom,
 		MinervaVelemirDialogue_rom,
 		QuincyDialogue_rom,
-		VelimirDialogue_rom,
+		//VelimirDialogue_rom,
 		dict
 	]) => {
 		window.kim_dict = dict;
@@ -79,10 +79,10 @@
 			"JabirDialogue_rom.dialogue": { nodes: JabirDialogue_rom, convos: {} },
 			"KayaDialogue_rom.dialogue": { nodes: KayaDialogue_rom, convos: {} },
 			"LettieDialogue_rom.dialogue": { nodes: LettieDialogue_rom, convos: {} },
-			"MinervaDialogue_rom.dialogue": { nodes: MinervaDialogue_rom, convos: {} },
+			//"MinervaDialogue_rom.dialogue": { nodes: MinervaDialogue_rom, convos: {} },
 			"MinervaVelemirDialogue_rom.dialogue": { nodes: MinervaVelemirDialogue_rom, convos: {} },
 			"QuincyDialogue_rom.dialogue": { nodes: QuincyDialogue_rom, convos: {} },
-			"VelimirDialogue_rom.dialogue": { nodes: VelimirDialogue_rom, convos: {} },
+			//"VelimirDialogue_rom.dialogue": { nodes: VelimirDialogue_rom, convos: {} },
 		};
 		for (const [chatroom_name, chatroom] of Object.entries(chatrooms))
 		{
