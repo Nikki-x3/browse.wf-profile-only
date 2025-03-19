@@ -231,17 +231,29 @@
 			console.timeEnd("addUniqueNameResults");
 
 			console.time("Filter results");
-			for (const result of results)
 			{
-				if (typeof result.value == "object"
-					&& "description" in result.value
-					&& result.value.description != ""
-					)
+				const keys_set = new Set();
+				for (let i = 0; i != results.length; ++i)
 				{
-					const i = results.findIndex(x => x.type == "tag" && x.key == result.value.description);
-					if (i != -1)
+					const result = results[i];
+					if (keys_set.has(result.key))
 					{
-						results.splice(i, 1);
+						results.splice(i--, 1);
+					}
+					else
+					{
+						keys_set.add(result.key);
+						if (typeof result.value == "object"
+							&& "description" in result.value
+							&& result.value.description != ""
+							)
+						{
+							const i = results.findIndex(x => x.type == "tag" && x.key == result.value.description);
+							if (i != -1)
+							{
+								results.splice(i, 1);
+							}
+						}
 					}
 				}
 			}
