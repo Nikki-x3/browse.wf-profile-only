@@ -230,6 +230,23 @@
 			addUniqueNameResults(results, query);
 			console.timeEnd("addUniqueNameResults");
 
+			console.time("Filter results");
+			for (const result of results)
+			{
+				if (typeof result.value == "object"
+					&& "description" in result.value
+					&& result.value.description != ""
+					)
+				{
+					const i = results.findIndex(x => x.type == "tag" && x.key == result.value.description);
+					if (i != -1)
+					{
+						results.splice(i, 1);
+					}
+				}
+			}
+			console.timeEnd("Filter results");
+
 			console.time("Sort results");
 			results.sort((a, b) => {
 				// Warframes first
@@ -245,7 +262,6 @@
 			console.timeEnd("Sort results");
 
 			console.time("Commit to DOM");
-			const tags_shown = {};
 			document.getElementById("results-status").textContent = "Found " + results.length + " results.";
 			const MAX_RESULTS = 200;
 			if (results.length > MAX_RESULTS)
@@ -256,11 +272,6 @@
 			let results_shown = 0;
 			for (const result of results)
 			{
-				if (result.type == "tag" && (result.key in tags_shown))
-				{
-					continue;
-				}
-
 				let root = document.createElement("div");
 				root.className = "card mb-3";
 				root = document.getElementById("results").appendChild(root);
@@ -331,8 +342,6 @@
 					&& result.value.description != ""
 					)
 				{
-					tags_shown[result.value.description] = true;
-
 					let p = document.createElement("p");
 					p.className = "card-text";
 					p.textContent = (dict[result.value.description] ?? result.value.description) + " ";
