@@ -548,11 +548,11 @@
 				{
 					const node = ExportRegions[bountyCycle.bounties[syndicateTag][i].node];
 					rows[i].querySelector(".mission").textContent = dict[node.name];
-					if (!bountyCycle.bounties[syndicateTag][i].ally)
+					if (["SolNode850", "SolNode853", "SolNode854", "SolNode856"].indexOf(bountyCycle.bounties[syndicateTag][i].node) == -1)
 					{
 						rows[i].querySelector(".mission").textContent += " (" + toTitleCase(dict[node.missionName]) + ")";
 					}
-					else
+					if (bountyCycle.bounties[syndicateTag][i].ally)
 					{
 						rows[i].querySelector(".ally").textContent = allyNames[bountyCycle.bounties[syndicateTag][i].ally];
 					}
