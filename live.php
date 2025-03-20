@@ -294,6 +294,12 @@
 								<td>115-120</td>
 								<td>6000/<wbr/>9000</td>
 							</tr>
+							<tr>
+								<th class="mission"></th>
+								<td class="challenge" colspan="2"></td>
+								<td>125-130</td>
+								<td>7500/<wbr/>11250</td>
+							</tr>
 						</table>
 					</div>
 				</div>
