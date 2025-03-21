@@ -278,7 +278,7 @@
 			const MAX_RESULTS = 200;
 			if (results.length > MAX_RESULTS)
 			{
-				document.getElementById("results-status").textContent += " Showing the first 100.";
+				document.getElementById("results-status").textContent += " Showing the first " + MAX_RESULTS + ".";
 			}
 			document.getElementById("results").innerHTML = "";
 			let results_shown = 0;
