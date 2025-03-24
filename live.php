@@ -329,7 +329,7 @@
 								<table class="table table-sm table-hover table-borderless mb-0" id="invasions-table"><tr><td>Loading...</td></tr></table>
 							</div>
 						</div>
-						<div class="card">
+						<div class="card mb-3">
 							<div class="card-header d-flex">
 								<h5 class="mb-0"><span data-collapse-toggle="labconquest"></span> <span id="labConquest-header">Deep Archimedea</h5>
 								<a class="m-auto me-0" data-notif-toggle="labconquest"></a>
@@ -342,6 +342,22 @@
 								</table>
 								<table class="table table-sm table-borderless mb-0">
 									<tr id="labConquest-fv"><td>&nbsp;</td></tr>
+								</table>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-header d-flex">
+								<h5 class="mb-0"><span data-collapse-toggle="hexconquest"></span> <span id="hexConquest-header">Temporal Archimedea</h5>
+								<a class="m-auto me-0" data-notif-toggle="hexconquest"></a>
+							</div>
+							<div class="card-body overflow-auto">
+								<table class="table table-sm table-borderless table-hover mb-2" id="hexConquest-missions">
+									<tr><th>Fetching data...</th></tr>
+									<tr><td>&nbsp;</td></tr>
+									<tr><td>&nbsp;</td></tr>
+								</table>
+								<table class="table table-sm table-borderless mb-0">
+									<tr id="hexConquest-fv"><td>&nbsp;</td></tr>
 								</table>
 							</div>
 						</div>
@@ -663,59 +679,118 @@
 
 		function updateWeeklyLocalised()
 		{
-			setDatum("labConquest-header", osdict["/Lotus/Language/Conquest/SolarMapLabConquestNode"], refresh_weekly_at);
-			document.getElementById("labConquest-header").innerHTML += " ";
-			document.getElementById("labConquest-header").appendChild(createCompletionToggle("labconquest-" + refresh_weekly_at));
-			const tbody = document.createElement("tbody");
-			for (const mission of weekly.labConquestMissions)
 			{
-				const tr = document.createElement("tr");
+				setDatum("labConquest-header", osdict["/Lotus/Language/Conquest/SolarMapLabConquestNode"], refresh_weekly_at);
+				document.getElementById("labConquest-header").innerHTML += " ";
+				document.getElementById("labConquest-header").appendChild(createCompletionToggle("labconquest-" + refresh_weekly_at));
+				const tbody = document.createElement("tbody");
+				for (const mission of weekly.labConquestMissions)
 				{
-					const th = document.createElement("th");
-					th.textContent = toTitleCase(dict["/Lotus/Language/Missions/MissionName_" + mission.type] ?? mission.type);
-					tr.appendChild(th);
+					const tr = document.createElement("tr");
+					{
+						const th = document.createElement("th");
+						th.textContent = toTitleCase(dict["/Lotus/Language/Missions/MissionName_" + mission.type] ?? mission.type);
+						tr.appendChild(th);
+					}
+					{
+						const td = document.createElement("td");
+						const abbr = document.createElement("abbr");
+						abbr.textContent = osdict["/Lotus/Language/Conquest/MissionVariant_LabConquest_" + mission.variant];
+						addTooltip(abbr, osdict["/Lotus/Language/Conquest/MissionVariant_LabConquest_" + mission.variant + "_Desc"]);
+						td.appendChild(abbr);
+						tr.appendChild(td);
+					}
+					for (let i = 0; i != 2; ++i)
+					{
+						const td = document.createElement("td");
+						const abbr = document.createElement("abbr");
+						abbr.textContent = osdict["/Lotus/Language/Conquest/Condition_" + mission.conditions[i]];
+						addTooltip(abbr, osdict["/Lotus/Language/Conquest/Condition_" + mission.conditions[i] + "_Desc"]);
+						td.appendChild(abbr);
+						tr.appendChild(td);
+					}
+					tbody.appendChild(tr);
 				}
+				document.getElementById("labConquest-missions").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+				document.getElementById("labConquest-missions").innerHTML = "";
+				document.getElementById("labConquest-missions").appendChild(tbody);
+				document.getElementById("labConquest-fv").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+				document.getElementById("labConquest-fv").innerHTML = "";
+				for (const fv of weekly.labConquestFrameVariables)
 				{
 					const td = document.createElement("td");
 					const abbr = document.createElement("abbr");
-					abbr.textContent = osdict["/Lotus/Language/Conquest/MissionVariant_LabConquest_" + mission.variant];
-					addTooltip(abbr, osdict["/Lotus/Language/Conquest/MissionVariant_LabConquest_" + mission.variant + "_Desc"]);
+					abbr.textContent = osdict["/Lotus/Language/Conquest/PersonalMod_" + fv];
+					let desc = osdict["/Lotus/Language/Conquest/PersonalMod_" + fv + "_Desc"].replaceAll(/<[^>]+>/g, "");
+					if (fv == "ShieldDelay")
+					{
+						desc = desc.split("|val|").join("500");
+					}
+					else if (fv == "TimeDilation")
+					{
+						desc = desc.split("|val|").join("50");
+					}
+					addTooltip(abbr, desc);
 					td.appendChild(abbr);
-					tr.appendChild(td);
+					document.getElementById("labConquest-fv").appendChild(td);
 				}
-				for (let i = 0; i != 2; ++i)
-				{
-					const td = document.createElement("td");
-					const abbr = document.createElement("abbr");
-					abbr.textContent = osdict["/Lotus/Language/Conquest/Condition_" + mission.conditions[i]];
-					addTooltip(abbr, osdict["/Lotus/Language/Conquest/Condition_" + mission.conditions[i] + "_Desc"]);
-					td.appendChild(abbr);
-					tr.appendChild(td);
-				}
-				tbody.appendChild(tr);
 			}
-			document.getElementById("labConquest-missions").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
-			document.getElementById("labConquest-missions").innerHTML = "";
-			document.getElementById("labConquest-missions").appendChild(tbody);
-			document.getElementById("labConquest-fv").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
-			document.getElementById("labConquest-fv").innerHTML = "";
-			for (const fv of weekly.labConquestFrameVariables)
+
 			{
-				const td = document.createElement("td");
-				const abbr = document.createElement("abbr");
-				abbr.textContent = osdict["/Lotus/Language/Conquest/PersonalMod_" + fv];
-				let desc = osdict["/Lotus/Language/Conquest/PersonalMod_" + fv + "_Desc"].replaceAll(/<[^>]+>/g, "");
-				if (fv == "ShieldDelay")
+				setDatum("hexConquest-header", osdict["/Lotus/Language/1999Echoes/1999HexConquestNode"], refresh_weekly_at);
+				document.getElementById("hexConquest-header").innerHTML += " ";
+				document.getElementById("hexConquest-header").appendChild(createCompletionToggle("hexconquest-" + refresh_weekly_at));
+				const tbody = document.createElement("tbody");
+				for (const mission of weekly.hexConquestMissions)
 				{
-					desc = desc.split("|val|").join("500");
+					const tr = document.createElement("tr");
+					{
+						const th = document.createElement("th");
+						th.textContent = toTitleCase(dict["/Lotus/Language/Missions/MissionName_" + mission.type] ?? mission.type);
+						tr.appendChild(th);
+					}
+					{
+						const td = document.createElement("td");
+						const abbr = document.createElement("abbr");
+						abbr.textContent = osdict["/Lotus/Language/Conquest/MissionVariant_HexConquest_" + mission.variant];
+						addTooltip(abbr, osdict["/Lotus/Language/Conquest/MissionVariant_HexConquest_" + mission.variant + "_Desc"]);
+						td.appendChild(abbr);
+						tr.appendChild(td);
+					}
+					for (let i = 0; i != 2; ++i)
+					{
+						const td = document.createElement("td");
+						const abbr = document.createElement("abbr");
+						abbr.textContent = osdict["/Lotus/Language/Conquest/Condition_" + mission.conditions[i]];
+						addTooltip(abbr, osdict["/Lotus/Language/Conquest/Condition_" + mission.conditions[i] + "_Desc"]);
+						td.appendChild(abbr);
+						tr.appendChild(td);
+					}
+					tbody.appendChild(tr);
 				}
-				else if (fv == "TimeDilation")
+				document.getElementById("hexConquest-missions").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+				document.getElementById("hexConquest-missions").innerHTML = "";
+				document.getElementById("hexConquest-missions").appendChild(tbody);
+				document.getElementById("hexConquest-fv").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+				document.getElementById("hexConquest-fv").innerHTML = "";
+				for (const fv of weekly.hexConquestFrameVariables)
 				{
-					desc = desc.split("|val|").join("50");
+					const td = document.createElement("td");
+					const abbr = document.createElement("abbr");
+					abbr.textContent = osdict["/Lotus/Language/Conquest/PersonalMod_" + fv];
+					let desc = osdict["/Lotus/Language/Conquest/PersonalMod_" + fv + "_Desc"].replaceAll(/<[^>]+>/g, "");
+					if (fv == "ShieldDelay")
+					{
+						desc = desc.split("|val|").join("500");
+					}
+					else if (fv == "TimeDilation")
+					{
+						desc = desc.split("|val|").join("50");
+					}
+					addTooltip(abbr, desc);
+					td.appendChild(abbr);
+					document.getElementById("hexConquest-fv").appendChild(td);
 				}
-				addTooltip(abbr, desc);
-				td.appendChild(abbr);
-				document.getElementById("labConquest-fv").appendChild(td);
 			}
 		}
 
@@ -745,6 +820,10 @@
 					if (localStorage.getItem("live.notif.labconquest"))
 					{
 						weekly_notifications_subscribed_to.push("Deep Archimedea");
+					}
+					if (localStorage.getItem("live.notif.hexconquest"))
+					{
+						weekly_notifications_subscribed_to.push("Temporal Archimedea");
 					}
 					if (weekly_notifications_subscribed_to.length != 0)
 					{
