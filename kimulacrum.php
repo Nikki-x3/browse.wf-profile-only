@@ -48,17 +48,17 @@
 					<label class="form-label"><b>Chat Controls</b></label><br/>
 					<select id="chatroom" class="form-control d-inline-block w-auto" style="min-width:200px">
 						<option>SELECT A CHATROOM</option>
-						<option value="AoiDialogue_rom.dialogue">xX GLIMMER Xx (Aoi)</option>
+						<option value="HexDialogue_rom.dialogue">The Hex</option>
 						<option value="ArthurDialogue_rom.dialogue">Broadsword (Arthur)</option>
 						<option value="EleanorDialogue_rom.dialogue">Salem (Eleanor)</option>
-						<option value="FlareDialogue_rom.dialogue">Liminus_Star (Flare)</option>
-						<option value="HexDialogue_rom.dialogue">The Hex</option>
-						<option value="JabirDialogue_rom.dialogue">H16h V0l7463 (Amir)</option>
-						<option value="KayaDialogue_rom.dialogue">KOLTrial_5115 (Kaya)</option>
 						<option value="LettieDialogue_rom.dialogue">Belladona ~{@ (Lettie)</option>
-						<!-- <option value="MinervaDialogue_rom.dialogue">MomToxicated (Minerva)</option> -->
-						<option value="MinervaVelemirDialogue_rom.dialogue">Minerva, Velimir</option>
+						<option value="JabirDialogue_rom.dialogue">H16h V0l7463 (Amir)</option>
+						<option value="AoiDialogue_rom.dialogue">xX GLIMMER Xx (Aoi)</option>
 						<option value="QuincyDialogue_rom.dialogue">Soldja1Shot1kil (Quincy)</option>
+						<option value="FlareDialogue_rom.dialogue">Liminus_Star (Flare)</option>
+						<option value="KayaDialogue_rom.dialogue">KOLTrial_5115 (Kaya)</option>
+						<option value="MinervaVelemirDialogue_rom.dialogue">Minerva, Velimir</option>
+						<!-- <option value="MinervaDialogue_rom.dialogue">MomToxicated (Minerva)</option> -->
 						<!-- <option value="VelimirDialogue_rom.dialogue">PapaPolar (Velimir)</option> -->
 					</select>
 					<select id="dialogue" class="form-control d-inline-block w-auto" style="min-width:200px">
