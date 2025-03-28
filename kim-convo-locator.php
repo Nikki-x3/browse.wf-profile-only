@@ -180,9 +180,10 @@
 			{
 				for (const node of chatroom.nodes)
 				{
+					let text;
 					if (node.type == "/EE/Types/Engine/DialogueNode" || node.type == "/EE/Types/Engine/PlayerChoiceDialogueNode")
 					{
-						let text = kim_dict[node.name] ?? node.name;
+						text = kim_dict[node.name] ?? node.name;
 						if (node.vars)
 						{
 							for (const [k, v] of Object.entries(node.vars))
@@ -191,7 +192,21 @@
 							}
 						}
 						text = text.split("<RETRO_EMOJI_HEART>").join("<3");
-
+					}
+					else if (node.type == "/EE/Types/Engine/CheckBooleanDialogueNode")
+					{
+						text = "$ Check boolean " + node.name;
+					}
+					else if (node.type == "/EE/Types/Engine/SetBooleanDialogueNode")
+					{
+						text = "$ Boolean " + node.name + " is now true.";
+					}
+					else if (node.type == "/EE/Types/Engine/ResetBooleanDialogueNode")
+					{
+						text = "$ Boolean " + node.name + " is now false.";
+					}
+					if (text)
+					{
 						if (normaliseText(text).indexOf(query) != -1)
 						{
 							const convo = node_id_to_convo(chatroom, node.id);
