@@ -2106,5 +2106,8 @@
     },
     "/Lotus/Types/StoreItems/AvatarImages/AvatarImageBigBytesPizzaGlyph": {
         "promo_code": "1999-VOICEPLAY"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/AvatarImageSpecialEffectGlyph": {
+        "promo_code": "SpecialEffect"
     }
 }
