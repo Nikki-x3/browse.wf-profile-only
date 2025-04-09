@@ -197,6 +197,10 @@
 					{
 						text = "$ Check boolean " + node.name;
 					}
+					else if (node.type == "/EE/Types/Engine/CheckBooleanScriptDialogueNode")
+					{
+						text = "$ Check " + node.script_name + ":" + node.func_name + JSON.stringify(node.args).split("[").join("(").split("]").join(")");
+					}
 					else if (node.type == "/EE/Types/Engine/SetBooleanDialogueNode")
 					{
 						text = "$ Boolean " + node.name + " is now true.";
