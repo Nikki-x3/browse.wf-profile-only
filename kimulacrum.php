@@ -299,11 +299,11 @@
 		else if (node.type == "/EE/Types/Engine/CheckBooleanScriptDialogueNode")
 		{
 			document.getElementById("choices").innerHTML = "";
-			presentChoice("$ " + node.script_name + " says " + (node.arg1 ?? "unknown boolean") + " is true", function()
+			presentChoice("$ " + node.script_name + ":" + node.func_name + JSON.stringify(node.args).split("[").join("(").split("]").join(")") + " evaluates to true", function()
 			{
 				processChoices(node.true_choices);
 			});
-			presentChoice("$ " + node.script_name + " says " + (node.arg1 ?? "unknown boolean") + " is false", function()
+			presentChoice("$ " + node.script_name + ":" + node.func_name + JSON.stringify(node.args).split("[").join("(").split("]").join(")") + " evaluates to false", function()
 			{
 				processChoices(node.false_choices);
 			});
