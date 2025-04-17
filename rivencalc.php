@@ -231,10 +231,32 @@
 			};
 		});
 
+		const rivenTypes = [...document.getElementById("riven-type").children].map(x => x.value);
+
+		function getCompatibleRivenType(weaponType)
+		{
+			while (true)
+			{
+				for (const rivenType of rivenTypes)
+				{
+					if (ExportUpgrades["/Lotus/Upgrades/Mods/Randomized/" + rivenType].compatibleItems.indexOf(weaponType) != -1)
+					{
+						return rivenType;
+					}
+				}
+				const weapon = ExportWeapons[weaponType];
+				if (!weapon)
+				{
+					break;
+				}
+				weaponType = weapon.parentName;
+			}
+		}
+
 		function updateDatalist()
 		{
 			document.getElementById("weapons-datalist").innerHTML = "";
-			Object.values(ExportWeapons).forEach(weapon => {
+			Object.entries(ExportWeapons).forEach(([weaponType, weapon]) => {
 				if ("primeOmegaAttenuation" in weapon) // kitgun chamber
 				{
 					let option = document.createElement("option");
@@ -249,7 +271,7 @@
 				}
 				else if (weapon.totalDamage != 0) // normal weapon
 				{
-					let rivenType = "LotusRifleRandomModRare";
+					/*let rivenType = "LotusRifleRandomModRare";
 					if (weapon.productCategory == "Pistols")
 					{
 						rivenType = "LotusPistolRandomModRare";
@@ -263,12 +285,17 @@
 					else if (weapon.holsterCategory == "SHOTGUN")
 					{
 						rivenType = "LotusShotgunRandomModRare";
-					}
+					}*/
 
-					let option = document.createElement("option");
-					option.setAttribute("data-value", rivenType + ":" + weapon.omegaAttenuation);
-					option.value = dict[weapon.name] ?? weapon.name;
-					document.getElementById("weapons-datalist").appendChild(option);
+					// New rivenType detection to fix Convectrix not being detected as a shotgun
+					const rivenType = getCompatibleRivenType(weaponType);
+					if (rivenType)
+					{
+						let option = document.createElement("option");
+						option.setAttribute("data-value", rivenType + ":" + weapon.omegaAttenuation);
+						option.value = dict[weapon.name] ?? weapon.name;
+						document.getElementById("weapons-datalist").appendChild(option);
+					}
 				}
 				else if (weapon.omegaAttenuation != 1.0 && !weapon.excludeFromCodex) // zaw strike, and not their pvp variants
 				{
