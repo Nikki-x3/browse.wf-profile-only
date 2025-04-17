@@ -849,21 +849,24 @@
 				const LanguageCode = (localStorage.getItem("lang") ?? "en");
 				for (const event of window.worldState.Events)
 				{
-					const time = Math.trunc(event.Date.$date.$numberLong / 1000);
-					if (time > highest_time)
+					if (event.Date)
 					{
-						highest_time = time;
-					}
-					let msg = event.Messages.find(x => x.LanguageCode == LanguageCode)?.Message;
-					msg ??= event.Msg;
-					if (msg && msg != "/Lotus/Language/CommunityMessages/JoinDiscord")
-					{
-						items.push({
-							type: event.Community ? "success" : "primary",
-							data: msg,
-							time: time,
-							link: event.Prop
-						});
+						const time = Math.trunc(event.Date.$date.$numberLong / 1000);
+						if (time > highest_time)
+						{
+							highest_time = time;
+						}
+						let msg = event.Messages.find(x => x.LanguageCode == LanguageCode)?.Message;
+						msg ??= event.Msg;
+						if (msg && msg != "/Lotus/Language/CommunityMessages/JoinDiscord")
+						{
+							items.push({
+								type: event.Community ? "success" : "primary",
+								data: msg,
+								time: time,
+								link: event.Prop
+							});
+						}
 					}
 				}
 			}
@@ -1025,10 +1028,13 @@
 				window.events_earmark = 0;
 				for (const event of worldState.Events)
 				{
-					const time = Math.trunc(event.Date.$date.$numberLong / 1000);
-					if (time > events_earmark)
+					if (event.Date)
 					{
-						events_earmark = time;
+						const time = Math.trunc(event.Date.$date.$numberLong / 1000);
+						if (time > events_earmark)
+						{
+							events_earmark = time;
+						}
 					}
 				}
 
