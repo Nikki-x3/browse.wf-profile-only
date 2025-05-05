@@ -34,11 +34,7 @@
 							<div class="card-body overflow-auto">
 								<table class="table table-hover table-sm table-borderless mb-0">
 									<tr>
-										<th class="w-50">Earth</th>
-										<td id="earth" class="w-50"></td>
-									</tr>
-									<tr>
-										<th id="poe-name" class="w-50">Plains of Eidolon</th>
+										<th id="poe-name" class="w-50">Plains of Eidolon / Earth</th>
 										<td id="poe" class="w-50">Fetching data...</td>
 									</tr>
 									<tr>
@@ -450,19 +446,6 @@
 			elm.appendChild(createExpiryBadge(expiry));
 		}
 
-		function updateEarth()
-		{
-			const time = Date.now();
-			const cycle = Math.trunc(time / 28800000);
-			const cycleStart = cycle * 28800000;
-			const cycleEnd = cycleStart + 28800000;
-			const cycleDayStart = cycleStart + 14400000;
-			const stateEnd = (time > cycleDayStart ? cycleEnd : cycleDayStart);
-			setDatum("earth", time > cycleDayStart ? "🌑 Night" : "☀️ Day", stateEnd);
-			setTimeout(updateEarth, stateEnd - time);
-		}
-		updateEarth();
-
 		function updateVallis()
 		{
 			const EPOCH = new Date("November 10, 2018 08:13:48 UTC").getTime();
@@ -611,7 +594,7 @@
 
 		function updateNames()
 		{
-			document.getElementById("poe-name").textContent = dict["/Lotus/Language/Locations/EidolonPlains"];
+			document.getElementById("poe-name").textContent = dict["/Lotus/Language/Locations/EidolonPlains"] + " / " + dict["/Lotus/Language/Locations/Earth"];
 			document.getElementById("vallis-name").textContent = dict["/Lotus/Language/Locations/VenusLandscape"];
 			document.getElementById("deimos-name").textContent = dict["/Lotus/Language/InfestedMicroplanet/SolarMapDeimosLandscapeName"];
 			document.getElementById("zariman-name").textContent = dict["/Lotus/Language/Zariman/ZarimanRegionName"];
