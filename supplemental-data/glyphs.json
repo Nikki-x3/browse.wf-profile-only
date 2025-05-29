@@ -1184,6 +1184,7 @@
     },
     "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageNeoNess": {
         "glyphwave": "5",
+        "promo_code": "NeoNess007",
         "markdown": "* Watch stream for 50 hours on Twitch then ask for code in chat\n* Twitch Clips contest\n* Twitch Subscription\n* $5 Tier [Patreon](https://www.patreon.com/NeoNess007)",
         "twitch": "https://twitch.tv/neoness007",
         "twitter": "https://twitter.com/NeoNess007",
@@ -2109,5 +2110,14 @@
     },
     "/Lotus/Types/StoreItems/AvatarImages/AvatarImageSpecialEffectGlyph": {
         "promo_code": "SpecialEffect"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageGastel": {
+        "promo_code": "Gastel"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageWarframeReliquary": {
+        "promo_code": "Reliquary"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageZexiontat": {
+        "promo_code": "Zexiontat"
     }
 }
