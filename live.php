@@ -575,6 +575,7 @@
 				{
 					sendNotification("New bounties are available.");
 				}
+				const stale = window.bountyCycle && window.bountyCycle.expiry == bountyCycle.expiry;
 				window.bountyCycle = bountyCycle;
 				window.bountyCycleExpiry = bountyCycle.expiry;
 				updateDayNightCycle();
@@ -584,7 +585,7 @@
 				document.getElementById("bounty-rot").textContent = bountyCycle.rot;
 				document.getElementById("vault-rot").textContent = bountyCycle.vaultRot;
 				updateBountyCycleLocalised();
-				window.refresh_bounty_cycle_at = Math.max(Date.now(), bountyCycleExpiry);
+				window.refresh_bounty_cycle_at = (stale ? (Date.now() + 60_000) : Math.max(Date.now(), bountyCycleExpiry));
 			}).catch(e =>
 			{
 				console.error(e);
