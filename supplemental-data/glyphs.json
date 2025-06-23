@@ -1630,7 +1630,7 @@
     "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageStallordD": {
         "discord": "https://discord.gg/0tSW3W9Yb7AXrR11",
         "glyphwave": "15",
-        "markdown": "* Posts codes on Discord.",
+        "promo_code": "StallordD",
         "twitter": "https://twitter.com/StallordD"
     },
     "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageStormcrown": {
