@@ -393,15 +393,31 @@
 				}
 			}
 			dialogue_name_to_start_node_id = Object.keys(dialogue_name_to_start_node_id).sort((a, b) => {
-				if (a.indexOf("Rank") !== -1 && b.indexOf("Rank") === -1)
+				const aRankIndex = a.indexOf("Rank");
+				const bRankIndex = b.indexOf("Rank");
+				if (aRankIndex != -1 && bRankIndex == -1)
 				{
 					return -1;
 				}
-				if (b.indexOf("Rank") !== -1 && a.indexOf("Rank") === -1)
+				if (bRankIndex != -1 && aRankIndex == -1)
 				{
 					return +1;
 				}
-				return a < b ? -1 : +1;
+				if (aRankIndex == -1)
+				{
+					return a < b ? -1 : +1;
+				}
+				const [aRank, aConvo] = a.substr(aRankIndex + 4).split("Convo").map(x => parseInt(x));
+				const [bRank, bConvo] = b.substr(bRankIndex + 4).split("Convo").map(x => parseInt(x));
+				if (aRank < bRank)
+				{
+					return -1;
+				}
+				if (bRank < aRank)
+				{
+					return +1;
+				}
+				return aConvo < bConvo ? -1 : +1;
 			}).reduce((obj, key) => { 
 				obj[key] = dialogue_name_to_start_node_id[key]; 
 				return obj;
