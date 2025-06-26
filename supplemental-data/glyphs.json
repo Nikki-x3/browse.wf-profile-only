@@ -456,7 +456,7 @@
     "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageCrusader": {
         "discord": "https://discord.gg/0y22g2rf1wNuO6fJ",
         "glyphwave": "11",
-        "markdown": "* Reserved for community members.\n* Currently pushing for global code (40K Twitch followers) and is currently short by about 600 followers: https://www.twitch.tv/crusader",
+        "promo_code": "CRUSADER",
         "twitch": "https://twitch.tv/crusader",
         "twitter": "https://twitter.com/CrusaderTwitch"
     },
@@ -2131,5 +2131,14 @@
     },
     "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageVeroz": {
         "promo_code": "VEROZ"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageRickunPrime": {
+        "promo_code": "RICKUNPRIME"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageVecToR": {
+        "promo_code": "VECTOR"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageDEUS": {
+        "promo_code": "DEUS"
     }
 }
