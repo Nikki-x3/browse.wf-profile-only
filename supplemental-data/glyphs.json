@@ -2140,5 +2140,23 @@
     },
     "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageDEUS": {
         "promo_code": "DEUS"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImage2020ZerO": {
+        "promo_code": "2020ZERO"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageBlackNato": {
+        "promo_code": "BLACKNATO974"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageLaurieeeLG": {
+        "promo_code": "LAURIEEELG"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageMylah": {
+        "promo_code": "MYLAH"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageRebeccaWeress": {
+        "promo_code": "RWERESS"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageSecriotMcFly": {
+        "promo_code": "SECRIOTMCFLY"
     }
 }
