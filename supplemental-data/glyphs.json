@@ -2119,5 +2119,17 @@
     },
     "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageZexiontat": {
         "promo_code": "Zexiontat"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageAesopYOLIAN": {
+        "promo_code": "AesopYOLIAN"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageShinobiFufu": {
+        "promo_code": "SHINOBIFUFU"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageEveCaptura": {
+        "promo_code": "EVECAPTURA"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageVeroz": {
+        "promo_code": "VEROZ"
     }
 }
