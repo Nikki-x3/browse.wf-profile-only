@@ -282,7 +282,7 @@
 			console.timeEnd("Sort results");
 
 			console.time("Commit to DOM");
-			document.getElementById("results-status").textContent = "Found " + results.length + " results.";
+			document.getElementById("results-status").textContent = "Found " + results.length + " result" + (results.length == 1 ? "" : "s") + ".";
 			const MAX_RESULTS = 200;
 			if (results.length > MAX_RESULTS)
 			{
