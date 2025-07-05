@@ -72,10 +72,12 @@
 
 		Promise.all([
 			fetch("https://browse.wf/warframe-public-export-plus/ExportFlavour.json").then(res => res.json()),
+			fetch("https://browse.wf/warframe-public-export-plus/ExportImages.json").then(res => res.json()),
 			getDictPromise()
-		]).then(([ExportFlavour, dict]) =>
+		]).then(([ExportFlavour, ExportImages, dict]) =>
 		{
 			window.ExportFlavour = ExportFlavour;
+			window.ExportImages = ExportImages;
 			window.dict = dict;
 
 			updatePickerCards();
@@ -145,7 +147,7 @@
 						{
 							const img = document.createElement("img");
 							img.className = "img-fluid rounded-start";
-							img.src = "https://browse.wf" + picker.icon;
+							setImageSource(img, picker.icon);
 							col.appendChild(img);
 						}
 						row.appendChild(col);
