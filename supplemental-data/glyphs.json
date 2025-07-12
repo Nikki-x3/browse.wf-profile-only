@@ -2158,5 +2158,8 @@
     },
     "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageSecriotMcFly": {
         "promo_code": "SECRIOTMCFLY"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/AvatarImagePride2025Glyph": {
+        "promo_code": "PRIDE2025"
     }
 }
