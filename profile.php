@@ -32,19 +32,22 @@
 	<?php require "components/navbar.php"; ?>
 	<div class="container pt-3">
 		<div class="alert alert-warning" role="alert">
-			As of update 38.0.8, it is no longer possible to get profile information via username. To use this tool, you now need an account id. To find your own account id, open your EE.log (<code>%localappdata%\Warframe\EE.log</code>) and look for "Logged in" — your account id will be in the parentheses.
+			<ul class="mb-0">
+				<li>As of update 38.0.8, it is no longer possible to get profile information via username. To use this tool, you now need an account id. To find your own account id, open your EE.log (<code>%localappdata%\Warframe\EE.log</code>) and look for "Logged in" — your account id will be in the parentheses.</li>
+				<li>
+					As of 2025-08-19, DE seem to have imposed a server-side rate-limit on our benevolent request proxying service. I do not like cat and mouse games, so you can manually retrieve your data by visiting the appropriate URL for your platform (replace <code>ACCOUNTID</code>), save the resulting JSON, and upload it below.
+					<ul>
+						<li>PC: <code>http://content.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
+						<li>PlayStation: <code>http://content-ps4.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
+						<li>Xbox: <code>http://content-xb1.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
+						<li>Switch: <code>http://content-swi.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
+						<li>Mobile: <code>http://content-mob.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
+					</ul>
+				</li>
+			</ul>
 		</div>
-		<form class="input-group mb-3" onsubmit="event.preventDefault();doLookup();">
-			<input id="username" type="text" class="form-control" value="" placeholder="Account ID" />
-			<span class="input-group-text">on</span>
-			<select id="platform" class="form-control">
-				<option value="pc">PC</option>
-				<option value="ps4">PlayStation</option>
-				<option value="xb1">Xbox</option>
-				<option value="swi">Switch</option>
-				<option value="mob">Mobile</option>
-			</select>
-			<input type="submit" class="btn btn-primary" />
+		<form class="mb-3">
+			<input id="profile-file" type="file" class="form-control" accept="application/json" onchange="loadProfile(this.files[0]);" />
 		</form>
 		<div id="status" class="alert alert-light"><div class="spinner-border spinner-border-sm me-2"></div><span>Loading</span></div>
 		<h3 class="mb-0"><span id="profile-name"></span><span class="text-body-secondary" id="profile-discriminator"></span></h3>
@@ -419,25 +422,7 @@
 		}
 
 		const params = new URLSearchParams(location.hash.replace("#", ""));
-		let initialDataUrl = "supplemental-data/profile-[DE]Rebecca.json";
-		if (params.has("account"))
-		{
-			initialDataUrl = "https://conduit.browse.wf/profilebyid?account=" + encodeURIComponent(params.get("account"));
-			window.hashprefix = "account=" + encodeURIComponent(params.get("account")) + "&";
-			if (params.has("platform"))
-			{
-				initialDataUrl += "&platform=" + params.get("platform");
-				window.hashprefix += "platform=" + params.get("platform") + "&";
-			}
-		}
-		else
-		{
-			window.hashprefix = "";
-		}
-		if (params.has("platform"))
-		{
-			document.getElementById("platform").value = params.get("platform");
-		}
+                window.hashprefix = "";
 
 		Promise.all([
 			getDictPromise(),
@@ -451,7 +436,7 @@
 			fetch("https://browse.wf/warframe-public-export-plus/ExportSyndicates.json").then(res => res.json()),
 			fetch("https://browse.wf/warframe-public-export-plus/ExportWarframes.json").then(res => res.json()),
 			fetch("https://browse.wf/warframe-public-export-plus/ExportWeapons.json").then(res => res.json()),
-			fetch(initialDataUrl).then(res => res.json())
+			fetch("supplemental-data/profile-[DE]Rebecca.json").then(res => res.json())
 			]).then(([
 				dict,
 				ExportAchievements,
@@ -496,6 +481,11 @@
 			{
 				renderProfile();
 			};
+
+			if (document.getElementById("profile-file").files.length)
+			{
+				loadProfile(document.getElementById("profile-file").files[0]);
+			}
 		});
 
 		function isXplatName(name)
@@ -517,36 +507,36 @@
 			return name;
 		}
 
-		let lookup_in_progress = false;
-		function doLookup()
+		function loadProfile(file)
 		{
-			if (!("profile" in window) || lookup_in_progress)
+			if (!file)
 			{
-				alert("Still loading, please wait.");
 				return;
 			}
-			lookup_in_progress = true;
-			document.querySelector("#status span").textContent = "Fetching data for " + document.getElementById("username").value;
+			document.querySelector("#status span").textContent = "Loading profile...";
 			document.querySelector("#status").classList.remove("d-none");
-			fetch("https://conduit.browse.wf/profilebyid?account=" + encodeURIComponent(document.getElementById("username").value) + "&platform=" + document.getElementById("platform").value).then(res => res.json()).then(data =>
+			const reader = new FileReader();
+			reader.onload = function(e)
 			{
-				if (data)
+				try
 				{
-					window.profile = data;
-					window.hashprefix = "account=" + encodeURIComponent(sanitiseName(profile.Results[0].AccountId.$oid)) + "&platform=" + profile.platform + "&";
-					location.hash = hashprefix + "tab=fashion"; // default tab
+					window.profile = JSON.parse(e.target.result);
+					document.getElementById("profile-nav").classList.remove("d-none");
+					activateTab(params.has("tab") ? params.get("tab") : "fashion");
+					renderProfile();
+					if (!params.has("tab"))
+					{
+						location.hash = "tab=fashion";
+					}
 				}
-				else
+				catch (err)
 				{
-					alert("Failed to load data for " + document.getElementById("username").value);
+					console.error(err);
+					alert("Failed to parse JSON file.");
 				}
-				renderProfile();
-				lookup_in_progress = false;
-			}).catch(() => {
-				alert("Bad request. Please note that you need to input an account id.");
-				renderProfile();
-				lookup_in_progress = false;
-			});
+				document.querySelector("#status").classList.add("d-none");
+			};
+			reader.readAsText(file);
 		}
 
 		function renderProfile()
