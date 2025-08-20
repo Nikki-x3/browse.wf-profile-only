@@ -1943,5 +1943,6 @@
 
 		document.querySelectorAll(".vq-abbr").forEach(elm => addTooltip(elm, "Voidplume Quills"));
 	</script>
+	<script src="https://censorcanary.org/censorcanary.js" defer></script>
 </body>
 </html>
