@@ -2161,5 +2161,8 @@
     },
     "/Lotus/Types/StoreItems/AvatarImages/AvatarImagePride2025Glyph": {
         "promo_code": "PRIDE2025"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/AvatarImageGlyphMemePotato": {
+        "promo_code": "bsd-warframe"
     }
 }
