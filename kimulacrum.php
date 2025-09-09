@@ -529,7 +529,7 @@
 
 		clearChat();
 
-		document.getElementById("chatroom").onchange = function()
+		document.getElementById("chatroom").onchange = function(event)
 		{
 			document.getElementById("dialogue").innerHTML = "<option>SELECT A DIALOGUE</option>";
 			clearChat();
@@ -544,7 +544,10 @@
 			{
 				document.getElementById("flowchart-link").classList.add("d-none");
 			}
-			saveState();
+			if (event)
+			{
+				saveState();
+			}
 		};
 		if (document.getElementById("chatroom").value != "SELECT A CHATROOM")
 		{
