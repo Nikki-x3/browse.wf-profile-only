@@ -414,7 +414,7 @@ function doQuery(query) {
                 }
             }
             if (!have_obtain_info
-                && result.key.substr(0, 48) == "/Lotus/Types/StoreItems/AvatarImages/FanChannel/") {
+                && result.key.substring(0, 48) == "/Lotus/Types/StoreItems/AvatarImages/FanChannel/") {
                 let p = document.createElement("p");
                 p.className = "card-text";
                 p.textContent = "If you know how to obtain this glyph, ";

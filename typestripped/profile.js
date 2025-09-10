@@ -38,13 +38,13 @@ const platformNames = {
     "mob": "Mobile",
 };
 function peColourToHex(colour) {
-    return "#" + colour.value.substr(4);
+    return "#" + colour.value.substring(4);
 }
 function peColourToRgb(colour) {
     return [
-        parseInt(colour.value.substr(4, 2), 16),
-        parseInt(colour.value.substr(6, 2), 16),
-        parseInt(colour.value.substr(8, 2), 16)
+        parseInt(colour.value.substring(4, 6), 16),
+        parseInt(colour.value.substring(6, 8), 16),
+        parseInt(colour.value.substring(8, 10), 16)
     ];
 }
 function parseRgbaInt(val) {
@@ -124,7 +124,7 @@ function xplatNameToPlatformId(name) {
 }
 function sanitiseName(name) {
     if (name.charCodeAt(name.length - 1) >= 0xE000) {
-        name = name.substr(0, name.length - 1);
+        name = name.substring(0, name.length - 1);
     }
     return name;
 }

@@ -1,5 +1,11 @@
 import type { IAbility, IArcane, ICustom, IExportEnemies, IFlavourItem, IGear, IPowersuit, IRecipe, IRegion, IRelic, IResource, ISentinel, IUpgrade, IWeapon, TMissionDeck } from "warframe-public-export-plus";
 
+interface IResult {
+	type: string;
+	key: string;
+	value: any;
+}
+
 interface IRewardSource {
 	name: string[];
 	rotation?: number;
@@ -220,7 +226,7 @@ Promise.all([
 	};
 });
 
-function updateMissionDeckNames()
+function updateMissionDeckNames(): void
 {
 	window.missionDeckNames = {
 		"/Lotus/Types/Game/MissionDecks/SortieRewards": ["Sortie"],
@@ -259,10 +265,10 @@ function updateMissionDeckNames()
 	});
 }
 
-function doQuery(query: string)
+function doQuery(query: string): void
 {
 	console.time("Input to language tags");
-	let results = getDictEntriesFromQuery(query).reduce((arr, [key, value]) =>
+	let results: IResult[] = getDictEntriesFromQuery(query).reduce((arr, [key, value]) =>
 	{
 		arr.push({ type: "tag", key, value });
 		return arr;
@@ -587,7 +593,7 @@ function doQuery(query: string)
 			}
 
 			if (!have_obtain_info
-				&& result.key.substr(0, 48) == "/Lotus/Types/StoreItems/AvatarImages/FanChannel/"
+				&& result.key.substring(0, 48) == "/Lotus/Types/StoreItems/AvatarImages/FanChannel/"
 				)
 			{
 				let p = document.createElement("p");
@@ -780,7 +786,7 @@ function getDictEntriesFromQuery(query: string): [string, string][]
 	});
 }
 
-function resolveTagsToUses(results)
+function resolveTagsToUses(results: IResult[]): IResult[]
 {
 	const res = [];
 	outer: for (const result of results)
@@ -802,7 +808,7 @@ function resolveTagsToUses(results)
 	return res;
 }
 
-function addUniqueNameResults(res, query)
+function addUniqueNameResults(res: IResult[], query: string): void
 {
 	query = query.toLowerCase();
 	for (const [type, entries] of Object.entries(window.meta_entries))

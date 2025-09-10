@@ -192,7 +192,7 @@ ExportChallenges_promise.then(res => { (window as any).ExportChallenges = res; }
 ExportMissionTypes_promise.then(res => { (window as any).ExportMissionTypes = res; });
 ExportFactions_promise.then(res => { (window as any).ExportFactions = res; });
 
-function formatExpiry(expiry)
+function formatExpiry(expiry: number): string
 {
 	expiry -= expiry % 1000; expiry += 1000; // normalise the ms so everything ticks at the same time
 	const time = Date.now();
@@ -204,7 +204,7 @@ function formatExpiry(expiry)
 	return deltaToUnits(delta).join(" ");
 }
 
-function deltaToUnits(delta)
+function deltaToUnits(delta: number): string[]
 {
 	delta = Math.abs(delta);
 
@@ -228,21 +228,21 @@ function deltaToUnits(delta)
 	return units;
 }
 
-function formatActivation(activation)
+function formatActivation(activation: number): string
 {
 	return deltaToUnits(Date.now() - activation)[0];
 }
 
-function createExpiryBadge(expiry)
+function createExpiryBadge(expiry: number): HTMLSpanElement
 {
 	const span = document.createElement("span");
-	span.setAttribute("data-expiry", expiry);
+	span.setAttribute("data-expiry", expiry.toString());
 	span.className = "badge text-bg-secondary";
 	span.textContent = formatExpiry(expiry);
 	return span;
 }
 
-function setDatum(name, value, expiry)
+function setDatum(name: string, value: string, expiry: number): void
 {
 	const elm = document.getElementById(name);
 	elm.querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
@@ -250,7 +250,7 @@ function setDatum(name, value, expiry)
 	elm.appendChild(createExpiryBadge(expiry));
 }
 
-function updateVallis()
+function updateVallis(): void
 {
 	const EPOCH = new Date("November 10, 2018 08:13:48 UTC").getTime();
 	const time = Date.now();
@@ -466,7 +466,7 @@ function updateIncursions()
 	setTimeout(updateIncursions, window.incursions_expiry - Date.now());
 }
 
-function addTooltip(elm, title)
+function addTooltip(elm: HTMLElement, title: string): any
 {
 	elm.setAttribute("data-bs-toggle", "tooltip");
 	elm.setAttribute("data-bs-title", title);
@@ -871,7 +871,7 @@ const sortieModifiers = {
 	"SORTIE_MODIFIER_BOW_ONLY": "Bow Only",
 };
 
-function setWorldStateExpiry(expiry)
+function setWorldStateExpiry(expiry: number): void
 {
 	if (Date.now() > expiry)
 	{
@@ -890,8 +890,8 @@ async function updateSorties()
 	await ExportMissionTypes_promise;
 
 	const sortie = window.worldState.Sorties.find(x => Date.now() >= parseInt(x.Activation.$date.$numberLong) && Date.now() < parseInt(x.Expiry.$date.$numberLong));
-	setWorldStateExpiry(sortie.Expiry.$date.$numberLong);
-	setDatum("sortie-header", toTitleCase(osdict["/Lotus/Language/Menu/SortieMissionName"]), sortie.Expiry.$date.$numberLong);
+	setWorldStateExpiry(parseInt(sortie.Expiry.$date.$numberLong));
+	setDatum("sortie-header", toTitleCase(osdict["/Lotus/Language/Menu/SortieMissionName"]), parseInt(sortie.Expiry.$date.$numberLong));
 	document.getElementById("sortie-header").innerHTML += " ";
 	document.getElementById("sortie-header").appendChild(createCompletionToggle(sortie._id.$oid));
 	const tbody = document.createElement("tbody");
@@ -915,8 +915,8 @@ async function updateSorties()
 	window.last_sortie = sortie._id.$oid;
 
 	const litesortie = window.worldState.LiteSorties.find(x => Date.now() >= parseInt(x.Activation.$date.$numberLong) && Date.now() < parseInt(x.Expiry.$date.$numberLong));
-	setWorldStateExpiry(litesortie.Expiry.$date.$numberLong);
-	setDatum("litesortie-header", osdict["/Lotus/Language/WorldStateWindow/LiteSortieMissionName"], litesortie.Expiry.$date.$numberLong);
+	setWorldStateExpiry(parseInt(litesortie.Expiry.$date.$numberLong));
+	setDatum("litesortie-header", osdict["/Lotus/Language/WorldStateWindow/LiteSortieMissionName"], parseInt(litesortie.Expiry.$date.$numberLong));
 	document.getElementById("litesortie-header").innerHTML += " ";
 	document.getElementById("litesortie-header").appendChild(createCompletionToggle(litesortie._id.$oid));
 	const mission_names = [];
@@ -945,8 +945,8 @@ function updateKinePage()
 async function updateDarvosDeal()
 {
 	window.dailyDeal = window.worldState.DailyDeals.find(x => Date.now() >= parseInt(x.Activation.$date.$numberLong) && Date.now() < parseInt(x.Expiry.$date.$numberLong));
-	setDatum("darvo-header", "Darvo's Deal", window.dailyDeal.Expiry.$date.$numberLong);
-	setWorldStateExpiry(window.dailyDeal.Expiry.$date.$numberLong);
+	setDatum("darvo-header", "Darvo's Deal", parseInt(window.dailyDeal.Expiry.$date.$numberLong));
+	setWorldStateExpiry(parseInt(window.dailyDeal.Expiry.$date.$numberLong));
 	const item_data = await getItemDataPromise(window.dailyDeal.StoreItem);
 	await dicts_promise;
 	document.getElementById("darvo-item").textContent = dict[item_data.name];
@@ -976,8 +976,8 @@ async function updateBaro()
 		document.getElementById("baro-soon").classList.add("d-none");
 		document.getElementById("baro-now").classList.remove("d-none");
 
-		setWorldStateExpiry(window.worldState.VoidTraders[0].Expiry.$date.$numberLong);
-		setDatum("baro-header", "Baro Ki'Teer", window.worldState.VoidTraders[0].Expiry.$date.$numberLong);
+		setWorldStateExpiry(parseInt(window.worldState.VoidTraders[0].Expiry.$date.$numberLong));
+		setDatum("baro-header", "Baro Ki'Teer", parseInt(window.worldState.VoidTraders[0].Expiry.$date.$numberLong));
 
 		for (const item of window.worldState.VoidTraders[0].Manifest)
 		{
@@ -1044,8 +1044,8 @@ async function updateBaro()
 		document.getElementById("baro-soon").classList.remove("d-none");
 		document.getElementById("baro-now").classList.add("d-none");
 
-		setWorldStateExpiry(window.worldState.VoidTraders[0].Activation.$date.$numberLong);
-		setDatum("baro-header", "Baro Ki'Teer", window.worldState.VoidTraders[0].Activation.$date.$numberLong);
+		setWorldStateExpiry(parseInt(window.worldState.VoidTraders[0].Activation.$date.$numberLong));
+		setDatum("baro-header", "Baro Ki'Teer", parseInt(window.worldState.VoidTraders[0].Activation.$date.$numberLong));
 
 		window.last_baro_expiry = "69";
 	}
@@ -1091,7 +1091,7 @@ async function updateAlerts()
 				}
 				span.innerHTML += " (" + alert.MissionInfo.minEnemyLevel + "-" + alert.MissionInfo.maxEnemyLevel + ") @ "+ dict[ExportRegions[alert.MissionInfo.location].name] + ", " + dict[ExportRegions[alert.MissionInfo.location].systemName] + " ";
 				span.appendChild(createExpiryBadge(alert.Expiry.$date.$numberLong));
-				setWorldStateExpiry(alert.Expiry.$date.$numberLong);
+				setWorldStateExpiry(parseInt(alert.Expiry.$date.$numberLong));
 				span.innerHTML += " ";
 				span.appendChild(createCompletionToggle(alert._id.$oid));
 				block.appendChild(span);
@@ -1266,7 +1266,7 @@ function updateCircuit()
 }
 dict_promise.then(updateCircuit);
 
-function loadScriptPromise(src)
+function loadScriptPromise(src: string): Promise<any>
 {
 	return new Promise((resolve, reject) =>
 	{
@@ -1279,7 +1279,7 @@ function loadScriptPromise(src)
 }
 
 const item_data_promises = {};
-function getItemDataPromise(uniqueName)
+function getItemDataPromise(uniqueName: string): Promise<any>
 {
 	uniqueName = uniqueName.split("/Lotus/StoreItems/").join("/Lotus/");
 	if (!item_data_promises[uniqueName])
@@ -1289,7 +1289,7 @@ function getItemDataPromise(uniqueName)
 	return item_data_promises[uniqueName];
 }
 
-async function getItemNamePromise(uniqueName)
+async function getItemNamePromise(uniqueName: string): Promise<string>
 {
 	try
 	{
@@ -1313,13 +1313,13 @@ async function getItemNamePromise(uniqueName)
 	}
 }
 
-function isOidMarkedAsCompleted(oid)
+function isOidMarkedAsCompleted(oid: string): boolean
 {
 	const arr = JSON.parse(localStorage.getItem("oids_completed") ?? "[]");
 	return arr.findIndex(x => x == oid) != -1;
 }
 
-function toggleOidCompletion(oid)
+function toggleOidCompletion(oid: string): void
 {
 	const arr = JSON.parse(localStorage.getItem("oids_completed") ?? "[]");
 	const index = arr.findIndex(x => x == oid);
@@ -1334,12 +1334,12 @@ function toggleOidCompletion(oid)
 	localStorage.setItem("oids_completed", JSON.stringify(arr));
 }
 
-function createCompletionToggle(oid)
+function createCompletionToggle(oid: string): HTMLAnchorElement
 {
 	let what = "completed";
-	if (oid.substr(0, 5) == "kahlb")
+	if (oid.substring(0, 5) == "kahlb")
 	{
-		what += " (Bonus Objective #" + oid.substr(5, 1) + ")";
+		what += " (Bonus Objective #" + oid.substring(5, 6) + ")";
 	}
 
 	const a = document.createElement("a");
@@ -1442,7 +1442,7 @@ function updateInvasions()
 	});
 }
 
-function setFissuresExpiry(expiry)
+function setFissuresExpiry(expiry: number): void
 {
 	if (!window.refresh_fissures_at || window.refresh_fissures_at > expiry)
 	{
@@ -1611,11 +1611,11 @@ setInterval(function()
 {
 	for (const elm of document.querySelectorAll(".badge[data-expiry]"))
 	{
-		elm.textContent = formatExpiry(elm.getAttribute("data-expiry"));
+		elm.textContent = formatExpiry(parseInt(elm.getAttribute("data-expiry")));
 	}
 	for (const elm of document.querySelectorAll(".badge[data-activation]"))
 	{
-		elm.textContent = formatActivation(elm.getAttribute("data-activation"));
+		elm.textContent = formatActivation(parseInt(elm.getAttribute("data-activation")));
 	}
 }, 100);
 
@@ -1647,7 +1647,7 @@ setInterval(function()
 	}
 }, 500);
 
-function refreshCollapseStatus(elm)
+function refreshCollapseStatus(elm: HTMLElement): void
 {
 	const engaged = localStorage.getItem("live.collapse." + elm.getAttribute("data-collapse-toggle"));
 	const span = document.createElement("span");
@@ -1684,7 +1684,7 @@ document.querySelectorAll<HTMLSpanElement>("[data-collapse-toggle]").forEach(elm
 	};
 });
 
-function sendNotification(text)
+function sendNotification(text: string): void
 {
 	const toast = document.createElement("div");
 	toast.className = "toast align-items-center text-bg-primary border-0";
@@ -1707,7 +1707,7 @@ function sendNotification(text)
 	}
 }
 
-function refreshNotifStatus(elm)
+function refreshNotifStatus(elm: HTMLElement): void
 {
 	const enabled = localStorage.getItem("live.notif." + elm.getAttribute("data-notif-toggle"));
 	const span = document.createElement("span");
@@ -1743,4 +1743,4 @@ document.querySelectorAll<HTMLAnchorElement>("[data-notif-toggle]").forEach(elm 
 	};
 });
 
-document.querySelectorAll(".vq-abbr").forEach(elm => addTooltip(elm, "Voidplume Quills"));
+document.querySelectorAll<HTMLElement>(".vq-abbr").forEach(elm => addTooltip(elm, "Voidplume Quills"));

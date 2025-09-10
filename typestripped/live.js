@@ -44,7 +44,7 @@ function formatActivation(activation) {
 }
 function createExpiryBadge(expiry) {
     const span = document.createElement("span");
-    span.setAttribute("data-expiry", expiry);
+    span.setAttribute("data-expiry", expiry.toString());
     span.className = "badge text-bg-secondary";
     span.textContent = formatExpiry(expiry);
     return span;
@@ -569,8 +569,8 @@ async function updateSorties() {
     await dicts_promise;
     await ExportMissionTypes_promise;
     const sortie = window.worldState.Sorties.find(x => Date.now() >= parseInt(x.Activation.$date.$numberLong) && Date.now() < parseInt(x.Expiry.$date.$numberLong));
-    setWorldStateExpiry(sortie.Expiry.$date.$numberLong);
-    setDatum("sortie-header", toTitleCase(osdict["/Lotus/Language/Menu/SortieMissionName"]), sortie.Expiry.$date.$numberLong);
+    setWorldStateExpiry(parseInt(sortie.Expiry.$date.$numberLong));
+    setDatum("sortie-header", toTitleCase(osdict["/Lotus/Language/Menu/SortieMissionName"]), parseInt(sortie.Expiry.$date.$numberLong));
     document.getElementById("sortie-header").innerHTML += " ";
     document.getElementById("sortie-header").appendChild(createCompletionToggle(sortie._id.$oid));
     const tbody = document.createElement("tbody");
@@ -591,8 +591,8 @@ async function updateSorties() {
     }
     window.last_sortie = sortie._id.$oid;
     const litesortie = window.worldState.LiteSorties.find(x => Date.now() >= parseInt(x.Activation.$date.$numberLong) && Date.now() < parseInt(x.Expiry.$date.$numberLong));
-    setWorldStateExpiry(litesortie.Expiry.$date.$numberLong);
-    setDatum("litesortie-header", osdict["/Lotus/Language/WorldStateWindow/LiteSortieMissionName"], litesortie.Expiry.$date.$numberLong);
+    setWorldStateExpiry(parseInt(litesortie.Expiry.$date.$numberLong));
+    setDatum("litesortie-header", osdict["/Lotus/Language/WorldStateWindow/LiteSortieMissionName"], parseInt(litesortie.Expiry.$date.$numberLong));
     document.getElementById("litesortie-header").innerHTML += " ";
     document.getElementById("litesortie-header").appendChild(createCompletionToggle(litesortie._id.$oid));
     const mission_names = [];
@@ -615,8 +615,8 @@ function updateKinePage() {
 }
 async function updateDarvosDeal() {
     window.dailyDeal = window.worldState.DailyDeals.find(x => Date.now() >= parseInt(x.Activation.$date.$numberLong) && Date.now() < parseInt(x.Expiry.$date.$numberLong));
-    setDatum("darvo-header", "Darvo's Deal", window.dailyDeal.Expiry.$date.$numberLong);
-    setWorldStateExpiry(window.dailyDeal.Expiry.$date.$numberLong);
+    setDatum("darvo-header", "Darvo's Deal", parseInt(window.dailyDeal.Expiry.$date.$numberLong));
+    setWorldStateExpiry(parseInt(window.dailyDeal.Expiry.$date.$numberLong));
     const item_data = await getItemDataPromise(window.dailyDeal.StoreItem);
     await dicts_promise;
     document.getElementById("darvo-item").textContent = dict[item_data.name];
@@ -639,8 +639,8 @@ async function updateBaro() {
     if (window.worldState.VoidTraders[0].Manifest) {
         document.getElementById("baro-soon").classList.add("d-none");
         document.getElementById("baro-now").classList.remove("d-none");
-        setWorldStateExpiry(window.worldState.VoidTraders[0].Expiry.$date.$numberLong);
-        setDatum("baro-header", "Baro Ki'Teer", window.worldState.VoidTraders[0].Expiry.$date.$numberLong);
+        setWorldStateExpiry(parseInt(window.worldState.VoidTraders[0].Expiry.$date.$numberLong));
+        setDatum("baro-header", "Baro Ki'Teer", parseInt(window.worldState.VoidTraders[0].Expiry.$date.$numberLong));
         for (const item of window.worldState.VoidTraders[0].Manifest) {
             getItemNamePromise(item.ItemType);
         }
@@ -693,8 +693,8 @@ async function updateBaro() {
     else {
         document.getElementById("baro-soon").classList.remove("d-none");
         document.getElementById("baro-now").classList.add("d-none");
-        setWorldStateExpiry(window.worldState.VoidTraders[0].Activation.$date.$numberLong);
-        setDatum("baro-header", "Baro Ki'Teer", window.worldState.VoidTraders[0].Activation.$date.$numberLong);
+        setWorldStateExpiry(parseInt(window.worldState.VoidTraders[0].Activation.$date.$numberLong));
+        setDatum("baro-header", "Baro Ki'Teer", parseInt(window.worldState.VoidTraders[0].Activation.$date.$numberLong));
         window.last_baro_expiry = "69";
     }
 }
@@ -729,7 +729,7 @@ async function updateAlerts() {
                 }
                 span.innerHTML += " (" + alert.MissionInfo.minEnemyLevel + "-" + alert.MissionInfo.maxEnemyLevel + ") @ " + dict[ExportRegions[alert.MissionInfo.location].name] + ", " + dict[ExportRegions[alert.MissionInfo.location].systemName] + " ";
                 span.appendChild(createExpiryBadge(alert.Expiry.$date.$numberLong));
-                setWorldStateExpiry(alert.Expiry.$date.$numberLong);
+                setWorldStateExpiry(parseInt(alert.Expiry.$date.$numberLong));
                 span.innerHTML += " ";
                 span.appendChild(createCompletionToggle(alert._id.$oid));
                 block.appendChild(span);
@@ -925,8 +925,8 @@ function toggleOidCompletion(oid) {
 }
 function createCompletionToggle(oid) {
     let what = "completed";
-    if (oid.substr(0, 5) == "kahlb") {
-        what += " (Bonus Objective #" + oid.substr(5, 1) + ")";
+    if (oid.substring(0, 5) == "kahlb") {
+        what += " (Bonus Objective #" + oid.substring(5, 6) + ")";
     }
     const a = document.createElement("a");
     a.className = "completion-check";
@@ -1149,10 +1149,10 @@ updateNewsSources(); // does updateWorldState
 updateInvasions();
 setInterval(function () {
     for (const elm of document.querySelectorAll(".badge[data-expiry]")) {
-        elm.textContent = formatExpiry(elm.getAttribute("data-expiry"));
+        elm.textContent = formatExpiry(parseInt(elm.getAttribute("data-expiry")));
     }
     for (const elm of document.querySelectorAll(".badge[data-activation]")) {
-        elm.textContent = formatActivation(elm.getAttribute("data-activation"));
+        elm.textContent = formatActivation(parseInt(elm.getAttribute("data-activation")));
     }
 }, 100);
 setInterval(function () {

@@ -7,7 +7,7 @@ function totwo(num) {
     if (num < 10) {
         return "0" + num;
     }
-    return num;
+    return num.toString();
 }
 function formattz(offset) {
     if (offset == 0) {

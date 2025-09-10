@@ -1,4 +1,4 @@
-import type { IAchievement, ICustom, IExportEnemies, IExportNightwave, IFlavourItem, IPowersuit, IRegion, ISentinel, ISyndicate, IWeapon } from "warframe-public-export-plus";
+import type { IAchievement, IColour, ICustom, IExportEnemies, IExportNightwave, IFlavourItem, IPowersuit, IRegion, ISentinel, ISyndicate, IWeapon } from "warframe-public-export-plus";
 
 // PlutoScript
 declare const pluto_require: (file: string) => Promise<void>;
@@ -72,21 +72,21 @@ const platformNames = {
 	"mob": "Mobile",
 };
 
-function peColourToHex(colour)
+function peColourToHex(colour: IColour): string
 {
-	return "#" + colour.value.substr(4);
+	return "#" + colour.value.substring(4);
 }
 
-function peColourToRgb(colour)
+function peColourToRgb(colour: IColour): [number, number, number]
 {
 	return [
-		parseInt(colour.value.substr(4, 2), 16),
-		parseInt(colour.value.substr(6, 2), 16),
-		parseInt(colour.value.substr(8, 2), 16)
+		parseInt(colour.value.substring(4, 6), 16),
+		parseInt(colour.value.substring(6, 8), 16),
+		parseInt(colour.value.substring(8, 10), 16)
 	];
 }
 
-function parseRgbaInt(val)
+function parseRgbaInt(val: number): [number, number, number, number]
 {
 	return [
 		(val >> 16) & 0xff,
@@ -96,19 +96,19 @@ function parseRgbaInt(val)
 	];
 }
 
-function toHexString(r, g, b)
+function toHexString(r: number, g: number, b: number): string
 {
 	return "#" + (r.toString(16).padStart(2, "0") + g.toString(16).padStart(2, "0") + b.toString(16).padStart(2, "0")).toUpperCase();
 }
 
-function makeColourFilter(colour)
+function makeColourFilter(colour: IColour): string
 {
 	const [red, green, blue] = peColourToRgb(colour);
 	const svg = `<svg xmlns="http://www.w3.org/2000/svg"><filter id="a"><feColorMatrix color-interpolation-filters="sRGB" in="SourceGraphic" type="matrix" values="${red / 255} 0 0 0 0 0 ${green / 255} 0 0 0 0 0 ${blue / 255} 0 0 0 0 0 1 0" /></filter></svg>`;
 	return "url('data:image/svg+xml," + svg + "#a')";
 }
 
-function makeSyndicateLogoElement(syndicate)
+function makeSyndicateLogoElement(syndicate: ISyndicate): HTMLDivElement
 {
 	const div = document.createElement("div");
 	div.style.backgroundColor /* [sic] */ = peColourToHex(syndicate.backgroundColour);
@@ -187,26 +187,26 @@ Promise.all([
 	}
 });
 
-function isXplatName(name)
+function isXplatName(name: string): boolean
 {
 	return name.charCodeAt(name.length - 1) >= 0xE000;
 }
 
-function xplatNameToPlatformId(name)
+function xplatNameToPlatformId(name: string): number
 {
 	return name.charCodeAt(name.length - 1) - 0xE000;
 }
 
-function sanitiseName(name)
+function sanitiseName(name: string): string
 {
 	if (name.charCodeAt(name.length - 1) >= 0xE000)
 	{
-		name = name.substr(0, name.length - 1);
+		name = name.substring(0, name.length - 1);
 	}
 	return name;
 }
 
-function loadProfile(file)
+function loadProfile(file?: File): void
 {
 	if (!file)
 	{
@@ -238,7 +238,7 @@ function loadProfile(file)
 	reader.readAsText(file);
 }
 
-function renderProfile()
+function renderProfile(): void
 {
 	document.querySelector("#status").classList.add("d-none");
 
@@ -705,7 +705,7 @@ function renderProfile()
 	}
 }
 
-function displaySkin(category, i, value)
+function displaySkin(category: string, i: number, value: string): void
 {
 	const elm = document.getElementById(category + "-skin-" + i);
 	if (elm)
@@ -753,7 +753,7 @@ const modularWeapons = {
 	"/Lotus/Weapons/Ostron/Melee/LotusModularWeapon": "Zaw",
 };
 
-function updateFashion()
+function updateFashion(): void
 {
 	for (const category of ["Suits", "LongGuns", "Pistols", "Melee"])
 	{
@@ -840,7 +840,7 @@ function updateFashion()
 	}
 }
 
-function tabulate(elm, event)
+function tabulate(elm: HTMLElement, event: Event): void
 {
 	event.preventDefault();
 
@@ -852,7 +852,7 @@ function tabulate(elm, event)
 	}
 }
 
-function activateTab(id)
+function activateTab(id: string): void
 {
 	document.querySelectorAll("[data-tab]").forEach(x => x.classList.remove("active"));
 	document.querySelector("[data-tab="+id+"]").classList.add("active");
