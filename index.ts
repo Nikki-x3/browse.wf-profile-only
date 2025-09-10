@@ -1,11 +1,75 @@
+import type { IAbility, IArcane, ICustom, IExportEnemies, IFlavourItem, IGear, IPowersuit, IRecipe, IRegion, IRelic, IResource, ISentinel, IUpgrade, IWeapon, TMissionDeck } from "warframe-public-export-plus";
+
+interface IRewardSource {
+	name: string[];
+	rotation?: number;
+	itemCount: number;
+	probability: number;
+	probabilityWorstCase?: number;
+}
+
+// common.js
+declare let onLanguageUpdate: () => void;
+declare function getDictPromise(): Promise<Record<string, string>>;
+declare function resolveTextIcons(text: string): string;
+declare function setImageSource(img: HTMLImageElement, icon: string): void;
+
+// fetch
+declare const dict: Record<string, string>;
+declare const ExportRegions: Record<string, IRegion>;
+declare const ExportRelics: Record<string, IRelic>;
+declare const ExportEnemies: IExportEnemies;
+declare const supplementalGlyphData: Record<string, {
+	promo_code?: string;
+	twitch?: string;
+	youtube?: string;
+	discord?: string;
+	twitter?: string;
+	mixer?: string;
+	"other-site"?: string;
+	markdown?: string;
+}>;
+declare global {
+	interface Window {
+		dict: Record<string, string>;
+		dict_entries: [string, string][];
+		ExportWarframes_entries: [string, IPowersuit][];
+		ExportWeapons_entries: [string, IWeapon][];
+		ExportUpgrades_entries: [string, IUpgrade][];
+		ExportArcanes_entries: [string, IArcane][];
+		ExportResources_entries: [string, IResource][];
+		ExportFlavour_entries: [string, IFlavourItem][];
+		ExportCustoms_entries: [string, ICustom][];
+		ExportGear_entries: [string, IGear][];
+		ExportSentinels_entries: [string, ISentinel][];
+		ExportAbilities_entries: [string, IAbility][];
+		ExportRewards_entries: [string, TMissionDeck][];
+		meta_entries: {
+			warframe: [string, IPowersuit][];
+			weapon: [string, IWeapon][];
+			upgrade: [string, IUpgrade][];
+			arcane: [string, IArcane][];
+			resource: [string, IResource][];
+			flavour: [string, IFlavourItem][];
+			custom: [string, ICustom][];
+			gear: [string, IGear][];
+			sentinel: [string, ISentinel][];
+			ability: [string, IAbility][];
+		};
+		itemToRecipeMap: Record<string, string>;
+		missionDeckNames: Record<string, string[]>;
+		droptableNames: Record<string, string[]>;
+	}
+}
+
 const params = new URLSearchParams(location.hash.replace("#", ""));
 if (params.has("q"))
 {
-	document.getElementById("query").value = params.get("q");
+	(document.getElementById("query") as HTMLInputElement).value = params.get("q");
 	document.getElementById("results-status").textContent = "Loading...";
 }
 
-document.getElementById("query").oninput = function()
+(document.getElementById("query") as HTMLInputElement).oninput = function(this: HTMLInputElement)
 {
 	if (this.value == "")
 	{
@@ -62,25 +126,25 @@ Promise.all([
 {
 	window.dict = dict;
 	window.dict_entries = Object.entries(window.dict).sort(([key1, value1], [key2, value2]) => value1.length - value2.length);
-	window.ExportWarframes = ExportWarframes;
-	window.ExportWeapons = ExportWeapons;
-	window.ExportUpgrades = ExportUpgrades;
-	window.ExportArcanes = ExportArcanes;
-	window.ExportResources = ExportResources;
-	window.ExportFlavour = ExportFlavour;
-	window.ExportCustoms = ExportCustoms;
-	window.ExportGear = ExportGear;
-	window.ExportSentinels = ExportSentinels
-	window.ExportRewards = ExportRewards;
-	window.ExportRegions = ExportRegions;
-	window.ExportEnemies = ExportEnemies;
-	window.ExportImages = ExportImages;
-	window.ExportTextIcons = ExportTextIcons;
-	window.ExportRelics = ExportRelics;
-	window.ExportAbilities = ExportAbilities;
-	window.supplementalGlyphData = supplementalGlyphData;
+	//(window as any).ExportWarframes = ExportWarframes;
+	//(window as any).ExportWeapons = ExportWeapons;
+	//(window as any).ExportUpgrades = ExportUpgrades;
+	//(window as any).ExportArcanes = ExportArcanes;
+	//(window as any).ExportResources = ExportResources;
+	//(window as any).ExportFlavour = ExportFlavour;
+	//(window as any).ExportCustoms = ExportCustoms;
+	//(window as any).ExportGear = ExportGear;
+	//(window as any).ExportSentinels = ExportSentinels;
+	//(window as any).ExportRewards = ExportRewards;
+	(window as any).ExportRegions = ExportRegions;
+	(window as any).ExportEnemies = ExportEnemies;
+	(window as any).ExportImages = ExportImages;
+	(window as any).ExportTextIcons = ExportTextIcons;
+	(window as any).ExportRelics = ExportRelics;
+	//(window as any).ExportAbilities = ExportAbilities;
+	(window as any).supplementalGlyphData = supplementalGlyphData;
 
-	for (const suit of Object.values(ExportWarframes))
+	for (const suit of Object.values(ExportWarframes as Record<string, IPowersuit>))
 	{
 		for (const ability of suit.abilities)
 		{
@@ -89,44 +153,45 @@ Promise.all([
 		}
 	}
 
-	window.ExportWarframes_entries = Object.entries(ExportWarframes);
-	window.ExportWeapons_entries = Object.entries(ExportWeapons).filter(([uniqueName, item]) => item.totalDamage != 0);
-	window.ExportUpgrades_entries = Object.entries(ExportUpgrades);
-	window.ExportArcanes_entries = Object.entries(ExportArcanes);
-	window.ExportResources_entries = Object.entries(ExportResources);
-	window.ExportFlavour_entries = Object.entries(ExportFlavour);
-	window.ExportCustoms_entries = Object.entries(ExportCustoms);
-	window.ExportGear_entries = Object.entries(ExportGear);
-	window.ExportSentinels_entries = Object.entries(ExportSentinels)
-	window.ExportRewards_entries = Object.entries(ExportRewards);
-	window.ExportAbilities_entries = Object.entries(ExportAbilities);
+	window.ExportWarframes_entries = Object.entries(ExportWarframes as Record<string, IPowersuit>);
+	window.ExportWeapons_entries = Object.entries(ExportWeapons as Record<string, IWeapon>).filter(([uniqueName, item]) => item.totalDamage != 0);
+	window.ExportUpgrades_entries = Object.entries(ExportUpgrades as Record<string, IUpgrade>);
+	window.ExportArcanes_entries = Object.entries(ExportArcanes as Record<string, IArcane>);
+	window.ExportResources_entries = Object.entries(ExportResources as Record<string, IResource>);
+	window.ExportFlavour_entries = Object.entries(ExportFlavour as Record<string, IFlavourItem>);
+	window.ExportCustoms_entries = Object.entries(ExportCustoms as Record<string, ICustom>);
+	window.ExportGear_entries = Object.entries(ExportGear as Record<string, IGear>);
+	window.ExportSentinels_entries = Object.entries(ExportSentinels as Record<string, ISentinel>);
+	window.ExportAbilities_entries = Object.entries(ExportAbilities as Record<string, IAbility>);
+
+	window.ExportRewards_entries = Object.entries(ExportRewards as Record<string, TMissionDeck>);
 
 	window.meta_entries = {
-		warframe: ExportWarframes_entries,
-		weapon: ExportWeapons_entries,
-		upgrade: ExportUpgrades_entries,
-		arcane: ExportArcanes_entries,
-		resource: ExportResources_entries,
-		flavour: ExportFlavour_entries,
-		custom: ExportCustoms_entries,
-		gear: ExportGear_entries,
-		sentinel: ExportSentinels_entries,
-		ability: ExportAbilities_entries,
+		warframe: window.ExportWarframes_entries,
+		weapon: window.ExportWeapons_entries,
+		upgrade: window.ExportUpgrades_entries,
+		arcane: window.ExportArcanes_entries,
+		resource: window.ExportResources_entries,
+		flavour: window.ExportFlavour_entries,
+		custom: window.ExportCustoms_entries,
+		gear: window.ExportGear_entries,
+		sentinel: window.ExportSentinels_entries,
+		ability: window.ExportAbilities_entries,
 	};
 
 	window.itemToRecipeMap = {};
-	Object.entries(ExportRecipes).forEach(([uniqueName, recipe]) => {
-		itemToRecipeMap[recipe.resultType] = uniqueName;
+	Object.entries(ExportRecipes as Record<string, IRecipe>).forEach(([uniqueName, recipe]) => {
+		window.itemToRecipeMap[recipe.resultType] = uniqueName;
 	});
 
 	updateMissionDeckNames();
 
-	if (document.getElementById("query").value)
+	if ((document.getElementById("query") as HTMLInputElement).value)
 	{
-		doQuery(document.getElementById("query").value);
+		doQuery((document.getElementById("query") as HTMLInputElement).value);
 	}
 
-	document.getElementById("query").oninput = function()
+	document.getElementById("query").oninput = function(this: HTMLInputElement)
 	{
 		if (this.value == "")
 		{
@@ -194,7 +259,7 @@ function updateMissionDeckNames()
 	});
 }
 
-function doQuery(query)
+function doQuery(query: string)
 {
 	console.time("Input to language tags");
 	let results = getDictEntriesFromQuery(query).reduce((arr, [key, value]) =>
@@ -251,7 +316,7 @@ function doQuery(query)
 			return 1;
 		}
 		// Tags last
-		return (a.type == "tag") - (b.type == "tag");
+		return Number(a.type == "tag") - Number(b.type == "tag");
 	});
 	console.timeEnd("Sort results");
 
@@ -510,7 +575,7 @@ function doQuery(query)
 					}
 
 					{
-						var converter = new showdown.Converter();
+						var converter = new window.showdown.Converter();
 						converter.setOption("openLinksInNewWindow", true);
 						converter.setOption("strikethrough", true);
 						let div = document.createElement("div");
@@ -584,11 +649,11 @@ function doQuery(query)
 			|| result.type == "sentinel"
 			)
 		{
-			const dropType = itemToRecipeMap[result.key] ?? result.key;
-			const dropIsBlueprint = !!itemToRecipeMap[result.key];
+			const dropType = window.itemToRecipeMap[result.key] ?? result.key;
+			const dropIsBlueprint = !!window.itemToRecipeMap[result.key];
 			const storeItem = "/Lotus/StoreItems/" + dropType.substring(7);
-			const sources = [];
-			ExportRewards_entries.forEach(([deckName, tiers]) =>
+			const sources: IRewardSource[] = [];
+			window.ExportRewards_entries.forEach(([deckName, tiers]) =>
 			{
 				for (let i = 0; i != tiers.length; ++i)
 				{
@@ -596,20 +661,16 @@ function doQuery(query)
 					{
 						if (reward.type == storeItem)
 						{
-							if (deckName in missionDeckNames)
+							if (deckName in window.missionDeckNames)
 							{
-								const source = {
-									name: missionDeckNames[deckName] ?? [deckName],
+								const source: IRewardSource = {
+									name: window.missionDeckNames[deckName] ?? [deckName],
 									rotation: tiers.length > 1 ? i : undefined,
-									itemCount: reward.itemCount
+									itemCount: reward.itemCount,
+									probability: reward.probability ?? { COMMON: 0.76, UNCOMMON: 0.40, RARE: 0.10 }[reward.rarity],
 								};
-								if (reward.probability)
+								if (!reward.probability)
 								{
-									source.probability = reward.probability
-								}
-								else
-								{
-									source.probability = { COMMON: 0.76, UNCOMMON: 0.40, RARE: 0.10 }[reward.rarity];
 									source.probabilityWorstCase = { COMMON: 0.50, UNCOMMON: 0.22, RARE: 0.02 }[reward.rarity];
 								}
 								sources.push(source);
@@ -631,7 +692,7 @@ function doQuery(query)
 						if (reward.type == dropType)
 						{
 							sources.push({
-								name: droptableNames[droptableName] ?? [droptableName],
+								name: window.droptableNames[droptableName] ?? [droptableName],
 								itemCount: 1,
 								probability: reward.probability * pool.chance
 							});
@@ -701,16 +762,16 @@ function doQuery(query)
 	console.timeEnd("Commit to DOM");
 }
 
-function getDictEntriesFromQuery(query)
+function getDictEntriesFromQuery(query: string): [string, string][]
 {
 	let num_results = 0;
 	query = query.toLowerCase();
-	return dict_entries.filter(([key, value]) =>
+	return window.dict_entries.filter(([key, value]) =>
 	{
 		value = value.toLowerCase();
 		return value == query
 			|| (
-				(value.substr(0, query.length) == query
+				(value.substring(0, query.length) == query
 				|| value.indexOf(" " + query) !== -1
 				)
 				&& ++num_results < 100
@@ -726,7 +787,7 @@ function resolveTagsToUses(results)
 	{
 		if (result.type == "tag")
 		{
-			for (const [type, entries] of Object.entries(meta_entries))
+			for (const [type, entries] of Object.entries(window.meta_entries))
 			{
 				const entry = entries.find(([uniqueName, item]) => item.name == result.key);
 				if (entry)
@@ -744,7 +805,7 @@ function resolveTagsToUses(results)
 function addUniqueNameResults(res, query)
 {
 	query = query.toLowerCase();
-	for (const [type, entries] of Object.entries(meta_entries))
+	for (const [type, entries] of Object.entries(window.meta_entries))
 	{
 		for (const [uniqueName, item] of entries)
 		{
