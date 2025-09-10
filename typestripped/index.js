@@ -61,7 +61,7 @@ Promise.all([
     window.ExportWarframes_entries = Object.entries(ExportWarframes);
     window.ExportWeapons_entries = Object.entries(ExportWeapons).filter(([uniqueName, item]) => item.totalDamage != 0);
     window.ExportUpgrades_entries = Object.entries(ExportUpgrades);
-    window.ExportArcanes_entries = Object.entries(ExportArcanes);
+    window.ExportArcanes_entries = Object.entries(ExportArcanes).filter(arr => !arr[1].excludeFromCodex); // Filter fixes result for Arcane Steadfast
     window.ExportResources_entries = Object.entries(ExportResources);
     window.ExportFlavour_entries = Object.entries(ExportFlavour);
     window.ExportCustoms_entries = Object.entries(ExportCustoms);
