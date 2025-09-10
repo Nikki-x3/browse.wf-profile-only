@@ -1,3 +1,22 @@
+import type { IPowersuit, IRecipe, IRelic, ISentinel, IWeapon, TMissionDeck } from "warframe-public-export-plus";
+
+// common.js
+declare let onLanguageUpdate: () => void;
+declare function getDictPromise(): Promise<Record<string, string>>;
+
+// fetch + derived
+declare let dict: Record<string, string>;
+//declare let ExportRelics: Record<string, IRelic>;
+//declare let ExportRewards: Record<string, TMissionDeck>;
+declare let ExportWeapons: Record<string, IWeapon>;
+declare let ExportWarframes: Record<string, IPowersuit>;
+declare let ExportSentinels: Record<string, ISentinel>;
+declare let component_to_item: Record<string, string>;
+declare let VarziaItems: Record<string, boolean>;
+declare let MissionRewards: Record<string, boolean>;
+declare let items: Record<string, TState>;
+
+type TState = 0 | 1 | 2;
 const STATE_VAULTED = 0;
 const STATE_RESURGENCE = 1;
 const STATE_INROTATION = 2;
@@ -13,16 +32,16 @@ Promise.all([
 	fetch("https://raw.githubusercontent.com/calamity-inc/warframe-worldstate-history/senpai/worldState.json").then(res => res.json()),
 	]).then(function([ dict, ExportRelics, ExportRewards, ExportRecipes, ExportWeapons, ExportWarframes, ExportSentinels, worldState ])
 {
-	window.dict = dict;
-	window.ExportRelics = ExportRelics;
-	window.ExportRewards = ExportRewards;
-	window.ExportWeapons = ExportWeapons;
-	window.ExportWarframes = ExportWarframes;
-	window.ExportSentinels = ExportSentinels;
+	(window as any).dict = dict;
+	//(window as any).ExportRelics = ExportRelics;
+	//(window as any).ExportRewards = ExportRewards;
+	(window as any).ExportWeapons = ExportWeapons;
+	(window as any).ExportWarframes = ExportWarframes;
+	(window as any).ExportSentinels = ExportSentinels;
 
 	console.time("build component_to_item");
-	window.component_to_item = {};
-	for (const [type, recipe] of Object.entries(ExportRecipes))
+	(window as any).component_to_item = {};
+	for (const [type, recipe] of Object.entries(ExportRecipes as Record<string, IRecipe>))
 	{
 		component_to_item[type] = recipe.resultType;
 		for (const ingredient of recipe.ingredients)
@@ -33,7 +52,7 @@ Promise.all([
 	console.timeEnd("build component_to_item");
 
 	console.time("build VarziaItems");
-	window.VarziaItems = {};
+	(window as any).VarziaItems = {};
 	for (const offering of worldState.PrimeVaultTraders[0].Manifest)
 	{
 		VarziaItems[offering.ItemType.split("/Lotus/StoreItems/").join("/Lotus/")] = true;
@@ -41,8 +60,8 @@ Promise.all([
 	console.timeEnd("build VarziaItems");
 
 	console.time("build MissionRewards");
-	window.MissionRewards = {};
-	for (const deck of Object.values(ExportRewards))
+	(window as any).MissionRewards = {};
+	for (const deck of Object.values(ExportRewards as Record<string, TMissionDeck>))
 	{
 		for (const tier of deck)
 		{
@@ -55,8 +74,8 @@ Promise.all([
 	console.timeEnd("build MissionRewards");
 
 	console.time("build items");
-	window.items = {};
-	for (const [type, relic] of Object.entries(ExportRelics))
+	(window as any).items = {};
+	for (const [type, relic] of Object.entries(ExportRelics as Record<string, IRelic>))
 	{
 		if (relic.quality == "VPQ_BRONZE" && relic.era != "Requiem")
 		{
@@ -87,10 +106,11 @@ Promise.all([
 
 function updateList()
 {
-	const state_to_elm = {};
-	state_to_elm[STATE_VAULTED] = document.getElementById("vaulted");
-	state_to_elm[STATE_RESURGENCE] = document.getElementById("resurgence");
-	state_to_elm[STATE_INROTATION] = document.getElementById("inrotation");
+	const state_to_elm: Record<TState, HTMLDivElement> = {
+		[STATE_VAULTED]: document.getElementById("vaulted") as HTMLDivElement,
+		[STATE_RESURGENCE]: document.getElementById("resurgence") as HTMLDivElement,
+		[STATE_INROTATION]: document.getElementById("inrotation") as HTMLDivElement,
+	};
 	for (const div of Object.values(state_to_elm))
 	{
 		div.innerHTML = "";
