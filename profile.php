@@ -422,7 +422,7 @@
 		}
 
 		const params = new URLSearchParams(location.hash.replace("#", ""));
-                window.hashprefix = "";
+		window.hashprefix = "";
 
 		Promise.all([
 			getDictPromise(),
@@ -1084,7 +1084,7 @@
 						displaySkin(category, i, "");
 					}
 				}
-			
+
 				for (const section of ["pricol", "attcol", "syancol", "sigcol"])
 				{
 					for (const key of ["t0", "t1", "t2", "t3", "m0", "m1", "en", "e1"])
