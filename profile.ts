@@ -1,3 +1,30 @@
+import type { IAchievement, ICustom, IExportEnemies, IExportNightwave, IFlavourItem, IPowersuit, IRegion, ISentinel, ISyndicate, IWeapon } from "warframe-public-export-plus";
+
+// PlutoScript
+declare const pluto_require: (file: string) => Promise<void>;
+declare function pluto_invoke(name: string, ...args: any[]): Promise<any>;
+
+// common.js
+declare let onLanguageUpdate: () => void;
+declare function getDictPromise(): Promise<Record<string, string>>;
+declare function toTitleCase(str: string): string;
+
+// fetch
+declare let dict: Record<string, string>;
+declare let ExportAchievements: Record<string, IAchievement>;
+declare let ExportCustoms: Record<string, ICustom>;
+declare let ExportEnemies: IExportEnemies;
+declare let ExportFlavour: Record<string, IFlavourItem>;
+declare let ExportNightwave: IExportNightwave;
+declare let ExportRegions: Record<string, IRegion>;
+declare let ExportSentinels: Record<string, ISentinel>;
+declare let ExportSyndicates: Record<string, ISyndicate>;
+declare let ExportWarframes: Record<string, IPowersuit>;
+declare let ExportWeapons: Record<string, IWeapon>;
+
+// state
+declare let profile: any;
+
 const platform_suffix_pluto_promise = pluto_require("platform-suffix.pluto");
 
 /*document.getElementById("username").onfocus = function()
@@ -95,7 +122,6 @@ function makeSyndicateLogoElement(syndicate)
 }
 
 const params = new URLSearchParams(location.hash.replace("#", ""));
-window.hashprefix = "";
 
 Promise.all([
 	getDictPromise(),
@@ -125,17 +151,17 @@ Promise.all([
 		profile
 	]) =>
 {
-	window.dict = dict;
-	window.ExportAchievements = ExportAchievements;
-	window.ExportCustoms = ExportCustoms;
-	window.ExportEnemies = ExportEnemies;
-	window.ExportFlavour = ExportFlavour;
-	window.ExportRegions = ExportRegions;
-	window.ExportSentinels = ExportSentinels;
-	window.ExportSyndicates = ExportSyndicates;
-	window.ExportWarframes = ExportWarframes;
-	window.ExportWeapons = ExportWeapons;
-	window.profile = profile;
+	(window as any).dict = dict;
+	(window as any).ExportAchievements = ExportAchievements;
+	(window as any).ExportCustoms = ExportCustoms;
+	(window as any).ExportEnemies = ExportEnemies;
+	(window as any).ExportFlavour = ExportFlavour;
+	(window as any).ExportRegions = ExportRegions;
+	(window as any).ExportSentinels = ExportSentinels;
+	(window as any).ExportSyndicates = ExportSyndicates;
+	(window as any).ExportWarframes = ExportWarframes;
+	(window as any).ExportWeapons = ExportWeapons;
+	(window as any).profile = profile;
 	//window.profile = { Results: [ { DisplayName: "asdasdasd", Created: { $date: { $numberLong: "1364064293561" } } } ] };
 
 	for (let i = 0; i != syndicateTags.length; ++i)
@@ -155,9 +181,9 @@ Promise.all([
 		renderProfile();
 	};
 
-	if (document.getElementById("profile-file").files.length)
+	if ((document.getElementById("profile-file") as HTMLInputElement).files.length)
 	{
-		loadProfile(document.getElementById("profile-file").files[0]);
+		loadProfile((document.getElementById("profile-file") as HTMLInputElement).files[0]);
 	}
 });
 
@@ -193,7 +219,7 @@ function loadProfile(file)
 	{
 		try
 		{
-			window.profile = JSON.parse(e.target.result);
+			(window as any).profile = JSON.parse(e.target.result as string);
 			document.getElementById("profile-nav").classList.remove("d-none");
 			activateTab(params.has("tab") ? params.get("tab") : "fashion");
 			renderProfile();
@@ -386,9 +412,9 @@ function renderProfile()
 							const title = document.createElement("h5");
 							title.className = "card-title";
 							title.textContent = dict[achievement.name] ?? tag;
-							if (tag.substr(0, 14) == "OrbVallisRacer")
+							if (tag.substring(0, 14) == "OrbVallisRacer")
 							{
-								title.textContent += " (" + vallisRaceNames[tag.substr(14)] + ")";
+								title.textContent += " (" + vallisRaceNames[tag.substring(14)] + ")";
 							}
 							body.appendChild(title);
 						}
@@ -450,10 +476,10 @@ function renderProfile()
 				if (node.systemName && node.systemIndex != 19)
 				{
 					td.textContent += ", " + (dict[node.systemName] ?? node.systemName);
-					if (node.missionIndex != 10)
+					if (node.missionType != "MT_PVP")
 					{
 						td.textContent += " (" + toTitleCase(dict[node.missionName])
-						if (node.factionName && node.systemIndex != 21)
+						if (node.faction && node.systemIndex != 21)
 						{
 							td.textContent += " - " + toTitleCase(dict[node.factionName]);
 						}
@@ -512,11 +538,11 @@ function renderProfile()
 	{
 		document.getElementById(category + "-config").innerHTML = `<option value="0">Config A</option><option value="1">Config B</option><option value="2">Config C</option><option value="3">Config D</option><option value="4">Config E</option><option value="5">Config F</option>`;
 
-		const key = category.substr(0, 1).toLowerCase();
+		const key = category.substring(0, 1).toLowerCase();
 		if (profile.Results[0].LoadOutPreset[key] && "cus" in profile.Results[0].LoadOutPreset[key])
 		{
 			document.querySelector("#" + category + "-config [value='" + profile.Results[0].LoadOutPreset[key].cus + "']").textContent += " (Active)";
-			document.getElementById(category + "-config").value = profile.Results[0].LoadOutPreset[key].cus;
+			(document.getElementById(category + "-config") as HTMLSelectElement).value = profile.Results[0].LoadOutPreset[key].cus;
 		}
 
 		if (category != "Suits")
@@ -732,7 +758,7 @@ function updateFashion()
 	for (const category of ["Suits", "LongGuns", "Pistols", "Melee"])
 	{
 		const equipment = profile.Results[0].LoadOutInventory[category] ? profile.Results[0].LoadOutInventory[category][0] : { ItemType: "None", Configs: [] };
-		const config = equipment.Configs[document.getElementById(category + "-config").value];
+		const config = equipment.Configs[(document.getElementById(category + "-config") as HTMLSelectElement).value];
 
 		document.getElementById(category + "-name").textContent = (dict[ExportWarframes[equipment.ItemType]?.name] ?? dict[ExportWeapons[equipment.ItemType]?.name] ?? modularWeapons[equipment.ItemType] ?? equipment.ItemType);
 		if (equipment.ItemName && equipment.ItemName != document.getElementById(category + "-name").textContent)
@@ -772,8 +798,8 @@ function updateFashion()
 						// Alpha might be interesting for sigils
 						const hex = toHexString(r, g, b);
 						elm.querySelector(".hex").textContent = hex;
-						elm.querySelector(".hex").style.fontFamily = "monospace";
-						elm.querySelector(".colour-blob").style.backgroundColor = hex;
+						elm.querySelector<HTMLSpanElement>(".hex").style.fontFamily = "monospace";
+						elm.querySelector<HTMLSpanElement>(".colour-blob").style.backgroundColor = hex;
 						Object.values(ExportFlavour).forEach(flavour =>
 						{
 							if (flavour.hexColours)
@@ -805,8 +831,8 @@ function updateFashion()
 					else
 					{
 						elm.querySelector(".hex").textContent = "Default";
-						elm.querySelector(".hex").style.fontFamily = "";
-						elm.querySelector(".colour-blob").style.backgroundColor = "";
+						elm.querySelector<HTMLSpanElement>(".hex").style.fontFamily = "";
+						elm.querySelector<HTMLSpanElement>(".colour-blob").style.backgroundColor = "";
 					}
 				}
 			}
@@ -822,7 +848,7 @@ function tabulate(elm, event)
 
 	if ("profile" in window)
 	{
-		location.hash = hashprefix + "tab=" + elm.getAttribute("data-tab");
+		location.hash = "tab=" + elm.getAttribute("data-tab");
 	}
 }
 
