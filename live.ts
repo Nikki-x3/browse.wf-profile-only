@@ -1,15 +1,196 @@
+import type { IChallenge, IFaction, IMissionType, IRegion, TFaction, TMissionType } from "warframe-public-export-plus";
+
+// Oracle
+interface IBountyCycle {
+    expiry:         number;
+    rot:            string;
+    vaultRot:       string;
+    zarimanFaction: string;
+    bounties:       Record<string, {
+		node:      string;
+		challenge: string;
+		ally?:     string;
+	}[]>;
+}
+
+// Oracle
+interface IWeekly {
+	expiry:                    number;
+    labConquestMissions:       IConquestMission[];
+    labConquestFrameVariables: string[];
+    hexConquestMissions:       IConquestMission[];
+    hexConquestFrameVariables: string[];
+}
+interface IConquestMission {
+	type:       string;
+    variant:    string;
+    conditions: string[];
+}
+
+// Oracle
+interface IInvasions {
+	activation: number;
+    expiry:     number;
+    invasions: IInvasion[];
+}
+interface IInvasion {
+	id:       string;
+	node:     string;
+	ally:     string;
+	allyPay:  {
+		ItemType:  string;
+		ItemCount: number;
+	}[];
+	missions: string[];
+}
+
+// worldState
+interface IMongoDate {
+	$date: {
+        $numberLong: string;
+    };
+}
+
+// worldState
+interface IDailyDeal {
+	StoreItem: string;
+	Activation: IMongoDate;
+	Expiry: IMongoDate;
+	Discount: number;
+    OriginalPrice: number;
+    SalePrice: number;
+    AmountTotal: number;
+    AmountSold: number;
+}
+
+// common.js
+declare let onLanguageUpdate: () => void;
+declare function getDictPromise(): Promise<Record<string, string>>;
+declare function getOSDictPromise(): Promise<Record<string, string>>;
+declare function toTitleCase(str: string): string;
+
+// arbyTiers.js
+declare const arbyTiers: Record<string, string>;
+
+// fetch
+declare const dict: Record<string, string>;
+declare const osdict: Record<string, string>;
+declare const ExportRegions: Record<string, IRegion>;
+declare const ExportChallenges: Record<string, IChallenge>;
+declare const ExportMissionTypes: Record<TMissionType, IMissionType>;
+declare const ExportFactions: Record<TFaction, IFaction>;
+
+// state
+declare global {
+	interface Window {
+		duviri_mood_index: number;
+		duviri_expiry: number;
+
+		bountyCycleExpiry: number;
+		bountyCycle: IBountyCycle;
+		refresh_bounty_cycle_at: number;
+
+		arbys: [number, string][];
+		arby_node: IRegion;
+		arby_expiry: number;
+
+		incursions: [number, string][];
+		incursions_today: string[];
+		incursions_expiry: number;
+
+		weekly: IWeekly;
+		refresh_weekly_at: number;
+
+		worldState: {
+			Events: any[];
+			Goals: any[];
+			Alerts: any[];
+			Sorties: {
+				_id: { $oid: string };
+				Activation: IMongoDate;
+				Expiry: IMongoDate;
+				Variants: {
+					missionType: TMissionType;
+					modifierType: string;
+        			node: string;
+				}[];
+			}[];
+			LiteSorties: {
+				_id: { $oid: string };
+				Activation: IMongoDate;
+				Expiry: IMongoDate;
+				Boss: "SORTIE_BOSS_AMAR" | "SORTIE_BOSS_NIRA" | "SORTIE_BOSS_BOREAL";
+				Missions: {
+					missionType: TMissionType;
+        			node: string;
+				}[];
+			}[];
+			ActiveMissions: {
+				_id: { $oid: string };
+    			Region: number;
+				Seed: number;
+				Activation: IMongoDate;
+				Expiry: IMongoDate;
+				Node: string;
+				MissionType: string;
+				Modifier: string;
+				Hard?: boolean;
+			}[];
+			VoidTraders: {
+				_id: { $oid: string };
+				Activation: IMongoDate;
+				Expiry: IMongoDate;
+    			Node: string;
+				Manifest: {
+					ItemType: string;
+					PrimePrice: number;
+					RegularPrice: number;
+				}[];
+			}[];
+			VoidStorms: {
+				_id: { $oid: string };
+				Node: string;
+				Activation: IMongoDate;
+				Expiry: IMongoDate;
+				ActiveMissionTier: string;
+			}[];
+			DailyDeals: IDailyDeal[];
+			Tmp: string;
+		}
+		redtext: { data: string; time: number }[];
+		refresh_news_sources_at: number;
+		news_notify_after: number;
+		events_earmark: number;
+		dailyDeal: IDailyDeal;
+		refresh_world_state_at: number;
+		last_sortie: string;
+		last_darvo_deal: string;
+		last_baro_expiry: string;
+		last_alert_count: number;
+
+		invasions: IInvasion[];
+		refresh_invasions_at: number;
+		num_invasions: number;
+
+		refresh_fissures_at: number;
+		num_fissures: number;
+	}
+}
+
 const dict_promise = getDictPromise();
 const osdict_promise = getOSDictPromise();
 const dicts_promise = Promise.all([ dict_promise, osdict_promise ]);
 const ExportRegions_promise = fetch("https://browse.wf/warframe-public-export-plus/ExportRegions.json").then(res => res.json());
 const ExportChallenges_promise = fetch("https://browse.wf/warframe-public-export-plus/ExportChallenges.json").then(res => res.json());
-const eMissionType_promise = fetch("https://browse.wf/warframe-public-export-plus/supplementals/eMissionType.json").then(res => res.json());
+const ExportMissionTypes_promise = fetch("https://browse.wf/warframe-public-export-plus/ExportMissionTypes.json").then(res => res.json());
+const ExportFactions_promise = fetch("https://browse.wf/warframe-public-export-plus/ExportFactions.json").then(res => res.json());
 
-dict_promise.then(dict => { window.dict = dict });
-osdict_promise.then(osdict => { window.osdict = osdict });
-ExportRegions_promise.then(res => window.ExportRegions = res);
-ExportChallenges_promise.then(res => window.ExportChallenges = res);
-eMissionType_promise.then(res => window.eMissionType = res);
+dict_promise.then(dict => { (window as any).dict = dict; });
+osdict_promise.then(osdict => { (window as any).osdict = osdict; });
+ExportRegions_promise.then(res => { (window as any).ExportRegions = res; });
+ExportChallenges_promise.then(res => { (window as any).ExportChallenges = res; });
+ExportMissionTypes_promise.then(res => { (window as any).ExportMissionTypes = res; });
+ExportFactions_promise.then(res => { (window as any).ExportFactions = res; });
 
 function formatExpiry(expiry)
 {
@@ -64,7 +245,7 @@ function createExpiryBadge(expiry)
 function setDatum(name, value, expiry)
 {
 	const elm = document.getElementById(name);
-	elm.querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+	elm.querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 	elm.textContent = value + " ";
 	elm.appendChild(createExpiryBadge(expiry));
 }
@@ -112,8 +293,8 @@ let sundown_update_queued = false;
 function updateDayNightCycle()
 {
 	const time = Date.now();
-	const cycleNightStart = bountyCycleExpiry - 3_000_000;
-	const stateEnd = time >= cycleNightStart ? bountyCycleExpiry : cycleNightStart;
+	const cycleNightStart = window.bountyCycleExpiry - 3_000_000;
+	const stateEnd = time >= cycleNightStart ? window.bountyCycleExpiry : cycleNightStart;
 	setDatum("poe", time >= cycleNightStart ? "🌑 Night" : "☀️ Day", stateEnd);
 	setDatum("deimos", time >= cycleNightStart ? "🌑 Vome" : "☀️ Fass", stateEnd);
 	if (time >= cycleNightStart)
@@ -159,30 +340,30 @@ const allyNames = {
 
 function updateBountyCycleLocalised()
 {
-	document.getElementById("bounty-rot-rewards").textContent = rotRewards[bountyCycle.rot].map(x => dict[x]).join(", ");
-	document.getElementById("vault-rot-rewards").textContent = vaultRotRewards[bountyCycle.vaultRot].map(x => dict[x]).join(", ");
-	setDatum("zariman", dict[bountyCycle.zarimanFaction == "FC_GRINEER" ? "/Lotus/Language/Game/Faction_GrineerUC" : "/Lotus/Language/Game/Faction_CorpusUC"], bountyCycle.expiry);
-	setDatum("bounties-header", "Bounties", bountyCycle.expiry);
+	document.getElementById("bounty-rot-rewards").textContent = rotRewards[window.bountyCycle.rot].map(x => dict[x]).join(", ");
+	document.getElementById("vault-rot-rewards").textContent = vaultRotRewards[window.bountyCycle.vaultRot].map(x => dict[x]).join(", ");
+	setDatum("zariman", dict[window.bountyCycle.zarimanFaction == "FC_GRINEER" ? "/Lotus/Language/Game/Faction_GrineerUC" : "/Lotus/Language/Game/Faction_CorpusUC"], window.bountyCycle.expiry);
+	setDatum("bounties-header", "Bounties", window.bountyCycle.expiry);
 	for (const syndicateTag of ["HexSyndicate", "EntratiLabSyndicate", "ZarimanSyndicate"])
 	{
 		const rows = document.getElementById(syndicateTag + "-table").querySelectorAll("tr");
-		for (let i = 0; i != bountyCycle.bounties[syndicateTag].length; ++i)
+		for (let i = 0; i != window.bountyCycle.bounties[syndicateTag].length; ++i)
 		{
-			const node = ExportRegions[bountyCycle.bounties[syndicateTag][i].node];
+			const node = ExportRegions[window.bountyCycle.bounties[syndicateTag][i].node];
 			rows[i].querySelector(".mission").textContent = dict[node.name];
-			if (["SolNode850", "SolNode853", "SolNode854", "SolNode856"].indexOf(bountyCycle.bounties[syndicateTag][i].node) == -1)
+			if (["SolNode850", "SolNode853", "SolNode854", "SolNode856"].indexOf(window.bountyCycle.bounties[syndicateTag][i].node) == -1)
 			{
 				rows[i].querySelector(".mission").textContent += " (" + toTitleCase(dict[node.missionName]) + ")";
 			}
-			if (bountyCycle.bounties[syndicateTag][i].ally)
+			if (window.bountyCycle.bounties[syndicateTag][i].ally)
 			{
-				rows[i].querySelector(".ally").textContent = allyNames[bountyCycle.bounties[syndicateTag][i].ally];
+				rows[i].querySelector(".ally").textContent = allyNames[window.bountyCycle.bounties[syndicateTag][i].ally];
 			}
-			const challenge = ExportChallenges[bountyCycle.bounties[syndicateTag][i].challenge];
+			const challenge = ExportChallenges[window.bountyCycle.bounties[syndicateTag][i].challenge];
 			const span = document.createElement("span");
-			span.textContent = dict[challenge.description].split("\r\n").pop().split("|COUNT|").join(challenge.requiredCount);
+			span.textContent = dict[challenge.description].split("\r\n").pop().split("|COUNT|").join(challenge.requiredCount.toString());
 			addTooltip(span, dict[challenge.name]);
-			rows[i].querySelector(".challenge").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+			rows[i].querySelector(".challenge").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 			rows[i].querySelector(".challenge").innerHTML = "";
 			rows[i].querySelector(".challenge").appendChild(span);
 		}
@@ -192,7 +373,7 @@ function updateBountyCycleLocalised()
 function updateBountyCycle()
 {
 	window.refresh_bounty_cycle_at = undefined;
-	fetch("https://oracle.browse.wf/bounty-cycle").then(res => res.json()).then(async (bountyCycle) =>
+	fetch("https://oracle.browse.wf/bounty-cycle").then(res => res.json()).then(async (bountyCycle: IBountyCycle) =>
 	{
 		if (window.bountyCycle && window.bountyCycle.expiry != bountyCycle.expiry && localStorage.getItem("live.notif.bounties"))
 		{
@@ -208,7 +389,7 @@ function updateBountyCycle()
 		document.getElementById("bounty-rot").textContent = bountyCycle.rot;
 		document.getElementById("vault-rot").textContent = bountyCycle.vaultRot;
 		updateBountyCycleLocalised();
-		window.refresh_bounty_cycle_at = (stale ? (Date.now() + 60_000) : Math.max(Date.now(), bountyCycleExpiry));
+		window.refresh_bounty_cycle_at = (stale ? (Date.now() + 60_000) : Math.max(Date.now(), window.bountyCycleExpiry));
 	}).catch(e =>
 	{
 		console.error(e);
@@ -228,39 +409,47 @@ function updateNames()
 	document.getElementById("ZarimanSyndicate-name").textContent = dict["/Lotus/Language/Syndicates/ZarimanName"];
 }
 
-function updateArbyLocalised()
+async function updateArbyLocalised()
 {
-	setDatum("arby-header", osdict["/Lotus/Language/Menu/AlertHardMode"], arby_expiry);
-	document.getElementById("arby-what").textContent = toTitleCase(dict[arby_node.missionName]) + " - " + dict[arby_node.factionName];
-	document.getElementById("arby-where").textContent = "@ " + dict[arby_node.name] + ", " + dict[arby_node.systemName];
+	// dicts are guaranteed available here
+	await ExportFactions_promise;
+
+	setDatum("arby-header", osdict["/Lotus/Language/Menu/AlertHardMode"], window.arby_expiry);
+	document.getElementById("arby-what").textContent = toTitleCase(dict[window.arby_node.missionName]) + " - " + dict[ExportFactions[window.arby_node.faction].name];
+	document.getElementById("arby-where").textContent = "@ " + dict[window.arby_node.name] + ", " + dict[window.arby_node.systemName];
 }
 
 function updateArby()
 {
+	// dicts are guaranteed available here
+
 	const currentHour = Math.trunc(Date.now() / 3600000) * 3600;
-	const epochHour = arbys[0][0];
+	const epochHour = window.arbys[0][0];
 	const currentHourIndex = (currentHour - epochHour) / 3600;
-	const arr = arbys[currentHourIndex];
+	const arr = window.arbys[currentHourIndex];
 	window.arby_node = ExportRegions[arr[1]];
 	window.arby_expiry = (currentHour + 3600) * 1000;
 	updateArbyLocalised();
 	document.getElementById("arby-tier").textContent = arbyTiers[arr[1]] ?? "F";
-	setTimeout(updateArby, arby_expiry - Date.now());
+	setTimeout(updateArby, window.arby_expiry - Date.now());
 }
 
-function updateIncursionsLocalised()
+async function updateIncursionsLocalised()
 {
-	setDatum("incursions-header", toTitleCase(osdict["/Lotus/Language/Labels/SteelPathDailies"]), incursions_expiry);
+	// dicts are guaranteed available here
+	await ExportFactions_promise;
+
+	setDatum("incursions-header", toTitleCase(osdict["/Lotus/Language/Labels/SteelPathDailies"]), window.incursions_expiry);
 	const elms = document.querySelectorAll("#incursions-body span.d-block");
 	for (let i = 0; i != elms.length; ++i)
 	{
-		const node = ExportRegions[incursions_today[i]];
+		const node = ExportRegions[window.incursions_today[i]];
 		elms[i].innerHTML = "";
 		const b = document.createElement("b");
 		b.textContent = toTitleCase(dict[node.missionName]);
 		if (node.systemIndex != 21)
 		{
-			b.textContent += " - " + toTitleCase(dict[node.factionName]);
+			b.textContent += " - " + toTitleCase(dict[ExportFactions[node.faction].name]);
 		}
 		elms[i].appendChild(b);
 		elms[i].innerHTML += " (" + (100 + node.minEnemyLevel) + "-" + (100 + node.maxEnemyLevel) + ")" + " @ " + dict[node.name] + ", " + dict[node.systemName];
@@ -270,28 +459,28 @@ function updateIncursionsLocalised()
 function updateIncursions()
 {
 	const today = Math.trunc(Date.now() / 86400000) * 86400;
-	const epochDay = incursions[0][0];
-	window.incursions_today = incursions[(today - epochDay) / 86400][1].split(",");
+	const epochDay = window.incursions[0][0];
+	window.incursions_today = window.incursions[(today - epochDay) / 86400][1].split(",");
 	window.incursions_expiry = (today + 86400) * 1000;
 	updateIncursionsLocalised();
-	setTimeout(updateIncursions, incursions_expiry - Date.now());
+	setTimeout(updateIncursions, window.incursions_expiry - Date.now());
 }
 
 function addTooltip(elm, title)
 {
 	elm.setAttribute("data-bs-toggle", "tooltip");
 	elm.setAttribute("data-bs-title", title);
-	return new bootstrap.Tooltip(elm);
+	return new window.bootstrap.Tooltip(elm);
 }
 
 function updateWeeklyLocalised()
 {
 	{
-		setDatum("labConquest-header", osdict["/Lotus/Language/Conquest/SolarMapLabConquestNode"], refresh_weekly_at);
+		setDatum("labConquest-header", osdict["/Lotus/Language/Conquest/SolarMapLabConquestNode"], window.refresh_weekly_at);
 		document.getElementById("labConquest-header").innerHTML += " ";
-		document.getElementById("labConquest-header").appendChild(createCompletionToggle("labconquest-" + refresh_weekly_at));
+		document.getElementById("labConquest-header").appendChild(createCompletionToggle("labconquest-" + window.refresh_weekly_at));
 		const tbody = document.createElement("tbody");
-		for (const mission of weekly.labConquestMissions)
+		for (const mission of window.weekly.labConquestMissions)
 		{
 			const tr = document.createElement("tr");
 			{
@@ -318,12 +507,12 @@ function updateWeeklyLocalised()
 			}
 			tbody.appendChild(tr);
 		}
-		document.getElementById("labConquest-missions").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+		document.getElementById("labConquest-missions").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 		document.getElementById("labConquest-missions").innerHTML = "";
 		document.getElementById("labConquest-missions").appendChild(tbody);
-		document.getElementById("labConquest-fv").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+		document.getElementById("labConquest-fv").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 		document.getElementById("labConquest-fv").innerHTML = "";
-		for (const fv of weekly.labConquestFrameVariables)
+		for (const fv of window.weekly.labConquestFrameVariables)
 		{
 			const td = document.createElement("td");
 			const abbr = document.createElement("abbr");
@@ -344,11 +533,11 @@ function updateWeeklyLocalised()
 	}
 
 	{
-		setDatum("hexConquest-header", osdict["/Lotus/Language/1999Echoes/1999HexConquestNode"], refresh_weekly_at);
+		setDatum("hexConquest-header", osdict["/Lotus/Language/1999Echoes/1999HexConquestNode"], window.refresh_weekly_at);
 		document.getElementById("hexConquest-header").innerHTML += " ";
-		document.getElementById("hexConquest-header").appendChild(createCompletionToggle("hexconquest-" + refresh_weekly_at));
+		document.getElementById("hexConquest-header").appendChild(createCompletionToggle("hexconquest-" + window.refresh_weekly_at));
 		const tbody = document.createElement("tbody");
-		for (const mission of weekly.hexConquestMissions)
+		for (const mission of window.weekly.hexConquestMissions)
 		{
 			const tr = document.createElement("tr");
 			{
@@ -375,12 +564,12 @@ function updateWeeklyLocalised()
 			}
 			tbody.appendChild(tr);
 		}
-		document.getElementById("hexConquest-missions").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+		document.getElementById("hexConquest-missions").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 		document.getElementById("hexConquest-missions").innerHTML = "";
 		document.getElementById("hexConquest-missions").appendChild(tbody);
-		document.getElementById("hexConquest-fv").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+		document.getElementById("hexConquest-fv").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 		document.getElementById("hexConquest-fv").innerHTML = "";
-		for (const fv of weekly.hexConquestFrameVariables)
+		for (const fv of window.weekly.hexConquestFrameVariables)
 		{
 			const td = document.createElement("td");
 			const abbr = document.createElement("abbr");
@@ -502,7 +691,7 @@ function updateNewsTicker()
 	{
 		for (let i = items.length; i-- != 0; )
 		{
-			if (items[i].time > news_notify_after)
+			if (items[i].time > window.news_notify_after)
 			{
 				sendNotification(items[i].data);
 			}
@@ -522,7 +711,7 @@ function updateNewsTicker()
 		{
 			const span = document.createElement("span");
 			span.className = "badge text-bg-secondary";
-			span.setAttribute("data-activation", items[i].time * 1000);
+			span.setAttribute("data-activation", (items[i].time * 1000).toString());
 			span.textContent = formatActivation(items[i].time * 1000);
 			p.appendChild(span);
 		}
@@ -567,8 +756,8 @@ async function updateNewsSources()
 			{
 				sourcesToUpdate.events = (
 					window.events_earmark != meta.latestEvent
-					|| worldState.Alerts.length != meta.alerts
-					|| worldState.Goals.length != meta.goals
+					|| window.worldState.Alerts.length != meta.alerts
+					|| window.worldState.Goals.length != meta.goals
 					|| (window.num_fissures && window.num_fissures != meta.fissures)
 					);
 			}
@@ -578,7 +767,7 @@ async function updateNewsSources()
 			}
 			if (window.dailyDeal)
 			{
-				document.getElementById("darvo-stock").textContent = (dailyDeal.AmountTotal - meta.darvoSold) + "/" + dailyDeal.AmountTotal;
+				document.getElementById("darvo-stock").textContent = (window.dailyDeal.AmountTotal - meta.darvoSold) + "/" + window.dailyDeal.AmountTotal;
 			}
 			if (window.num_invasions && window.num_invasions != meta.invasions)
 			{
@@ -638,9 +827,9 @@ function updateWorldState()
 			if (event.Date)
 			{
 				const time = Math.trunc(event.Date.$date.$numberLong / 1000);
-				if (time > events_earmark)
+				if (time > window.events_earmark)
 				{
-					events_earmark = time;
+					window.events_earmark = time;
 				}
 			}
 		}
@@ -689,7 +878,7 @@ function setWorldStateExpiry(expiry)
 		console.trace("World state already expired");
 		expiry = Date.now() + 30000;
 	}
-	if (!window.refresh_world_state_at || refresh_world_state_at > expiry)
+	if (!window.refresh_world_state_at || window.refresh_world_state_at > expiry)
 	{
 		window.refresh_world_state_at = expiry;
 	}
@@ -698,9 +887,9 @@ function setWorldStateExpiry(expiry)
 async function updateSorties()
 {
 	await dicts_promise;
-	await eMissionType_promise;
+	await ExportMissionTypes_promise;
 
-	const sortie = worldState.Sorties.find(x => Date.now() >= x.Activation.$date.$numberLong && Date.now() < x.Expiry.$date.$numberLong);
+	const sortie = window.worldState.Sorties.find(x => Date.now() >= parseInt(x.Activation.$date.$numberLong) && Date.now() < parseInt(x.Expiry.$date.$numberLong));
 	setWorldStateExpiry(sortie.Expiry.$date.$numberLong);
 	setDatum("sortie-header", toTitleCase(osdict["/Lotus/Language/Menu/SortieMissionName"]), sortie.Expiry.$date.$numberLong);
 	document.getElementById("sortie-header").innerHTML += " ";
@@ -710,7 +899,7 @@ async function updateSorties()
 	{
 		const tr = document.createElement("tr");
 		const th = document.createElement("th");
-		th.textContent = toTitleCase(dict[eMissionType.find(x => x.tag == variant.missionType).name]);
+		th.textContent = toTitleCase(dict[ExportMissionTypes[variant.missionType].name]);
 		tr.appendChild(th);
 		const td = document.createElement("td");
 		td.textContent = sortieModifiers[variant.modifierType];
@@ -725,7 +914,7 @@ async function updateSorties()
 	}
 	window.last_sortie = sortie._id.$oid;
 
-	const litesortie = worldState.LiteSorties.find(x => Date.now() >= x.Activation.$date.$numberLong && Date.now() < x.Expiry.$date.$numberLong);
+	const litesortie = window.worldState.LiteSorties.find(x => Date.now() >= parseInt(x.Activation.$date.$numberLong) && Date.now() < parseInt(x.Expiry.$date.$numberLong));
 	setWorldStateExpiry(litesortie.Expiry.$date.$numberLong);
 	setDatum("litesortie-header", osdict["/Lotus/Language/WorldStateWindow/LiteSortieMissionName"], litesortie.Expiry.$date.$numberLong);
 	document.getElementById("litesortie-header").innerHTML += " ";
@@ -733,10 +922,10 @@ async function updateSorties()
 	const mission_names = [];
 	for (const mission of litesortie.Missions)
 	{
-		mission_names.push(toTitleCase(dict[eMissionType.find(x => x.tag == mission.missionType).name]));
+		mission_names.push(toTitleCase(dict[ExportMissionTypes[mission.missionType].name]));
 	}
 	const span = document.createElement("span");
-	span.textContent = toTitleCase(litesortie.Boss.substr(12));
+	span.textContent = toTitleCase(litesortie.Boss.substring(12));
 	span.className = "text-" + { "Amar": "danger", "Nira": "warning", "Boreal": "info" }[span.textContent];
 	document.getElementById("litesortie-body").innerHTML = "";
 	document.getElementById("litesortie-body").appendChild(span);
@@ -745,7 +934,7 @@ async function updateSorties()
 
 function updateKinePage()
 {
-	const Tmp = JSON.parse(worldState.Tmp ?? "{}");
+	const Tmp = JSON.parse(window.worldState.Tmp ?? "{}");
 	const lang_code = (localStorage.getItem("lang") ?? "en");
 	if (Tmp.pgr && Tmp.pgr[lang_code])
 	{
@@ -755,48 +944,48 @@ function updateKinePage()
 
 async function updateDarvosDeal()
 {
-	window.dailyDeal = worldState.DailyDeals.find(x => Date.now() >= x.Activation.$date.$numberLong && Date.now() < x.Expiry.$date.$numberLong);
-	setDatum("darvo-header", "Darvo's Deal", dailyDeal.Expiry.$date.$numberLong);
-	setWorldStateExpiry(dailyDeal.Expiry.$date.$numberLong);
-	const item_data = await getItemDataPromise(dailyDeal.StoreItem);
+	window.dailyDeal = window.worldState.DailyDeals.find(x => Date.now() >= parseInt(x.Activation.$date.$numberLong) && Date.now() < parseInt(x.Expiry.$date.$numberLong));
+	setDatum("darvo-header", "Darvo's Deal", window.dailyDeal.Expiry.$date.$numberLong);
+	setWorldStateExpiry(window.dailyDeal.Expiry.$date.$numberLong);
+	const item_data = await getItemDataPromise(window.dailyDeal.StoreItem);
 	await dicts_promise;
 	document.getElementById("darvo-item").textContent = dict[item_data.name];
-	document.getElementById("darvo-icon").src = "https://browse.wf" + item_data.icon;
-	document.getElementById("darvo-stock").textContent = (dailyDeal.AmountTotal - dailyDeal.AmountSold) + "/" + dailyDeal.AmountTotal;
-	document.getElementById("darvo-ogprice").textContent = dailyDeal.OriginalPrice;
-	document.getElementById("darvo-price").textContent = dailyDeal.SalePrice;
-	document.getElementById("darvo-discount").textContent = dailyDeal.Discount;
+	(document.getElementById("darvo-icon") as HTMLImageElement).src = "https://browse.wf" + item_data.icon;
+	document.getElementById("darvo-stock").textContent = (window.dailyDeal.AmountTotal - window.dailyDeal.AmountSold) + "/" + window.dailyDeal.AmountTotal;
+	document.getElementById("darvo-ogprice").textContent = window.dailyDeal.OriginalPrice.toString();
+	document.getElementById("darvo-price").textContent = window.dailyDeal.SalePrice.toString();
+	document.getElementById("darvo-discount").textContent = window.dailyDeal.Discount.toString();
 
 	if (window.last_darvo_deal
-		&& window.last_darvo_deal != dailyDeal.Activation.$date.$numberLong
+		&& window.last_darvo_deal != window.dailyDeal.Activation.$date.$numberLong
 		&& localStorage.getItem("live.notif.darvo")
 		)
 	{
-		sendNotification("Darvo sells " + dict[item_data.name] + " for " + dailyDeal.SalePrice + " Platinum today.");
+		sendNotification("Darvo sells " + dict[item_data.name] + " for " + window.dailyDeal.SalePrice + " Platinum today.");
 	}
-	window.last_darvo_deal = dailyDeal.Activation.$date.$numberLong;
+	window.last_darvo_deal = window.dailyDeal.Activation.$date.$numberLong;
 }
 
 async function updateBaro()
 {
 	await dicts_promise;
 	await ExportRegions_promise;
-	document.querySelectorAll(".baro-where").forEach(x => x.textContent = dict[ExportRegions[worldState.VoidTraders[0].Node].name] + ", " + dict[ExportRegions[worldState.VoidTraders[0].Node].systemName]);
-	if (worldState.VoidTraders[0].Manifest)
+	document.querySelectorAll(".baro-where").forEach(x => x.textContent = dict[ExportRegions[window.worldState.VoidTraders[0].Node].name] + ", " + dict[ExportRegions[window.worldState.VoidTraders[0].Node].systemName]);
+	if (window.worldState.VoidTraders[0].Manifest)
 	{
 		document.getElementById("baro-soon").classList.add("d-none");
 		document.getElementById("baro-now").classList.remove("d-none");
 
-		setWorldStateExpiry(worldState.VoidTraders[0].Expiry.$date.$numberLong);
-		setDatum("baro-header", "Baro Ki'Teer", worldState.VoidTraders[0].Expiry.$date.$numberLong);
+		setWorldStateExpiry(window.worldState.VoidTraders[0].Expiry.$date.$numberLong);
+		setDatum("baro-header", "Baro Ki'Teer", window.worldState.VoidTraders[0].Expiry.$date.$numberLong);
 
-		for (const item of worldState.VoidTraders[0].Manifest)
+		for (const item of window.worldState.VoidTraders[0].Manifest)
 		{
 			getItemNamePromise(item.ItemType);
 		}
 
 		const items = [];
-		for (const item of worldState.VoidTraders[0].Manifest)
+		for (const item of window.worldState.VoidTraders[0].Manifest)
 		{
 			const data = { ...item, ...(await getItemDataPromise(item.ItemType)) };
 			if (data.compatName)
@@ -842,34 +1031,33 @@ async function updateBaro()
 		document.getElementById("baro-table").appendChild(tbody);
 
 		if (window.last_baro_expiry
-			&& window.last_baro_expiry != worldState.VoidTraders[0].Expiry.$date.$numberLong
+			&& window.last_baro_expiry != window.worldState.VoidTraders[0].Expiry.$date.$numberLong
 			&& localStorage.getItem("live.notif.baro")
 			)
 		{
 			sendNotification("Baro Ki'Teer has arrived at " + document.querySelector(".baro-where").textContent + ".");
 		}
-		window.last_baro_expiry = worldState.VoidTraders[0].Expiry.$date.$numberLong;
+		window.last_baro_expiry = window.worldState.VoidTraders[0].Expiry.$date.$numberLong;
 	}
 	else
 	{
 		document.getElementById("baro-soon").classList.remove("d-none");
 		document.getElementById("baro-now").classList.add("d-none");
 
-		setWorldStateExpiry(worldState.VoidTraders[0].Activation.$date.$numberLong);
-		setDatum("baro-header", "Baro Ki'Teer", worldState.VoidTraders[0].Activation.$date.$numberLong);
+		setWorldStateExpiry(window.worldState.VoidTraders[0].Activation.$date.$numberLong);
+		setDatum("baro-header", "Baro Ki'Teer", window.worldState.VoidTraders[0].Activation.$date.$numberLong);
 
-		window.last_baro_expiry = 69;
+		window.last_baro_expiry = "69";
 	}
 }
 
 async function updateAlerts()
 {
-	if (worldState.Alerts.length != 0)
+	if (window.worldState.Alerts.length != 0)
 	{
-		const promises = [eMissionType_promise];
-		for (const alert of worldState.Alerts)
+		const promises = [dict_promise, ExportMissionTypes_promise, ExportFactions_promise, ExportRegions];
+		for (const alert of window.worldState.Alerts)
 		{
-			promises.push(getFactionNamePromise(alert.MissionInfo.faction));
 			if (alert.MissionInfo.missionReward.items)
 			{
 				for (const reward of alert.MissionInfo.missionReward.items)
@@ -887,9 +1075,9 @@ async function updateAlerts()
 		}
 		await Promise.all(promises);
 
-		document.getElementById("alerts-body").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+		document.getElementById("alerts-body").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 		document.getElementById("alerts-body").innerHTML = "";
-		for (const alert of worldState.Alerts)
+		for (const alert of window.worldState.Alerts)
 		{
 			const block = document.createElement("div");
 			block.className = "card-block";
@@ -898,7 +1086,7 @@ async function updateAlerts()
 				span.className = "d-block";
 				{
 					const b = document.createElement("b");
-					b.textContent = toTitleCase(dict[eMissionType.find(x => x.tag == alert.MissionInfo.missionType).name]) + " - " + (await getFactionNamePromise(alert.MissionInfo.faction));
+					b.textContent = toTitleCase(dict[ExportMissionTypes[alert.MissionInfo.missionType].name]) + " - " + dict[ExportFactions[alert.MissionInfo.faction].name];
 					span.appendChild(b);
 				}
 				span.innerHTML += " (" + alert.MissionInfo.minEnemyLevel + "-" + alert.MissionInfo.maxEnemyLevel + ") @ "+ dict[ExportRegions[alert.MissionInfo.location].name] + ", " + dict[ExportRegions[alert.MissionInfo.location].systemName] + " ";
@@ -942,21 +1130,21 @@ async function updateAlerts()
 		document.getElementById("alerts-body").textContent = "None right now.";
 	}
 
-	if ("last_alert_count" in window && worldState.Alerts.length > window.last_alert_count && localStorage.getItem("live.notif.alerts"))
+	if ("last_alert_count" in window && window.worldState.Alerts.length > window.last_alert_count && localStorage.getItem("live.notif.alerts"))
 	{
-		const diff = (worldState.Alerts.length - window.last_alert_count);
+		const diff = (window.worldState.Alerts.length - window.last_alert_count);
 		sendNotification(diff == 1 ? "A new alert is live." : diff + " new alerts are live.");
 	}
-	window.last_alert_count = worldState.Alerts.length;
+	window.last_alert_count = window.worldState.Alerts.length;
 }
 
 async function updateGoals()
 {
-	if (worldState.Goals.length != 0)
+	if (window.worldState.Goals.length != 0)
 	{
 		await osdict_promise;
 		const goal_names = [];
-		for (const goal of worldState.Goals)
+		for (const goal of window.worldState.Goals)
 		{
 			goal_names.push(osdict[goal.Desc] ? toTitleCase(osdict[goal.Desc]) : goal.Desc);
 		}
@@ -986,11 +1174,11 @@ function updateTeshin()
 		"Rifle Riven Mod",
 		"Shotgun Riven Mod"
 	][week % 8];
-	document.getElementById("teshin-check").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+	document.getElementById("teshin-check").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 	document.getElementById("teshin-check").innerHTML = "";
 	document.getElementById("teshin-check").appendChild(createCompletionToggle("teshin" + week));
 
-	document.getElementById("ironwake-check").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+	document.getElementById("ironwake-check").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 	document.getElementById("ironwake-check").innerHTML = "";
 	document.getElementById("ironwake-check").appendChild(createCompletionToggle("ironwake" + week));
 
@@ -1040,23 +1228,23 @@ function updateCircuit()
 	setDatum("circuit-header", "Weekly Missions", weekEnd);
 	updateCircuitLocalised();
 
-	document.getElementById("clem-check").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+	document.getElementById("clem-check").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 	document.getElementById("clem-check").innerHTML = "";
 	document.getElementById("clem-check").appendChild(createCompletionToggle("clem" + week));
 
-	document.getElementById("maroo-check").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+	document.getElementById("maroo-check").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 	document.getElementById("maroo-check").innerHTML = "";
 	document.getElementById("maroo-check").appendChild(createCompletionToggle("maroo" + week));
 
-	document.getElementById("circuit-frames-check").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+	document.getElementById("circuit-frames-check").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 	document.getElementById("circuit-frames-check").innerHTML = "";
 	document.getElementById("circuit-frames-check").appendChild(createCompletionToggle("circuit-normal-" + week));
 
-	document.getElementById("circuit-weapons-check").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+	document.getElementById("circuit-weapons-check").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 	document.getElementById("circuit-weapons-check").innerHTML = "";
 	document.getElementById("circuit-weapons-check").appendChild(createCompletionToggle("circuit-hard-" + week));
 
-	document.getElementById("netracell-checks").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+	document.getElementById("netracell-checks").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 	document.getElementById("netracell-checks").innerHTML = "";
 	document.getElementById("netracell-checks").appendChild(createCompletionToggle("netracell1-" + week));
 	document.getElementById("netracell-checks").appendChild(createCompletionToggle("netracell2-" + week));
@@ -1064,7 +1252,7 @@ function updateCircuit()
 	document.getElementById("netracell-checks").appendChild(createCompletionToggle("netracell4-" + week));
 	document.getElementById("netracell-checks").appendChild(createCompletionToggle("netracell5-" + week));
 
-	document.getElementById("kahl-checks").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+	document.getElementById("kahl-checks").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 	document.getElementById("kahl-checks").innerHTML = "";
 	document.getElementById("kahl-checks").appendChild(createCompletionToggle("kahl-" + week));
 	document.getElementById("kahl-checks").appendChild(createCompletionToggle("kahlb1-" + week));
@@ -1125,16 +1313,6 @@ async function getItemNamePromise(uniqueName)
 	}
 }
 
-async function getFactionNamePromise(tag)
-{
-	if (!window.eFaction_promise)
-	{
-		window.eFaction_promise = fetch("https://browse.wf/warframe-public-export-plus/supplementals/eFaction.json").then(res => res.json())
-	}
-	await dicts_promise;
-	return dict[(await eFaction_promise).find(x => x.tag == tag).name];
-}
-
 function isOidMarkedAsCompleted(oid)
 {
 	const arr = JSON.parse(localStorage.getItem("oids_completed") ?? "[]");
@@ -1182,14 +1360,14 @@ async function updateInvasionsLocalised()
 	const tbody = document.createElement("tbody");
 	let last_id = "";
 	window.num_invasions = 0;
-	for (const invasion of invasions)
+	for (const invasion of window.invasions)
 	{
 		const tr = document.createElement("tr");
 		{
 			const th = document.createElement("th");
 			if (last_id != invasion.id)
 			{
-				++num_invasions;
+				++window.num_invasions;
 				const node = ExportRegions[invasion.node];
 				th.textContent = dict[node.name] + ", " + dict[node.systemName];
 			}
@@ -1235,8 +1413,8 @@ async function updateInvasionsLocalised()
 		tbody.appendChild(tr);
 		last_id = invasion.id;
 	}
-	setDatum("invasions-header", toTitleCase(osdict["/Lotus/Language/Menu/WorldStatePanel_Invasions"]), refresh_invasions_at);
-	document.getElementById("invasions-table").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+	setDatum("invasions-header", toTitleCase(osdict["/Lotus/Language/Menu/WorldStatePanel_Invasions"]), window.refresh_invasions_at);
+	document.getElementById("invasions-table").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 	document.getElementById("invasions-table").innerHTML = "";
 	document.getElementById("invasions-table").appendChild(tbody);
 }
@@ -1244,7 +1422,7 @@ async function updateInvasionsLocalised()
 function updateInvasions()
 {
 	window.refresh_invasions_at = undefined;
-	fetch("https://oracle.browse.wf/invasions").then(res => res.json()).then(async (res) =>
+	fetch("https://oracle.browse.wf/invasions").then(res => res.json()).then(async (res: IInvasions) =>
 	{
 		const promises = [dicts_promise, ExportRegions_promise];
 		for (const invasion of res.invasions)
@@ -1266,7 +1444,7 @@ function updateInvasions()
 
 function setFissuresExpiry(expiry)
 {
-	if (!window.refresh_fissures_at || refresh_fissures_at > expiry)
+	if (!window.refresh_fissures_at || window.refresh_fissures_at > expiry)
 	{
 		window.refresh_fissures_at = expiry;
 	}
@@ -1285,9 +1463,10 @@ async function updateFissures()
 {
 	await dict_promise;
 	await ExportRegions_promise;
+	await ExportFactions_promise;
 
 	const fissures = [];
-	for (const fissure of worldState.ActiveMissions)
+	for (const fissure of window.worldState.ActiveMissions)
 	{
 		fissures.push({
 			Category: fissure.Hard ? "sp-fissures" : "fissures",
@@ -1298,7 +1477,7 @@ async function updateFissures()
 			Modifier: fissure.Modifier,
 		});
 	}
-	for (const fissure of worldState.VoidStorms)
+	for (const fissure of window.worldState.VoidStorms)
 	{
 		fissures.push({
 			Category: "rj-fissures",
@@ -1347,7 +1526,7 @@ async function updateFissures()
 				span.textContent = " (" + (node.minEnemyLevel + baselvl) + "-" + (node.maxEnemyLevel + baselvl) + ")";
 				if (node.systemIndex != 21)
 				{
-					span.textContent += " - " + dict[node.factionName];
+					span.textContent += " - " + dict[ExportFactions[node.faction].name];
 				}
 				if (fissure.Category != "rj-fissures")
 				{
@@ -1413,13 +1592,13 @@ dicts_promise.then(([dict, osdict]) =>
 		ExportRegions_promise
 	]).then(([arbys]) =>
 	{
-		window.arbys = arbys.split("\n").map(line => line.split(",")).filter(arr => arr.length == 2);
+		window.arbys = arbys.split("\n").map(line => line.split(",")).filter(arr => arr.length == 2).map(arr => [ parseInt(arr[0]), arr[1] ]);
 		updateArby();
 	});
 
 	fetch("https://browse.wf/sp-incursions.txt").then(res => res.text()).then(async (incursions) => {
 		await ExportRegions_promise;
-		window.incursions = incursions.split("\n").map(line => line.split(";")).filter(arr => arr.length == 2);
+		window.incursions = incursions.split("\n").map(line => line.split(";")).filter(arr => arr.length == 2).map(arr => [ parseInt(arr[0]), arr[1] ]);
 		updateIncursions();
 	});
 });
@@ -1482,12 +1661,12 @@ function refreshCollapseStatus(elm)
 		elm.classList.remove("engaged");
 	}
 	addTooltip(span, engaged ? "Expand" : "Collapse");
-	elm.querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+	elm.querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 	elm.innerHTML = "";
 	elm.appendChild(span);
 }
 
-document.querySelectorAll("[data-collapse-toggle]").forEach(elm =>
+document.querySelectorAll<HTMLSpanElement>("[data-collapse-toggle]").forEach(elm =>
 {
 	elm.classList.add("text-secondary");
 	refreshCollapseStatus(elm);
@@ -1520,7 +1699,7 @@ function sendNotification(text)
 	button.setAttribute("data-bs-dismiss", "toast");
 	div.appendChild(button);
 	toast.appendChild(div);
-	new bootstrap.Toast(document.querySelector(".toast-container").appendChild(toast)).show();
+	new window.bootstrap.Toast(document.querySelector(".toast-container").appendChild(toast)).show();
 
 	if (Notification.permission == "granted")
 	{
@@ -1535,12 +1714,12 @@ function refreshNotifStatus(elm)
 	span.textContent = enabled ? "🔕" : "🔔";
 	const name = elm.getAttribute("data-notif-toggle") == "nightfall" ? "Notifications (30s before Plains of Eidolon nightfall)" : "Notifications";
 	addTooltip(span, (enabled ? "Disable " : "Enable ") + name);
-	elm.querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => bootstrap.Tooltip.getInstance(x).dispose());
+	elm.querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
 	elm.innerHTML = "";
 	elm.appendChild(span);
 }
 
-document.querySelectorAll("[data-notif-toggle]").forEach(elm =>
+document.querySelectorAll<HTMLAnchorElement>("[data-notif-toggle]").forEach(elm =>
 {
 	refreshNotifStatus(elm);
 	elm.onclick = function()
