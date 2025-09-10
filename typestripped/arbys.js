@@ -1,8 +1,7 @@
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 function loc(key) {
-    var _a;
-    return (_a = dict[key]) !== null && _a !== void 0 ? _a : key;
+    return dict[key] ?? key;
 }
 function totwo(num) {
     if (num < 10) {
@@ -88,7 +87,6 @@ function updateFilterNamesForLocale() {
     document.querySelector("label[for=filter-FC_MITW]").textContent = dict["/Lotus/Language/Game/Faction_MITW"];
 }
 function updateLog() {
-    var _a, _b;
     console.time("updateLog");
     const zulu = (document.getElementById("select-tz").value == "zulu");
     currentHour = Math.trunc(Date.now() / 3600000) * 3600;
@@ -101,7 +99,7 @@ function updateLog() {
     document.getElementById("log").innerHTML = "";
     for (let i = currentHourIndex; i != arbys.length && remainingArbys-- > 0; ++i) {
         const arr = arbys[i];
-        const thisArbyGrade = ((_a = arbyTiers[arr[1]]) !== null && _a !== void 0 ? _a : "F");
+        const thisArbyGrade = (arbyTiers[arr[1]] ?? "F");
         if (!document.getElementById("filter-tier-" + thisArbyGrade).checked) {
             continue;
         }
@@ -153,7 +151,7 @@ function updateLog() {
         const thisArbyDay = zulu ? date.getUTCDate() : date.getDate();
         const thisArbyWeekDay = zulu ? date.getUTCDay() : date.getDay();
         const thisArbyMonth = zulu ? date.getUTCMonth() : date.getMonth();
-        const thisArbyGrade = ((_b = arbyTiers[arr[1]]) !== null && _b !== void 0 ? _b : "F");
+        const thisArbyGrade = (arbyTiers[arr[1]] ?? "F");
         {
             const tr = document.getElementById("next-tier-" + thisArbyGrade);
             if (tr.children[1].innerHTML == "N/A") {

@@ -66,7 +66,6 @@ Promise.all([
     onLanguageUpdate = updateList;
 });
 function updateList() {
-    var _a, _b, _c, _d, _e;
     const state_to_elm = {
         [STATE_VAULTED]: document.getElementById("vaulted"),
         [STATE_RESURGENCE]: document.getElementById("resurgence"),
@@ -77,7 +76,7 @@ function updateList() {
     }
     let named_items = [];
     for (const [item, state] of Object.entries(items)) {
-        const name = (_d = (_b = dict[(_a = ExportWarframes[item]) === null || _a === void 0 ? void 0 : _a.name]) !== null && _b !== void 0 ? _b : dict[(_c = ExportWeapons[item]) === null || _c === void 0 ? void 0 : _c.name]) !== null && _d !== void 0 ? _d : dict[(_e = ExportSentinels[item]) === null || _e === void 0 ? void 0 : _e.name];
+        const name = dict[ExportWarframes[item]?.name] ?? dict[ExportWeapons[item]?.name] ?? dict[ExportSentinels[item]?.name];
         if (name) {
             named_items.push({
                 key: item,
