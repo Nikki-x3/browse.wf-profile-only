@@ -2,11 +2,11 @@ import type { IChallenge, IFaction, IMissionType, IRegion, TFaction, TMissionTyp
 
 // Oracle
 interface IBountyCycle {
-    expiry:         number;
-    rot:            string;
-    vaultRot:       string;
-    zarimanFaction: string;
-    bounties:       Record<string, {
+	expiry:         number;
+	rot:            string;
+	vaultRot:       string;
+	zarimanFaction: string;
+	bounties:       Record<string, {
 		node:      string;
 		challenge: string;
 		ally?:     string;
@@ -16,22 +16,22 @@ interface IBountyCycle {
 // Oracle
 interface IWeekly {
 	expiry:                    number;
-    labConquestMissions:       IConquestMission[];
-    labConquestFrameVariables: string[];
-    hexConquestMissions:       IConquestMission[];
-    hexConquestFrameVariables: string[];
+	labConquestMissions:       IConquestMission[];
+	labConquestFrameVariables: string[];
+	hexConquestMissions:       IConquestMission[];
+	hexConquestFrameVariables: string[];
 }
 interface IConquestMission {
 	type:       string;
-    variant:    string;
-    conditions: string[];
+	variant:    string;
+	conditions: string[];
 }
 
 // Oracle
 interface IInvasions {
 	activation: number;
-    expiry:     number;
-    invasions: IInvasion[];
+	expiry:     number;
+	invasions: IInvasion[];
 }
 interface IInvasion {
 	id:       string;
@@ -47,8 +47,8 @@ interface IInvasion {
 // worldState
 interface IMongoDate {
 	$date: {
-        $numberLong: string;
-    };
+		$numberLong: string;
+	};
 }
 
 // worldState
@@ -57,10 +57,10 @@ interface IDailyDeal {
 	Activation: IMongoDate;
 	Expiry: IMongoDate;
 	Discount: number;
-    OriginalPrice: number;
-    SalePrice: number;
-    AmountTotal: number;
-    AmountSold: number;
+	OriginalPrice: number;
+	SalePrice: number;
+	AmountTotal: number;
+	AmountSold: number;
 }
 
 // common.js
@@ -112,7 +112,7 @@ declare global {
 				Variants: {
 					missionType: TMissionType;
 					modifierType: string;
-        			node: string;
+					node: string;
 				}[];
 			}[];
 			LiteSorties: {
@@ -122,12 +122,12 @@ declare global {
 				Boss: "SORTIE_BOSS_AMAR" | "SORTIE_BOSS_NIRA" | "SORTIE_BOSS_BOREAL";
 				Missions: {
 					missionType: TMissionType;
-        			node: string;
+					node: string;
 				}[];
 			}[];
 			ActiveMissions: {
 				_id: { $oid: string };
-    			Region: number;
+				Region: number;
 				Seed: number;
 				Activation: IMongoDate;
 				Expiry: IMongoDate;
@@ -140,7 +140,7 @@ declare global {
 				_id: { $oid: string };
 				Activation: IMongoDate;
 				Expiry: IMongoDate;
-    			Node: string;
+				Node: string;
 				Manifest: {
 					ItemType: string;
 					PrimePrice: number;
