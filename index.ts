@@ -301,10 +301,14 @@ function doQuery(query: string): void
 					&& result.value.description != ""
 					)
 				{
-					const i = results.findIndex(x => x.type == "tag" && x.key == result.value.description);
-					if (i != -1)
+					const j = results.findIndex(x => x.type == "tag" && x.key == result.value.description);
+					if (j != -1)
 					{
-						results.splice(i, 1);
+						results.splice(j, 1);
+						if (i >= j)
+						{
+							--i;
+						}
 					}
 				}
 			}
