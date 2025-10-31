@@ -37,18 +37,8 @@
     "/Lotus/Types/StoreItems/AvatarImages/AvatarImageCreatorMogamu": {
         "promo_code": "Mogamu"
     },
-    "/Lotus/Types/StoreItems/AvatarImages/AvatarImageCreatorN00blShowtek": {
-        "promo_code": "N00blShowtek"
-    },
     "/Lotus/Types/StoreItems/AvatarImages/AvatarImageCreatorOriginalWickedfun": {
         "promo_code": "OriginalWickedfun"
-    },
-    "/Lotus/Types/StoreItems/AvatarImages/AvatarImageCreatorQuiteShallow": {
-        "glyphwave": "2",
-        "markdown": "* Glyph giveaways during art stream on twitch\n* Glyph giveaways for [Patreon](https://www.patreon.com/QuiteShallow) and clan member on discord",
-        "twitch": "https://twitch.tv/quietteshy",
-        "twitter": "https://twitter.com/quiteshallow",
-        "youtube": "https://www.youtube.com/channel/UCLPBnMwDwtOOEegviAyKcEg"
     },
     "/Lotus/Types/StoreItems/AvatarImages/AvatarImageCreatorTacticalPotato": {
         "promo_code": "TacticalPotato"
@@ -1683,13 +1673,6 @@
     },
     "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageTBGKaru": {
         "promo_code": "TBGKaru"
-    },
-    "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageTCN": {
-        "glyphwave": "4",
-        "markdown": "* Posts glyph codes on [website](http://www.tennoclocknews.com/)\n* 50 Bus Tickets (250 minutes) at [WarframeRSB Twitch Stream](https://www.twitch.tv/warframersb)\n* [Warframe Void Trader Log](https://docs.google.com/spreadsheets/d/1nbP0VgXjHozZikZFejERfw_dkilj26pyfhK29uaPAIQ/edit#gid=1264888159)\n* Submit any speedrun using Loki on [speedrun.com/wf/](https://www.speedrun.com/wf/)",
-        "other-site": "http://www.tennoclocknews.com/",
-        "twitch": "https://twitch.tv/tgdm",
-        "twitter": "https://twitter.com/TennoClockNews"
     },
     "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageTVSBOH": {
         "promo_code": "MikeTheBard"
