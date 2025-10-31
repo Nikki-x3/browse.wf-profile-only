@@ -2147,5 +2147,11 @@
     },
     "/Lotus/Types/StoreItems/AvatarImages/AvatarImageGlyphMemePotato": {
         "promo_code": "bsd-warframe"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/AvatarImageConqueraGlyphIX": {
+        "promo_code": "QTCC5KREWARD"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/AvatarImageConqueraGlyphVIII": {
+        "promo_code": "QTCC10KBUNDLE"
     }
 }
