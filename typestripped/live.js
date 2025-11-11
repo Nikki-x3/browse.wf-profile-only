@@ -700,7 +700,7 @@ async function updateBaro() {
 }
 async function updateAlerts() {
     if (window.worldState.Alerts.length != 0) {
-        const promises = [dict_promise, ExportMissionTypes_promise, ExportFactions_promise, ExportRegions];
+        const promises = [dict_promise, ExportMissionTypes_promise, ExportFactions_promise, ExportRegions_promise];
         for (const alert of window.worldState.Alerts) {
             if (alert.MissionInfo.missionReward.items) {
                 for (const reward of alert.MissionInfo.missionReward.items) {
