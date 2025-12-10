@@ -15,13 +15,6 @@ $ext = substr($_SERVER["SERVER_SOFTWARE"] ?? "", 0, 3) == "PHP" ? ".php" : "";
 				<a class="nav-link<?=(substr($_SERVER["REQUEST_URI"], 0, 8) == "/profile" ? " active" : ""); ?>" href="/profile<?=$ext;?>">Profile Viewer</a>
 				<a class="nav-link<?=(substr($_SERVER["REQUEST_URI"], 0, 13) == "/color-picker" ? " active" : ""); ?>" href="/color-picker<?=$ext;?>">Color Picker</a>
 				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle<?=((substr($_SERVER["REQUEST_URI"], 0, 11) == "/kimulacrum" || substr($_SERVER["REQUEST_URI"], 0, 18) == "/kim-convo-locator") ? " active" : ""); ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">KIM</a>
-					<ul class="dropdown-menu">
-						<li><a class="dropdown-item<?=(substr($_SERVER["REQUEST_URI"], 0, 18) == "/kim-convo-locator" ? " active" : ""); ?>" href="/kim-convo-locator<?=$ext;?>">Convo Locator</a></li>
-						<li><a class="dropdown-item<?=(substr($_SERVER["REQUEST_URI"], 0, 11) == "/kimulacrum" ? " active" : ""); ?>" href="/kimulacrum<?=$ext;?>">Kimulacrum</a></li>
-					</ul>
-				</li>
-				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle<?=((substr($_SERVER["REQUEST_URI"], 0, 7) == "/glyphs" || substr($_SERVER["REQUEST_URI"], 0, 12) == "/prime-vault" || substr($_SERVER["REQUEST_URI"], 0, 11) == "/text-icons" || substr($_SERVER["REQUEST_URI"], 0, 16) == "/platform-suffix" || substr($_SERVER["REQUEST_URI"], 0, 14) == "/invigorations") ? " active" : ""); ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">More Tools</a>
 					<ul class="dropdown-menu">
 						<li><a class="dropdown-item<?=(substr($_SERVER["REQUEST_URI"], 0, 7) == "/glyphs" ? " active" : ""); ?>" href="/glyphs<?=$ext;?>">Glyphs</a></li>
