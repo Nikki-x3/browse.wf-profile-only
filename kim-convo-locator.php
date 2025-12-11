@@ -38,21 +38,29 @@
 		"MinervaVelemirDialogue_rom.dialogue": "Minerva, Velimir",
 		"QuincyDialogue_rom.dialogue": "Soldja1Shot1kil",
 		//"VelimirDialogue_rom.dialogue": "PapaPolar",
+		"LoidDialogue_rom.dialogue": "POM2_LAB1",
+		"LyonDialogue_rom.dialogue": "Lyon",
+		"MarieDialogue_rom.dialogue": "Marie",
+		"RoatheDialogue_rom.dialogue": "Roathe",
 	};
 
 	Promise.all([
-		fetch("https://kim.browse.wf/AoiDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/ArthurDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/EleanorDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/FlareDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/HexDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/JabirDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/KayaDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/LettieDialogue_rom.dialogue.json").then(res => res.json()),
-		//fetch("https://kim.browse.wf/MinervaDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/MinervaVelemirDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/QuincyDialogue_rom.dialogue.json").then(res => res.json()),
-		//fetch("https://kim.browse.wf/VelimirDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/AoiDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/ArthurDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/EleanorDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/FlareDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/HexDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/JabirDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/KayaDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/LettieDialogue_rom.dialogue.json").then(res => res.json()),
+		//fetch("https://kim.browse.wf/data/MinervaDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/MinervaVelemirDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/QuincyDialogue_rom.dialogue.json").then(res => res.json()),
+		//fetch("https://kim.browse.wf/data/VelimirDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/LoidDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/LyonDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/MarieDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/RoatheDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/dicts/" + (localStorage.getItem("lang") ?? "en") + ".json").then(res => res.json())
 	]).then(([
 		AoiDialogue_rom,
@@ -67,6 +75,10 @@
 		MinervaVelemirDialogue_rom,
 		QuincyDialogue_rom,
 		//VelimirDialogue_rom,
+		LoidDialogue_rom,
+		LyonDialogue_rom,
+		MarieDialogue_rom,
+		RoatheDialogue_rom,
 		dict
 	]) => {
 		window.kim_dict = dict;
@@ -83,6 +95,10 @@
 			"MinervaVelemirDialogue_rom.dialogue": { nodes: MinervaVelemirDialogue_rom, convos: {} },
 			"QuincyDialogue_rom.dialogue": { nodes: QuincyDialogue_rom, convos: {} },
 			//"VelimirDialogue_rom.dialogue": { nodes: VelimirDialogue_rom, convos: {} },
+			"LoidDialogue_rom.dialogue": { nodes: LoidDialogue_rom, convos: {} },
+			"LyonDialogue_rom.dialogue": { nodes: LyonDialogue_rom, convos: {} },
+			"MarieDialogue_rom.dialogue": { nodes: MarieDialogue_rom, convos: {} },
+			"RoatheDialogue_rom.dialogue": { nodes: RoatheDialogue_rom, convos: {} },
 		};
 		for (const [chatroom_name, chatroom] of Object.entries(chatrooms))
 		{
@@ -90,35 +106,48 @@
 			{
 				if (node.type == "/EE/Types/Engine/StartDialogueNode")
 				{
-					const convo = node.name;
+					const convo = node.Content;
 					//convo_to_chatroom[convo] = chatroom_name;
-					const pending = [ node.id ];
+					const pending = [ node.Id ];
 					const done = [];
 					while (pending.length != 0)
 					{
 						const node_id = pending.pop();
-						if (done.find(x => x == node_id))
+						if (done.indexOf(node_id) != -1)
 						{
 							continue;
 						}
 						done.push(node_id);
 						const n = chatroom.nodes[node_id];
-						if (n.true_choices)
+						if (n.Outgoing)
 						{
-							for (const choice of n.true_choices)
-							{
-								pending.push(choice);
-							}
-							for (const choice of n.false_choices)
+							for (const choice of n.Outgoing)
 							{
 								pending.push(choice);
 							}
 						}
-						else
+						else if (n.TrueNodes)
 						{
-							for (const choice of n.choices)
+							for (const choice of n.TrueNodes)
 							{
 								pending.push(choice);
+							}
+							if (n.FalseNodes)
+							{
+								for (const choice of n.FalseNodes)
+								{
+									pending.push(choice);
+								}
+							}
+						}
+						else if (n.Outputs)
+						{
+							for (const output of n.Outputs)
+							{
+								for (const choice of output.Outgoing)
+								{
+									pending.push(choice);
+								}
 							}
 						}
 					}
@@ -183,45 +212,70 @@
 					let text;
 					if (node.type == "/EE/Types/Engine/DialogueNode" || node.type == "/EE/Types/Engine/PlayerChoiceDialogueNode")
 					{
-						text = kim_dict[node.name] ?? node.name;
-						if (node.vars)
+						if (node.Content)
 						{
-							for (const [k, v] of Object.entries(node.vars))
+							text = kim_dict[node.Content] ?? node.Content;
+							/*if (node.vars)
 							{
-								text = text.split("|"+k+"|").join(kim_dict[v] ?? v);
-							}
+								for (const [k, v] of Object.entries(node.vars))
+								{
+									text = text.split("|"+k+"|").join(kim_dict[v] ?? v);
+								}
+							}*/
+							text = text.split("<RETRO_EMOJI_HEART>").join("<3");
 						}
-						text = text.split("<RETRO_EMOJI_HEART>").join("<3");
 					}
 					else if (node.type == "/EE/Types/Engine/CheckBooleanDialogueNode")
 					{
-						text = "$ Check boolean " + node.name;
+						text = "$ Check boolean " + node.Content;
 					}
 					else if (node.type == "/EE/Types/Engine/CheckBooleanScriptDialogueNode")
 					{
-						text = "$ Check " + node.script_name + ":" + node.func_name + JSON.stringify(node.args).split("[").join("(").split("]").join(")");
+						text = "$ Check " + node.Script.Script + ":" + node.Script.Function;
 					}
 					else if (node.type == "/EE/Types/Engine/SetBooleanDialogueNode")
 					{
-						text = "$ Boolean " + node.name + " is now true.";
+						text = "$ Boolean " + node.Content + " is now true.";
 					}
 					else if (node.type == "/EE/Types/Engine/ResetBooleanDialogueNode")
 					{
-						text = "$ Boolean " + node.name + " is now false.";
+						text = "$ Boolean " + node.Content + " is now false.";
+					}
+					else if (node.type == "/EE/Types/Engine/CheckMultiBooleanDialogueNode")
+					{
+						const involvedBooleans = {};
+						for (const output of node.Outputs)
+						{
+							for (const bool of output.Expression.split(", "))
+							{
+								involvedBooleans[bool] = true;
+							}
+						}
+						delete involvedBooleans["false"];
+						text = "$ Evaluate booleans " + Object.keys(involvedBooleans).join(", ");
+					}
+					else if (node.type == "/EE/Types/Engine/IncCounterDialogueNode")
+					{
+						const arr = node.Content.split(" ");
+						text = "$ Add " + arr[1] + " to " + arr[0] + " counter";
+					}
+					else if (node.type == "/EE/Types/Engine/CheckCounterDialogueNode")
+					{
+						text = "$ Evaluate expressions on " + node.CounterName + " counter";
 					}
 					if (text)
 					{
 						if (normaliseText(text).indexOf(query) != -1)
 						{
-							const convo = node_id_to_convo(chatroom, node.id);
+							const convo = node_id_to_convo(chatroom, node.Id);
 
 							let sender_name = "Drifter";
 							if (node.type == "/EE/Types/Engine/DialogueNode")
 							{
 								sender_name = chatroom_to_username[chatroom_name];
-								if (node.nickname_override)
+								if (node.Speaker)
 								{
-									sender_name = node.nickname_override;
+									sender_name = node.Speaker;
 									if (kim_dict[sender_name])
 									{
 										sender_name = kim_dict[sender_name];

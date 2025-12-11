@@ -60,6 +60,10 @@
 						<option value="MinervaVelemirDialogue_rom.dialogue">Minerva, Velimir</option>
 						<!-- <option value="MinervaDialogue_rom.dialogue">MomToxicated (Minerva)</option> -->
 						<!-- <option value="VelimirDialogue_rom.dialogue">PapaPolar (Velimir)</option> -->
+						<option value="LoidDialogue_rom.dialogue">POM2_LAB1 (Loid)</option>
+						<option value="LyonDialogue_rom.dialogue">Lyon</option>
+						<option value="MarieDialogue_rom.dialogue">Marie</option>
+						<option value="RoatheDialogue_rom.dialogue">Roathe</option>
 					</select>
 					<select id="dialogue" class="form-control d-inline-block w-auto" style="min-width:200px">
 						<option>SELECT A DIALOGUE</option>
@@ -232,14 +236,14 @@
 
 	function getNodeText(node)
 	{
-		let text = dicts[lang][node.name] ?? node.name;
-		if (node.vars)
+		let text = dicts[lang][node.Content] ?? node.Content;
+		/*if (node.vars)
 		{
 			for (const [k, v] of Object.entries(node.vars))
 			{
 				text = text.split("|"+k+"|").join(dicts[lang][v] ?? v);
 			}
-		}
+		}*/
 		return text;
 	}
 
@@ -250,9 +254,9 @@
 		if (node.type == "/EE/Types/Engine/DialogueNode")
 		{
 			let sender_name = window.sender_name;
-			if (node.nickname_override)
+			if (node.Speaker)
 			{
-				sender_name = node.nickname_override;
+				sender_name = node.Speaker;
 				if (dicts[lang][sender_name])
 				{
 					sender_name = dicts[lang][sender_name];
@@ -267,7 +271,7 @@
 		}
 		else if (node.type == "/EE/Types/Engine/ChemistryDialogueNode")
 		{
-			chemistry = node.chemistry;
+			chemistry = node.ChemistryDelta;
 		}
 		else if (node.type == "/EE/Types/Engine/EndDialogueNode")
 		{
@@ -276,22 +280,22 @@
 			{
 				msg += " +" + chemistry + " Chemistry.";
 			}
-			if (node.name)
+			if (node.Content)
 			{
-				msg += " The next chat after this would be " + node.name + ".";
+				msg += " The next chat after this would be " + node.Content + ".";
 			}
 			addToHistory("System", msg);
 		}
 		else if (node.type == "/EE/Types/Engine/CheckBooleanDialogueNode")
 		{
 			document.getElementById("choices").innerHTML = "";
-			presentChoice("$ Boolean " + node.name + " is true", function()
+			presentChoice("$ Boolean " + node.Content + " is true", function()
 			{
-				processChoices(node.true_choices);
+				processChoices(node.TrueNodes ?? []);
 			});
-			presentChoice("$ Boolean " + node.name + " is false", function()
+			presentChoice("$ Boolean " + node.Content + " is false", function()
 			{
-				processChoices(node.false_choices);
+				processChoices(node.FalseNodes ?? []);
 			});
 			endChoices();
 			return;
@@ -299,42 +303,73 @@
 		else if (node.type == "/EE/Types/Engine/CheckBooleanScriptDialogueNode")
 		{
 			document.getElementById("choices").innerHTML = "";
-			presentChoice("$ " + node.script_name + ":" + node.func_name + JSON.stringify(node.args).split("[").join("(").split("]").join(")") + " evaluates to true", function()
+			presentChoice("$ " + node.Script.Script + ":" + node.Script.Function + " evaluates to true", function()
 			{
-				processChoices(node.true_choices);
+				processChoices(node.TrueNodes ?? []);
 			});
-			presentChoice("$ " + node.script_name + ":" + node.func_name + JSON.stringify(node.args).split("[").join("(").split("]").join(")") + " evaluates to false", function()
+			presentChoice("$ " + node.Script.Script + ":" + node.Script.Function + " evaluates to false", function()
 			{
-				processChoices(node.false_choices);
+				processChoices(node.FalseNodes ?? []);
 			});
+			endChoices();
+			return;
+		}
+		else if (node.type == "/EE/Types/Engine/CheckMultiBooleanDialogueNode")
+		{
+			document.getElementById("choices").innerHTML = "";
+			for (const output of node.Outputs)
+			{
+				presentChoice("$ " + output.Expression, function()
+				{
+					processChoices(output.Outgoing);
+				});
+			}
 			endChoices();
 			return;
 		}
 		else if (node.type == "/EE/Types/Engine/SetBooleanDialogueNode")
 		{
-			addToHistory("System", "Boolean " + node.name + " is now true.");
+			addToHistory("System", "Boolean " + node.Content + " is now true.");
 		}
 		else if (node.type == "/EE/Types/Engine/ResetBooleanDialogueNode")
 		{
-			addToHistory("System", "Boolean " + node.name + " is now false.");
+			addToHistory("System", "Boolean " + node.Content + " is now false.");
 		}
 		else if (node.type == "/EE/Types/Engine/SpecialCompletionDialogueNode")
 		{
-			if (node.refs.length == 1)
+			if (node.OtherDialogueInfos.length == 1)
 			{
-				addToHistory("System", node.refs[0].convo + " would now be queued in " + node.refs[0].diag + ".");
+				addToHistory("System", node.OtherDialogueInfos[0].Tag + " would now be queued in " + node.OtherDialogueInfos[0].Dialogue + ".");
 			}
 			else
 			{
 				console.warn("Unhandled node:", node);				
 			}
 		}
+		else if (node.type == "/EE/Types/Engine/IncCounterDialogueNode")
+		{
+			const arr = node.Content.split(" ");
+			addToHistory("System", "Add " + arr[1] + " to " + arr[0] + " counter.");
+		}
+		else if (node.type == "/EE/Types/Engine/CheckCounterDialogueNode")
+		{
+			document.getElementById("choices").innerHTML = "";
+			for (const output of node.Outputs)
+			{
+				presentChoice("$ " + node.CounterName + " counter: " + output.Expression, function()
+				{
+					processChoices(output.Outgoing);
+				});
+			}
+			endChoices();
+			return;
+		}
 		else if (node.type != "/EE/Types/Engine/StartDialogueNode")
 		{
 			console.warn("Unhandled node:", node);
 		}
 
-		processChoices(node.choices, chemistry);
+		processChoices(node.Outgoing, chemistry);
 	}
 
 	function processChoices(choices, chemistry)
@@ -389,7 +424,7 @@
 			{
 				if (node.type == "/EE/Types/Engine/StartDialogueNode")
 				{
-					dialogue_name_to_start_node_id[node.name] = node.id;
+					dialogue_name_to_start_node_id[node.Content] = node.Id;
 				}
 			}
 			dialogue_name_to_start_node_id = Object.keys(dialogue_name_to_start_node_id).sort((a, b) => {
@@ -453,18 +488,22 @@
 
 	addToHistory("System", "Loading data...");
 	Promise.all([
-		fetch("https://kim.browse.wf/AoiDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/ArthurDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/EleanorDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/FlareDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/HexDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/JabirDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/KayaDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/LettieDialogue_rom.dialogue.json").then(res => res.json()),
-		//fetch("https://kim.browse.wf/MinervaDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/MinervaVelemirDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/QuincyDialogue_rom.dialogue.json").then(res => res.json()),
-		//fetch("https://kim.browse.wf/VelimirDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/AoiDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/ArthurDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/EleanorDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/FlareDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/HexDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/JabirDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/KayaDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/LettieDialogue_rom.dialogue.json").then(res => res.json()),
+		//fetch("https://kim.browse.wf/data/MinervaDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/MinervaVelemirDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/QuincyDialogue_rom.dialogue.json").then(res => res.json()),
+		//fetch("https://kim.browse.wf/data/VelimirDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/LoidDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/LyonDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/MarieDialogue_rom.dialogue.json").then(res => res.json()),
+		fetch("https://kim.browse.wf/data/RoatheDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/dicts/en.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/dicts/de.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/dicts/es.json").then(res => res.json()),
@@ -493,6 +532,10 @@
 		MinervaVelemirDialogue_rom,
 		QuincyDialogue_rom,
 		//VelimirDialogue_rom,
+		LoidDialogue_rom,
+		LyonDialogue_rom,
+		MarieDialogue_rom,
+		RoatheDialogue_rom,
 		dict_en, dict_de, dict_es, dict_fr, dict_it, dict_ja, dict_ko, dict_pl, dict_pt, dict_ru, dict_tc, dict_th, dict_tr, dict_uk, dict_zh
 	]) => {
 		window.dicts = {
@@ -525,6 +568,10 @@
 			"MinervaVelemirDialogue_rom.dialogue": MinervaVelemirDialogue_rom,
 			"QuincyDialogue_rom.dialogue": QuincyDialogue_rom,
 			//"VelimirDialogue_rom.dialogue": VelimirDialogue_rom,
+			"LoidDialogue_rom.dialogue": LoidDialogue_rom,
+			"LyonDialogue_rom.dialogue": LyonDialogue_rom,
+			"MarieDialogue_rom.dialogue": MarieDialogue_rom,
+			"RoatheDialogue_rom.dialogue": RoatheDialogue_rom,
 		};
 
 		clearChat();
