@@ -193,7 +193,7 @@
 
 	function normaliseText(text)
 	{
-		return text.toLowerCase().split("‘").join("'").split("’").join("'");
+		return text.toLowerCase().split("‘").join("'").split("’").join("'").split("\r\n").join(" ");
 	}
 
 	function doLocate()
