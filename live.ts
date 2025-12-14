@@ -1262,6 +1262,11 @@ function updateCircuit()
 	document.getElementById("kahl-checks").appendChild(createCompletionToggle("kahlb5-" + week));
 	document.getElementById("kahl-checks").appendChild(createCompletionToggle("kahlb6-" + week));
 
+	document.getElementById("descent-checks").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
+	document.getElementById("descent-checks").innerHTML = "";
+	document.getElementById("descent-checks").appendChild(createCompletionToggle("descent1-" + week));
+	document.getElementById("descent-checks").appendChild(createCompletionToggle("descent2-" + week));
+
 	setTimeout(updateCircuit, weekEnd - Date.now());
 }
 dict_promise.then(updateCircuit);

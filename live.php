@@ -149,7 +149,8 @@
 								<p class="mb-1">The Circuit (Normal): <b id="circuit-frames">Loading...</b> <span id="circuit-frames-check"></span></p>
 								<p class="mb-1">The Circuit (Steel Path): <b id="circuit-weapons"></b> <span id="circuit-weapons-check"></span></p>
 								<p class="mb-1">Netracells <span id="netracell-checks"></span></p>
-								<p class="mb-0">Break Narmer <span id="kahl-checks"></span></p>
+								<p class="mb-1">Break Narmer <span id="kahl-checks"></span></p>
+								<p class="mb-0">Descendia <span id="descent-checks"></span></p>
 							</div>
 						</div>
 						<div class="card mb-3">
@@ -374,7 +375,7 @@
 	</div>
 	<?php require "components/commonjs.html"; ?>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-	<script src="typestripped/live.js"></script>
+	<script src="typestripped/live.js?descent"></script>
 	<script src="https://censorcanary.org/censorcanary.js" defer></script>
 </body>
 </html>
