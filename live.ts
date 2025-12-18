@@ -14,6 +14,16 @@ interface IBountyCycle {
 }
 
 // Oracle
+interface IMin {
+    version:       number;
+    latestEvent:   number;
+    latestRedtext: number;
+    darvoSold:     number;
+    invasions:     number;
+    alerts:        number;
+    goals:         number;
+    fissures:      number;
+}
 interface IWeekly {
 	expiry:                    number;
 	labConquestMissions:       IConquestMission[];
@@ -83,6 +93,8 @@ declare const ExportFactions: Record<TFaction, IFaction>;
 // state
 declare global {
 	interface Window {
+		LIVE_VERSION: number;
+
 		duviri_mood_index: number;
 		duviri_expiry: number;
 
@@ -751,7 +763,11 @@ async function updateNewsSources()
 	{
 		try
 		{
-			const meta = await fetch("https://oracle.browse.wf/min").then(res => res.json());
+			const meta: IMin = await fetch("https://oracle.browse.wf/min").then(res => res.json());
+			if (meta.version > window.LIVE_VERSION)
+			{
+				document.getElementById("update-prompt").classList.remove("d-none");
+			}
 			if (window.worldState)
 			{
 				sourcesToUpdate.events = (
@@ -777,6 +793,14 @@ async function updateNewsSources()
 		catch (e)
 		{
 			console.error(e);
+		}
+	}
+	else
+	{
+		const meta: IMin = await fetch("https://oracle.browse.wf/min").then(res => res.json());
+		if (meta.version > window.LIVE_VERSION)
+		{
+			document.getElementById("update-prompt").classList.remove("d-none");
 		}
 	}
 

@@ -463,6 +463,9 @@ async function updateNewsSources() {
     if (window.worldState || window.redtext) {
         try {
             const meta = await fetch("https://oracle.browse.wf/min").then(res => res.json());
+            if (meta.version > window.LIVE_VERSION) {
+                document.getElementById("update-prompt").classList.remove("d-none");
+            }
             if (window.worldState) {
                 sourcesToUpdate.events = (window.events_earmark != meta.latestEvent
                     || window.worldState.Alerts.length != meta.alerts
@@ -481,6 +484,12 @@ async function updateNewsSources() {
         }
         catch (e) {
             console.error(e);
+        }
+    }
+    else {
+        const meta = await fetch("https://oracle.browse.wf/min").then(res => res.json());
+        if (meta.version > window.LIVE_VERSION) {
+            document.getElementById("update-prompt").classList.remove("d-none");
         }
     }
     if (sourcesToUpdate.events) {
