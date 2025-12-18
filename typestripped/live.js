@@ -496,7 +496,7 @@ async function updateNewsSources() {
         updateWorldState();
     }
     if (sourcesToUpdate.redtext) {
-        fetch("https://oracle.browse.wf/redtext.json?" + Date.now()).then(res => res.json()).then(redtext => {
+        fetch("https://oracle.browse.wf/redtext.json").then(res => res.json()).then(redtext => {
             window.redtext = redtext;
             updateNewsTicker();
         });
@@ -517,7 +517,7 @@ function updateWorldStateLocalised() {
 }
 function updateWorldState() {
     window.refresh_world_state_at = undefined;
-    fetch("https://oracle.browse.wf/worldState.json?" + Date.now()).then(res => res.json()).then(worldState => {
+    fetch("https://oracle.browse.wf/worldState.json").then(res => res.json()).then(worldState => {
         window.worldState = worldState;
         window.bountyCycleExpiry = parseInt(worldState.SyndicateMissions.find(x => x.Tag == "HexSyndicate").Expiry.$date.$numberLong);
         updateDayNightCycle();
