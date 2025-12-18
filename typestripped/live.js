@@ -717,46 +717,51 @@ async function updateAlerts() {
         document.getElementById("alerts-body").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
         document.getElementById("alerts-body").innerHTML = "";
         for (const alert of window.worldState.Alerts) {
-            const block = document.createElement("div");
-            block.className = "card-block";
-            {
-                const span = document.createElement("span");
-                span.className = "d-block";
+            if (Date.now() < alert.Activation.$date.$numberLong) {
+                setWorldStateExpiry(parseInt(alert.Activation.$date.$numberLong));
+            }
+            else if (Date.now() < alert.Expiry.$date.$numberLong) {
+                const block = document.createElement("div");
+                block.className = "card-block";
                 {
-                    const b = document.createElement("b");
-                    b.textContent = toTitleCase(dict[ExportMissionTypes[alert.MissionInfo.missionType].name]) + " - " + dict[ExportFactions[alert.MissionInfo.faction].name];
-                    span.appendChild(b);
-                }
-                span.innerHTML += " (" + alert.MissionInfo.minEnemyLevel + "-" + alert.MissionInfo.maxEnemyLevel + ") @ " + dict[ExportRegions[alert.MissionInfo.location].name] + ", " + dict[ExportRegions[alert.MissionInfo.location].systemName] + " ";
-                span.appendChild(createExpiryBadge(alert.Expiry.$date.$numberLong));
-                setWorldStateExpiry(parseInt(alert.Expiry.$date.$numberLong));
-                span.innerHTML += " ";
-                span.appendChild(createCompletionToggle(alert._id.$oid));
-                block.appendChild(span);
-            }
-            {
-                const span = document.createElement("span");
-                span.className = "d-block";
-                span.textContent = alert.MissionInfo.missionReward.credits.toLocaleString() + " Credits";
-                block.appendChild(span);
-            }
-            if (alert.MissionInfo.missionReward.items) {
-                for (const reward of alert.MissionInfo.missionReward.items) {
                     const span = document.createElement("span");
                     span.className = "d-block";
-                    span.textContent = await getItemNamePromise(reward);
+                    {
+                        const b = document.createElement("b");
+                        b.textContent = toTitleCase(dict[ExportMissionTypes[alert.MissionInfo.missionType].name]) + " - " + dict[ExportFactions[alert.MissionInfo.faction].name];
+                        span.appendChild(b);
+                    }
+                    span.innerHTML += " (" + alert.MissionInfo.minEnemyLevel + "-" + alert.MissionInfo.maxEnemyLevel + ") @ " + dict[ExportRegions[alert.MissionInfo.location].name] + ", " + dict[ExportRegions[alert.MissionInfo.location].systemName] + " ";
+                    span.appendChild(createExpiryBadge(alert.Expiry.$date.$numberLong));
+                    setWorldStateExpiry(parseInt(alert.Expiry.$date.$numberLong));
+                    span.innerHTML += " ";
+                    span.appendChild(createCompletionToggle(alert._id.$oid));
                     block.appendChild(span);
                 }
-            }
-            if (alert.MissionInfo.missionReward.countedItems) {
-                for (const reward of alert.MissionInfo.missionReward.countedItems) {
+                {
                     const span = document.createElement("span");
                     span.className = "d-block";
-                    span.textContent = reward.ItemCount + "X " + await getItemNamePromise(reward.ItemType);
+                    span.textContent = alert.MissionInfo.missionReward.credits.toLocaleString() + " Credits";
                     block.appendChild(span);
                 }
+                if (alert.MissionInfo.missionReward.items) {
+                    for (const reward of alert.MissionInfo.missionReward.items) {
+                        const span = document.createElement("span");
+                        span.className = "d-block";
+                        span.textContent = await getItemNamePromise(reward);
+                        block.appendChild(span);
+                    }
+                }
+                if (alert.MissionInfo.missionReward.countedItems) {
+                    for (const reward of alert.MissionInfo.missionReward.countedItems) {
+                        const span = document.createElement("span");
+                        span.className = "d-block";
+                        span.textContent = reward.ItemCount + "X " + await getItemNamePromise(reward.ItemType);
+                        block.appendChild(span);
+                    }
+                }
+                document.getElementById("alerts-body").appendChild(block);
             }
-            document.getElementById("alerts-body").appendChild(block);
         }
     }
     else {
