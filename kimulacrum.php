@@ -96,7 +96,6 @@
 
 	window.chatroom = undefined;
 	window.dialogue = undefined;
-	let lang = localStorage.getItem("lang") || "en";
 
 	const retro_emoji_paths = [
 		"/Lotus/Interface/Graphics/Retro/Texts/Emoji/RetroEmojiAnnoyed1_d.png",
@@ -236,12 +235,12 @@
 
 	function getNodeText(node)
 	{
-		let text = dicts[lang][node.Content] ?? node.Content;
+		let text = kim_dict[node.Content] ?? node.Content;
 		/*if (node.vars)
 		{
 			for (const [k, v] of Object.entries(node.vars))
 			{
-				text = text.split("|"+k+"|").join(dicts[lang][v] ?? v);
+				text = text.split("|"+k+"|").join(kim_dict[v] ?? v);
 			}
 		}*/
 		return text;
@@ -257,9 +256,9 @@
 			if (node.Speaker)
 			{
 				sender_name = node.Speaker;
-				if (dicts[lang][sender_name])
+				if (kim_dict[sender_name])
 				{
-					sender_name = dicts[lang][sender_name];
+					sender_name = kim_dict[sender_name];
 				}
 			}
 			addToHistory(sender_name, getNodeText(node), chemistry);
@@ -471,7 +470,7 @@
 	function setActiveDialogue(dialogue)
 	{
 		document.getElementById("flowchart-link").classList.remove("d-none");
-		document.getElementById("flowchart-link").href = "https://kim.browse.wf/flowcharts_svg/" + lang + "/" + chatroom + "/" + dialogue + ".svg";
+		document.getElementById("flowchart-link").href = "https://kim.browse.wf/flowcharts_svg/" + (localStorage.getItem("lang") ?? "en") + "/" + chatroom + "/" + dialogue + ".svg";
 		window.dialogue = dialogue;
 		clearChat();
 		processNode(nodes[dialogue_name_to_start_node_id[dialogue]]);
@@ -504,21 +503,7 @@
 		fetch("https://kim.browse.wf/data/LyonDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/data/MarieDialogue_rom.dialogue.json").then(res => res.json()),
 		fetch("https://kim.browse.wf/data/RoatheDialogue_rom.dialogue.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/en.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/de.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/es.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/fr.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/it.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/ja.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/ko.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/pl.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/pt.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/ru.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/tc.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/th.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/tr.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/uk.json").then(res => res.json()),
-		fetch("https://kim.browse.wf/dicts/zh.json").then(res => res.json())
+		fetch("https://kim.browse.wf/dicts/" + (localStorage.getItem("lang") ?? "en") + ".json").then(res => res.json())
 	]).then(([
 		AoiDialogue_rom,
 		ArthurDialogue_rom,
@@ -536,25 +521,9 @@
 		LyonDialogue_rom,
 		MarieDialogue_rom,
 		RoatheDialogue_rom,
-		dict_en, dict_de, dict_es, dict_fr, dict_it, dict_ja, dict_ko, dict_pl, dict_pt, dict_ru, dict_tc, dict_th, dict_tr, dict_uk, dict_zh
+		dict
 	]) => {
-		window.dicts = {
-			en: dict_en,
-			de: dict_de,
-			es: dict_es,
-			fr: dict_fr,
-			it: dict_it,
-			ja: dict_ja,
-			ko: dict_ko,
-			pl: dict_pl,
-			pt: dict_pt,
-			ru: dict_ru,
-			tc: dict_tc,
-			th: dict_th,
-			tr: dict_tr,
-			uk: dict_uk,
-			zh: dict_zh,
-		};
+		window.kim_dict = dict;
 		window.chatrooms = {
 			"AoiDialogue_rom.dialogue": AoiDialogue_rom,
 			"ArthurDialogue_rom.dialogue": ArthurDialogue_rom,
@@ -656,8 +625,11 @@
 
 	onLanguageUpdate = function()
 	{
-		lang = localStorage.getItem("lang") || "en";
-		recreateChat();
+		fetch("https://kim.browse.wf/dicts/" + (localStorage.getItem("lang") ?? "en") + ".json").then(res => res.json()).then(dict =>
+		{
+			window.kim_dict = dict;
+			recreateChat();
+		})
 	};
 
 	document.getElementById("username").oninput = function()
