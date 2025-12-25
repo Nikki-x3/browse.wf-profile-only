@@ -2160,5 +2160,14 @@
     },
     "/Lotus/Types/StoreItems/AvatarImages/FanChannel/AvatarImageMovemberBaruukBright": {
         "promo_code": "MOVEMBER2025"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/AvatarImageRoatheMistletoeGlyph": {
+        "promo_code": "MISTLETOE2025"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/AvatarImageLyonAllardMistletoeGlyph": {
+        "promo_code": "MISTLETOE2025"
+    },
+    "/Lotus/Types/StoreItems/AvatarImages/AvatarImageMarieLerouxMistletoeGlyph": {
+        "promo_code": "MISTLETOE2025"
     }
 }
