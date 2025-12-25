@@ -357,7 +357,7 @@
 			{
 				presentChoice("$ " + node.CounterName + " counter: " + output.Expression, function()
 				{
-					processChoices(output.Outgoing);
+					processChoices(output.Outgoing ?? []);
 				});
 			}
 			endChoices();
@@ -368,7 +368,7 @@
 			console.warn("Unhandled node:", node);
 		}
 
-		processChoices(node.Outgoing, chemistry);
+		processChoices(node.Outgoing ?? [], chemistry);
 	}
 
 	function processChoices(choices, chemistry)
