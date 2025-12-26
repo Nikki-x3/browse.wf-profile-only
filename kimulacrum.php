@@ -76,7 +76,7 @@
 				</td>
 				<td>
 					<label class="form-label"><b>Ambience</b></label><br/>
-					<audio controls loop>
+					<audio id="ambience" controls loop>
 						<source src="https://kim.browse.wf/kimulacrum_resources/1999GreatDespairRomanceChatLoop.mp3" type="audio/mpeg" />
 					</audio>
 				</td>
@@ -415,6 +415,22 @@
 		{
 			window.chatroom = chatroom;
 			window.sender_name = document.querySelector("option[value='"+chatroom+"']").textContent.split(" (")[0];
+
+			const audioSource = 
+				(chatroom == "LoidDialogue_rom.dialogue" || chatroom == "LyonDialogue_rom.dialogue" || chatroom == "MarieDialogue_rom.dialogue" || chatroom == "RoatheDialogue_rom.dialogue")
+				? "https://kim.browse.wf/kimulacrum_resources/TauTriadRomanceChatLoop.mp3"
+				: "https://kim.browse.wf/kimulacrum_resources/1999GreatDespairRomanceChatLoop.mp3"
+				;
+			if (document.querySelector("#ambience source").getAttribute("src") != audioSource)
+			{
+				const playing = !document.querySelector("#ambience").paused;
+				document.querySelector("#ambience source").setAttribute("src", audioSource);
+				document.querySelector("#ambience").load();
+				if (playing)
+				{
+					document.querySelector("#ambience").play();
+				}
+			}
 
 			window.nodes = window.chatrooms[chatroom];
 
