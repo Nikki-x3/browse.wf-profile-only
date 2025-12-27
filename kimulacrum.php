@@ -409,6 +409,50 @@
 		location.hash = hash;
 	}
 
+	function stringToSortInt(str, max_len)
+	{
+		let score = 0n;
+		let shift = BigInt(max_len * 8);
+		const addByteToScore = function(b)
+		{
+			if (b < 0 || b > 0xFF)
+			{
+				throw new Error(`Can't add byte ${b} to score`);
+			}
+			score |= BigInt(b) << shift;
+			if (shift <= 0n)
+			{
+				throw new Error(`String too long: ${str}`);
+			}
+			shift -= 8n;
+		};
+		let num;
+		for (let i = 0; i != str.length; ++i)
+		{
+			const cc = str.charCodeAt(i);
+			if (cc >= 48 && cc <= 57)
+			{
+				num ??= 0;
+				num *= 10;
+				num += cc - 48;
+			}
+			else
+			{
+				if (num !== undefined)
+				{
+					addByteToScore(num);
+					num = undefined;
+				}
+				addByteToScore(cc);
+			}
+		}
+		if (num !== undefined)
+		{
+			addByteToScore(num);
+		}
+		return score;
+	}
+
 	function setActiveChatroom(chatroom)
 	{
 		if (window.chatroom != chatroom)
@@ -443,31 +487,10 @@
 				}
 			}
 			dialogue_name_to_start_node_id = Object.keys(dialogue_name_to_start_node_id).sort((a, b) => {
-				const aRankIndex = a.indexOf("Rank");
-				const bRankIndex = b.indexOf("Rank");
-				if (aRankIndex != -1 && bRankIndex == -1)
-				{
-					return -1;
-				}
-				if (bRankIndex != -1 && aRankIndex == -1)
-				{
-					return +1;
-				}
-				if (aRankIndex == -1)
-				{
-					return a < b ? -1 : +1;
-				}
-				const [aRank, aConvo] = a.substr(aRankIndex + 4).split("Convo").map(x => parseInt(x));
-				const [bRank, bConvo] = b.substr(bRankIndex + 4).split("Convo").map(x => parseInt(x));
-				if (aRank < bRank)
-				{
-					return -1;
-				}
-				if (bRank < aRank)
-				{
-					return +1;
-				}
-				return aConvo < bConvo ? -1 : +1;
+				const max_len = Math.max(a.length, b.length);
+				const aScore = stringToSortInt(a, max_len);
+				const bScore = stringToSortInt(b, max_len);
+				return aScore < bScore ? -1 : +1;
 			}).reduce((obj, key) => { 
 				obj[key] = dialogue_name_to_start_node_id[key]; 
 				return obj;
