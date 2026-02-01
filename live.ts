@@ -15,14 +15,14 @@ interface IBountyCycle {
 
 // Oracle
 interface IMin {
-    version:       number;
-    latestEvent:   number;
-    latestRedtext: number;
-    darvoSold:     number;
-    invasions:     number;
-    alerts:        number;
-    goals:         number;
-    fissures:      number;
+	version:       number;
+	latestEvent:   number;
+	latestRedtext: number;
+	darvoSold:     number;
+	invasions:     number;
+	alerts:        number;
+	goals:         number;
+	fissures:      number;
 }
 interface IWeekly {
 	expiry:                    number;
