@@ -24,18 +24,6 @@ interface IMin {
 	goals:         number;
 	fissures:      number;
 }
-interface IWeekly {
-	expiry:                    number;
-	labConquestMissions:       IConquestMission[];
-	labConquestFrameVariables: string[];
-	hexConquestMissions:       IConquestMission[];
-	hexConquestFrameVariables: string[];
-}
-interface IConquestMission {
-	type:       string;
-	variant:    string;
-	conditions: string[];
-}
 
 // Oracle
 interface IInvasions {
@@ -71,6 +59,31 @@ interface IDailyDeal {
 	SalePrice: number;
 	AmountTotal: number;
 	AmountSold: number;
+}
+
+// worldState
+interface IConquest {
+	Activation: IMongoDate;
+	Expiry: IMongoDate;
+	Type: "CT_LAB" | "CT_HEX";
+	Missions: {
+		faction: TFaction;
+		missionType: TMissionType;
+		difficulties: [
+			{
+				type: "CD_NORMAL";
+				deviation: string;
+				risks: [string];
+			},
+			{
+				type: "CD_HARD";
+				deviation: string;
+				risks: [string, string];
+			}
+		];
+	}[];
+	Variables: [string, string, string, string];
+	RandomSeed: number;
 }
 
 // common.js
@@ -110,7 +123,6 @@ declare global {
 		incursions_today: string[];
 		incursions_expiry: number;
 
-		weekly: IWeekly;
 		refresh_weekly_at: number;
 
 		worldState: {
@@ -167,6 +179,7 @@ declare global {
 				ActiveMissionTier: string;
 			}[];
 			DailyDeals: IDailyDeal[];
+			Conquests: IConquest[];
 			Tmp: string;
 		}
 		redtext: { data: string; time: number }[];
@@ -485,167 +498,39 @@ function addTooltip(elm: HTMLElement, title: string): any
 	return new window.bootstrap.Tooltip(elm);
 }
 
-function updateWeeklyLocalised()
-{
-	{
-		setDatum("labConquest-header", osdict["/Lotus/Language/Conquest/SolarMapLabConquestNode"], window.refresh_weekly_at);
-		document.getElementById("labConquest-header").innerHTML += " ";
-		document.getElementById("labConquest-header").appendChild(createCompletionToggle("labconquest-" + window.refresh_weekly_at));
-		const tbody = document.createElement("tbody");
-		for (const mission of window.weekly.labConquestMissions)
-		{
-			const tr = document.createElement("tr");
-			{
-				const th = document.createElement("th");
-				th.textContent = toTitleCase(dict["/Lotus/Language/Missions/MissionName_" + mission.type] ?? mission.type);
-				tr.appendChild(th);
-			}
-			{
-				const td = document.createElement("td");
-				const abbr = document.createElement("abbr");
-				abbr.textContent = osdict["/Lotus/Language/Conquest/MissionVariant_LabConquest_" + mission.variant];
-				addTooltip(abbr, osdict["/Lotus/Language/Conquest/MissionVariant_LabConquest_" + mission.variant + "_Desc"]);
-				td.appendChild(abbr);
-				tr.appendChild(td);
-			}
-			for (let i = 0; i != 2; ++i)
-			{
-				const td = document.createElement("td");
-				const abbr = document.createElement("abbr");
-				abbr.textContent = osdict["/Lotus/Language/Conquest/Condition_" + mission.conditions[i]];
-				addTooltip(abbr, osdict["/Lotus/Language/Conquest/Condition_" + mission.conditions[i] + "_Desc"]);
-				td.appendChild(abbr);
-				tr.appendChild(td);
-			}
-			tbody.appendChild(tr);
-		}
-		document.getElementById("labConquest-missions").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
-		document.getElementById("labConquest-missions").innerHTML = "";
-		document.getElementById("labConquest-missions").appendChild(tbody);
-		document.getElementById("labConquest-fv").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
-		document.getElementById("labConquest-fv").innerHTML = "";
-		for (const fv of window.weekly.labConquestFrameVariables)
-		{
-			const td = document.createElement("td");
-			const abbr = document.createElement("abbr");
-			abbr.textContent = osdict["/Lotus/Language/Conquest/PersonalMod_" + fv];
-			let desc = osdict["/Lotus/Language/Conquest/PersonalMod_" + fv + "_Desc"].replaceAll(/<[^>]+>/g, "");
-			if (fv == "ShieldDelay")
-			{
-				desc = desc.split("|val|").join("500");
-			}
-			else if (fv == "TimeDilation")
-			{
-				desc = desc.split("|val|").join("50");
-			}
-			addTooltip(abbr, desc);
-			td.appendChild(abbr);
-			document.getElementById("labConquest-fv").appendChild(td);
-		}
-	}
-
-	{
-		setDatum("hexConquest-header", osdict["/Lotus/Language/1999Echoes/1999HexConquestNode"], window.refresh_weekly_at);
-		document.getElementById("hexConquest-header").innerHTML += " ";
-		document.getElementById("hexConquest-header").appendChild(createCompletionToggle("hexconquest-" + window.refresh_weekly_at));
-		const tbody = document.createElement("tbody");
-		for (const mission of window.weekly.hexConquestMissions)
-		{
-			const tr = document.createElement("tr");
-			{
-				const th = document.createElement("th");
-				th.textContent = toTitleCase(dict["/Lotus/Language/Missions/MissionName_" + mission.type] ?? mission.type);
-				tr.appendChild(th);
-			}
-			{
-				const td = document.createElement("td");
-				const abbr = document.createElement("abbr");
-				abbr.textContent = osdict["/Lotus/Language/Conquest/MissionVariant_HexConquest_" + mission.variant];
-				addTooltip(abbr, osdict["/Lotus/Language/Conquest/MissionVariant_HexConquest_" + mission.variant + "_Desc"]);
-				td.appendChild(abbr);
-				tr.appendChild(td);
-			}
-			for (let i = 0; i != 2; ++i)
-			{
-				const td = document.createElement("td");
-				const abbr = document.createElement("abbr");
-				abbr.textContent = osdict["/Lotus/Language/Conquest/Condition_" + mission.conditions[i]];
-				addTooltip(abbr, osdict["/Lotus/Language/Conquest/Condition_" + mission.conditions[i] + "_Desc"]);
-				td.appendChild(abbr);
-				tr.appendChild(td);
-			}
-			tbody.appendChild(tr);
-		}
-		document.getElementById("hexConquest-missions").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
-		document.getElementById("hexConquest-missions").innerHTML = "";
-		document.getElementById("hexConquest-missions").appendChild(tbody);
-		document.getElementById("hexConquest-fv").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
-		document.getElementById("hexConquest-fv").innerHTML = "";
-		for (const fv of window.weekly.hexConquestFrameVariables)
-		{
-			const td = document.createElement("td");
-			const abbr = document.createElement("abbr");
-			abbr.textContent = osdict["/Lotus/Language/Conquest/PersonalMod_" + fv];
-			let desc = osdict["/Lotus/Language/Conquest/PersonalMod_" + fv + "_Desc"].replaceAll(/<[^>]+>/g, "");
-			if (fv == "ShieldDelay")
-			{
-				desc = desc.split("|val|").join("500");
-			}
-			else if (fv == "TimeDilation")
-			{
-				desc = desc.split("|val|").join("50");
-			}
-			addTooltip(abbr, desc);
-			td.appendChild(abbr);
-			document.getElementById("hexConquest-fv").appendChild(td);
-		}
-	}
-}
-
 function updateWeekly()
 {
-	window.refresh_weekly_at = undefined;
-	Promise.all([
-		fetch("https://oracle.browse.wf/weekly").then(res => res.json()),
-		dicts_promise
-	]).then(([weekly]) =>
+	const weekIndex = Math.trunc((Date.now() - 1391990400_000) / 604800_000);
+	const weekEnd = ((weekIndex + 1) * 604800_000) + 1391990400_000;
+	if (window.refresh_weekly_at)
 	{
-		if (window.weekly)
+		const weekly_notifications_subscribed_to = [];
+		if (localStorage.getItem("live.notif.litesortie"))
 		{
-			const weekly_notifications_subscribed_to = [];
-			if (localStorage.getItem("live.notif.litesortie"))
-			{
-				weekly_notifications_subscribed_to.push("Archon Hunt");
-			}
-			if (localStorage.getItem("live.notif.teshin"))
-			{
-				weekly_notifications_subscribed_to.push("Vendors");
-			}
-			if (localStorage.getItem("live.notif.circuit"))
-			{
-				weekly_notifications_subscribed_to.push("Weekly Missions");
-			}
-			if (localStorage.getItem("live.notif.labconquest"))
-			{
-				weekly_notifications_subscribed_to.push("Deep Archimedea");
-			}
-			if (localStorage.getItem("live.notif.hexconquest"))
-			{
-				weekly_notifications_subscribed_to.push("Temporal Archimedea");
-			}
-			if (weekly_notifications_subscribed_to.length != 0)
-			{
-				sendNotification("It's a new week. " + weekly_notifications_subscribed_to.join(", ") + " refreshed.");
-			}
+			weekly_notifications_subscribed_to.push("Archon Hunt");
 		}
-		window.weekly = weekly;
-		window.refresh_weekly_at = weekly.expiry * 1000;
-		updateWeeklyLocalised();
-	}).catch(e =>
-	{
-		console.error(e);
-		setTimeout(updateWeekly, 5000);
-	});
+		if (localStorage.getItem("live.notif.teshin"))
+		{
+			weekly_notifications_subscribed_to.push("Vendors");
+		}
+		if (localStorage.getItem("live.notif.circuit"))
+		{
+			weekly_notifications_subscribed_to.push("Weekly Missions");
+		}
+		if (localStorage.getItem("live.notif.labconquest"))
+		{
+			weekly_notifications_subscribed_to.push("Deep Archimedea");
+		}
+		if (localStorage.getItem("live.notif.hexconquest"))
+		{
+			weekly_notifications_subscribed_to.push("Temporal Archimedea");
+		}
+		if (weekly_notifications_subscribed_to.length != 0)
+		{
+			sendNotification("It's a new week. " + weekly_notifications_subscribed_to.join(", ") + " refreshed.");
+		}
+	}
+	window.refresh_weekly_at = weekEnd;
 }
 
 function updateNewsTicker()
@@ -833,6 +718,7 @@ function updateWorldStateLocalised()
 	updateAlerts();
 	updateGoals();
 	updateFissures();
+	updateConquests();
 }
 
 function updateWorldState()
@@ -1586,6 +1472,174 @@ async function updateFissures()
 	document.getElementById("rj-fissures-table").appendChild(tbody["rj-fissures"]);
 }
 
+function conquestRiskTagToLoc(tag)
+{
+	if (tag == "EMPBlackHole")
+	{
+		return "MagneticHounds";
+	}
+	return tag;
+}
+
+function conquestVariableTagToLoc(tag)
+{
+	if (tag == "DullBlades")
+	{
+		return "ComboCountChance";
+	}
+	if (tag == "Undersupplied")
+	{
+		return "MaxAmmo";
+	}
+	return tag;
+}
+
+async function updateConquests()
+{
+	await dict_promise;
+	await ExportMissionTypes_promise;
+
+	for (const conquest of window.worldState.Conquests)
+	{
+		if (Date.now() >= parseInt(conquest.Activation.$date.$numberLong) && Date.now() < parseInt(conquest.Expiry.$date.$numberLong))
+		{
+			const expiry = parseInt(conquest.Expiry.$date.$numberLong);
+			setWorldStateExpiry(expiry);
+
+			if (conquest.Type == "CT_LAB")
+			{
+				setDatum("labConquest-header", osdict["/Lotus/Language/Conquest/SolarMapLabConquestNode"], expiry);
+				document.getElementById("labConquest-header").innerHTML += " ";
+				document.getElementById("labConquest-header").appendChild(createCompletionToggle("labconquest-" + expiry));
+				const tbody = document.createElement("tbody");
+				for (const mission of conquest.Missions)
+				{
+					const tr = document.createElement("tr");
+					{
+						let missionTypeDisplayName = ExportMissionTypes[mission.missionType].name?.substring(37);
+						if (missionTypeDisplayName == "Defense")
+						{
+							missionTypeDisplayName = "DualDefense";
+						}
+
+						const th = document.createElement("th");
+						th.textContent = toTitleCase(dict["/Lotus/Language/Missions/MissionName_" + missionTypeDisplayName] ?? mission.missionType);
+						tr.appendChild(th);
+					}
+					{
+						const td = document.createElement("td");
+						const abbr = document.createElement("abbr");
+						abbr.textContent = osdict["/Lotus/Language/Conquest/MissionVariant_LabConquest_" + mission.difficulties[0].deviation];
+						addTooltip(abbr, osdict["/Lotus/Language/Conquest/MissionVariant_LabConquest_" + mission.difficulties[0].deviation + "_Desc"]);
+						td.appendChild(abbr);
+						tr.appendChild(td);
+					}
+					for (let i = 0; i != 2; ++i)
+					{
+						const risk = conquestRiskTagToLoc(mission.difficulties[1].risks[i]);
+
+						const td = document.createElement("td");
+						const abbr = document.createElement("abbr");
+						abbr.textContent = osdict["/Lotus/Language/Conquest/Condition_" + risk];
+						addTooltip(abbr, osdict["/Lotus/Language/Conquest/Condition_" + risk + "_Desc"]);
+						td.appendChild(abbr);
+						tr.appendChild(td);
+					}
+					tbody.appendChild(tr);
+				}
+				document.getElementById("labConquest-missions").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
+				document.getElementById("labConquest-missions").innerHTML = "";
+				document.getElementById("labConquest-missions").appendChild(tbody);
+				document.getElementById("labConquest-fv").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
+				document.getElementById("labConquest-fv").innerHTML = "";
+				for (const tag of conquest.Variables)
+				{
+					const fv = conquestVariableTagToLoc(tag);
+
+					const td = document.createElement("td");
+					const abbr = document.createElement("abbr");
+					abbr.textContent = osdict["/Lotus/Language/Conquest/PersonalMod_" + fv];
+					let desc = osdict["/Lotus/Language/Conquest/PersonalMod_" + fv + "_Desc"].replaceAll(/<[^>]+>/g, "");
+					if (fv == "ShieldDelay")
+					{
+						desc = desc.split("|val|").join("500");
+					}
+					else if (fv == "TimeDilation")
+					{
+						desc = desc.split("|val|").join("50");
+					}
+					addTooltip(abbr, desc);
+					td.appendChild(abbr);
+					document.getElementById("labConquest-fv").appendChild(td);
+				}
+			}
+			else if (conquest.Type == "CT_HEX")
+			{
+				setDatum("hexConquest-header", osdict["/Lotus/Language/1999Echoes/1999HexConquestNode"], expiry);
+				document.getElementById("hexConquest-header").innerHTML += " ";
+				document.getElementById("hexConquest-header").appendChild(createCompletionToggle("hexconquest-" + expiry));
+				const tbody = document.createElement("tbody");
+				for (const mission of conquest.Missions)
+				{
+					const tr = document.createElement("tr");
+					{
+						const missionTypeDisplayName = ExportMissionTypes[mission.missionType].name?.substring(37);
+
+						const th = document.createElement("th");
+						th.textContent = toTitleCase(dict["/Lotus/Language/Missions/MissionName_" + missionTypeDisplayName] ?? mission.missionType);
+						tr.appendChild(th);
+					}
+					{
+						const td = document.createElement("td");
+						const abbr = document.createElement("abbr");
+						abbr.textContent = osdict["/Lotus/Language/Conquest/MissionVariant_HexConquest_" + mission.difficulties[0].deviation];
+						addTooltip(abbr, osdict["/Lotus/Language/Conquest/MissionVariant_HexConquest_" + mission.difficulties[0].deviation + "_Desc"]);
+						td.appendChild(abbr);
+						tr.appendChild(td);
+					}
+					for (let i = 0; i != 2; ++i)
+					{
+						const risk = conquestRiskTagToLoc(mission.difficulties[1].risks[i]);
+						
+						const td = document.createElement("td");
+						const abbr = document.createElement("abbr");
+						abbr.textContent = osdict["/Lotus/Language/Conquest/Condition_" + risk];
+						addTooltip(abbr, osdict["/Lotus/Language/Conquest/Condition_" + risk + "_Desc"]);
+						td.appendChild(abbr);
+						tr.appendChild(td);
+					}
+					tbody.appendChild(tr);
+				}
+				document.getElementById("hexConquest-missions").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
+				document.getElementById("hexConquest-missions").innerHTML = "";
+				document.getElementById("hexConquest-missions").appendChild(tbody);
+				document.getElementById("hexConquest-fv").querySelectorAll("[data-bs-toggle=tooltip]").forEach(x => window.bootstrap.Tooltip.getInstance(x).dispose());
+				document.getElementById("hexConquest-fv").innerHTML = "";
+				for (const tag of conquest.Variables)
+				{
+					const fv = conquestVariableTagToLoc(tag);
+
+					const td = document.createElement("td");
+					const abbr = document.createElement("abbr");
+					abbr.textContent = osdict["/Lotus/Language/Conquest/PersonalMod_" + fv];
+					let desc = osdict["/Lotus/Language/Conquest/PersonalMod_" + fv + "_Desc"].replaceAll(/<[^>]+>/g, "");
+					if (fv == "ShieldDelay")
+					{
+						desc = desc.split("|val|").join("500");
+					}
+					else if (fv == "TimeDilation")
+					{
+						desc = desc.split("|val|").join("50");
+					}
+					addTooltip(abbr, desc);
+					td.appendChild(abbr);
+					document.getElementById("hexConquest-fv").appendChild(td);
+				}
+			}
+		}
+	}
+}
+
 updateBountyCycle();
 
 dict_promise.then(() => updateNames());
@@ -1607,10 +1661,6 @@ dicts_promise.then(([dict, osdict]) =>
 		if (window.incursions)
 		{
 			updateIncursionsLocalised();
-		}
-		if (window.weekly)
-		{
-			updateWeeklyLocalised();
 		}
 		if (window.worldState)
 		{
