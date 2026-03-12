@@ -41,7 +41,8 @@
 						<li>PlayStation: <code>http://content-ps4.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
 						<li>Xbox: <code>http://content-xb1.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
 						<li>Switch: <code>http://content-swi.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
-						<li>Mobile: <code>http://content-mob.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
+						<li>iOS: <code>http://content-mob.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
+						<li>Android: <code>http://content-and.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
 					</ul>
 				</li>
 			</ul>
