@@ -58,6 +58,7 @@
 		</ul>
 		<h3>Arbitrations</h3>
 		<p>The data behind the <a href="/arbys" target="_blank">arbitration schedule</a> is stored in the <a href="arbys.txt" target="_blank">arbys.txt</a>. Furthermore, the data prior to Update 37 is also still available in the <a href="arbys-old.txt" target="_blank">arbys-old.txt</a>.</p>
+		<p>The tier rankings have been provided by <a href="https://discord.gg/arbitrations" target="_blank">Arbitration Goons</a>.</p>
 		<h3>Live World State</h3>
 		<p>For our <a href="/live" target="_blank">live world state tracker</a>, we have created <a href="https://oracle.browse.wf" target="_blank">the oracle</a>, which has many services, including providing current bounty challenges, invasion mission types, and deep archimedea modifiers.</p>
 		<p>Additionally, there's the steel path incursions schedule in the <a href="sp-incursions.txt" target="_blank">sp-incursions.txt</a>.</p>
