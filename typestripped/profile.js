@@ -354,7 +354,10 @@ function renderProfile() {
                     if (node.missionType != "MT_PVP") {
                         td.textContent += " (" + toTitleCase(dict[node.missionName]);
                         if (node.faction && node.systemIndex != 21) {
-                            td.textContent += " - " + toTitleCase(dict[ExportFactions[node.faction].name]);
+                            const factionName = ExportFactions[node.faction].name;
+                            if (factionName) {
+                                td.textContent += " - " + toTitleCase(dict[factionName]);
+                            }
                         }
                         td.textContent += ")";
                     }

@@ -11,6 +11,6 @@
     "eslint": "^8",
     "php-ts-dev": "^0.1.1",
     "typescript": "^5.9.2",
-    "warframe-public-export-plus": "^0.5.86"
+    "warframe-public-export-plus": "^0.5.104"
   }
 }
