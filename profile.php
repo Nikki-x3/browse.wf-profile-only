@@ -37,12 +37,12 @@
 				<li>
 					To avoid our server getting rate-limited by DE, you need to manually retrieve your data by visiting the appropriate URL for your platform (replace <code>ACCOUNTID</code>), save the resulting JSON, and upload it below.
 					<ul>
-						<li>PC: <code>http://content.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
-						<li>PlayStation: <code>http://content-ps4.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
-						<li>Xbox: <code>http://content-xb1.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
-						<li>Switch: <code>http://content-swi.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
-						<li>iOS: <code>http://content-mob.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
-						<li>Android: <code>http://content-and.warframe.com/dynamic/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
+						<li>PC: <code>https://api.warframe.com/cdn/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
+						<li>PlayStation: <code>https://api-ps4.warframe.com/cdn/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
+						<li>Xbox: <code>https://api-xb1.warframe.com/cdn/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
+						<li>Switch: <code>https://api-swi.warframe.com/cdn/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
+						<li>iOS: <code>https://api-mob.warframe.com/cdn/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
+						<li>Android: <code>https://api-and.warframe.com/cdn/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
 					</ul>
 				</li>
 			</ul>
