@@ -282,21 +282,6 @@ function updateNewsTicker() {
             }
         }
     }
-    if (window.redtext) {
-        const cutoff = (Date.now() / 1000) - (30 * 86400);
-        for (const event of window.redtext) {
-            if (event.time > cutoff) {
-                if (event.time > highest_time) {
-                    highest_time = event.time;
-                }
-                items.push({
-                    type: "danger",
-                    data: event.data.split("WALLOPS :")[1],
-                    time: event.time
-                });
-            }
-        }
-    }
     items.sort((a, b) => b.time - a.time);
     if (window.news_notify_after && localStorage.getItem("live.notif.news")) {
         for (let i = items.length; i-- != 0;) {
@@ -305,7 +290,7 @@ function updateNewsTicker() {
             }
         }
     }
-    if (window.worldState && window.redtext) {
+    if (window.worldState) {
         window.refresh_news_sources_at = Date.now() + 60_000;
         window.news_notify_after = highest_time;
     }
@@ -344,10 +329,9 @@ function updateNewsTicker() {
 async function updateNewsSources() {
     window.refresh_news_sources_at = undefined;
     const sourcesToUpdate = {
-        events: !window.worldState,
-        redtext: !window.redtext,
+        events: !window.worldState
     };
-    if (window.worldState || window.redtext) {
+    if (window.worldState) {
         try {
             const meta = await fetch("https://oracle.browse.wf/min").then(res => res.json());
             if (meta.version > window.LIVE_VERSION) {
@@ -358,9 +342,6 @@ async function updateNewsSources() {
                     || window.worldState.Alerts.length != meta.alerts
                     || window.worldState.Goals.length != meta.goals
                     || (window.num_fissures && window.num_fissures != meta.fissures));
-            }
-            if (window.redtext) {
-                sourcesToUpdate.redtext = (window.redtext[window.redtext.length - 1].time != meta.latestRedtext);
             }
             if (window.dailyDeal) {
                 document.getElementById("darvo-stock").textContent = (window.dailyDeal.AmountTotal - meta.darvoSold) + "/" + window.dailyDeal.AmountTotal;
@@ -382,13 +363,7 @@ async function updateNewsSources() {
     if (sourcesToUpdate.events) {
         updateWorldState();
     }
-    if (sourcesToUpdate.redtext) {
-        fetch("https://oracle.browse.wf/redtext.json").then(res => res.json()).then(redtext => {
-            window.redtext = redtext;
-            updateNewsTicker();
-        });
-    }
-    if (!sourcesToUpdate.events && !sourcesToUpdate.redtext) {
+    if (!sourcesToUpdate.events) {
         window.refresh_news_sources_at = Date.now() + 60_000;
     }
 }

@@ -17,7 +17,6 @@ interface IBountyCycle {
 interface IMin {
 	version:       number;
 	latestEvent:   number;
-	latestRedtext: number;
 	darvoSold:     number;
 	invasions:     number;
 	alerts:        number;
@@ -182,7 +181,6 @@ declare global {
 			Conquests: IConquest[];
 			Tmp: string;
 		}
-		redtext: { data: string; time: number }[];
 		refresh_news_sources_at: number;
 		news_notify_after: number;
 		events_earmark: number;
@@ -563,25 +561,6 @@ function updateNewsTicker()
 			}
 		}
 	}
-	if (window.redtext)
-	{
-		const cutoff = (Date.now() / 1000) - (30 * 86400);
-		for (const event of window.redtext)
-		{
-			if (event.time > cutoff)
-			{
-				if (event.time > highest_time)
-				{
-					highest_time = event.time;
-				}
-				items.push({
-					type: "danger",
-					data: event.data.split("WALLOPS :")[1],
-					time: event.time
-				});
-			}
-		}
-	}
 	items.sort((a, b) => b.time - a.time);
 
 	if (window.news_notify_after && localStorage.getItem("live.notif.news"))
@@ -594,7 +573,7 @@ function updateNewsTicker()
 			}
 		}
 	}
-	if (window.worldState && window.redtext)
+	if (window.worldState)
 	{
 		window.refresh_news_sources_at = Date.now() + 60_000;
 		window.news_notify_after = highest_time;
@@ -641,10 +620,9 @@ async function updateNewsSources()
 	window.refresh_news_sources_at = undefined;
 
 	const sourcesToUpdate = {
-		events: !window.worldState,
-		redtext: !window.redtext,
+		events: !window.worldState
 	};
-	if (window.worldState || window.redtext)
+	if (window.worldState)
 	{
 		try
 		{
@@ -661,10 +639,6 @@ async function updateNewsSources()
 					|| window.worldState.Goals.length != meta.goals
 					|| (window.num_fissures && window.num_fissures != meta.fissures)
 					);
-			}
-			if (window.redtext)
-			{
-				sourcesToUpdate.redtext = (window.redtext[window.redtext.length - 1].time != meta.latestRedtext);
 			}
 			if (window.dailyDeal)
 			{
@@ -693,16 +667,8 @@ async function updateNewsSources()
 	{
 		updateWorldState();
 	}
-	if (sourcesToUpdate.redtext)
-	{
-		fetch("https://oracle.browse.wf/redtext.json").then(res => res.json()).then(redtext =>
-		{
-			window.redtext = redtext;
-			updateNewsTicker();
-		});
-	}
 
-	if (!sourcesToUpdate.events && !sourcesToUpdate.redtext)
+	if (!sourcesToUpdate.events)
 	{
 		window.refresh_news_sources_at = Date.now() + 60_000;
 	}
