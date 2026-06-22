@@ -1,3 +1,4 @@
+const LIVE_VERSION = 1;
 const dict_promise = getDictPromise();
 const osdict_promise = getOSDictPromise();
 const dicts_promise = Promise.all([dict_promise, osdict_promise]);
@@ -334,7 +335,7 @@ async function updateNewsSources() {
     if (window.worldState) {
         try {
             const meta = await fetch("https://oracle.browse.wf/min").then(res => res.json());
-            if (meta.version > window.LIVE_VERSION) {
+            if (meta.version > LIVE_VERSION) {
                 document.getElementById("update-prompt").classList.remove("d-none");
             }
             if (window.worldState) {
@@ -356,7 +357,7 @@ async function updateNewsSources() {
     }
     else {
         const meta = await fetch("https://oracle.browse.wf/min").then(res => res.json());
-        if (meta.version > window.LIVE_VERSION) {
+        if (meta.version > LIVE_VERSION) {
             document.getElementById("update-prompt").classList.remove("d-none");
         }
     }
@@ -380,10 +381,10 @@ function updateWorldStateLocalised() {
 }
 function updateWorldState() {
     window.refresh_world_state_at = undefined;
-    fetch("https://oracle.browse.wf/worldState.json").then(res => res.json()).then(worldState => {
+    fetch("https://oracle.browse.wf/worldState.min.json").then(res => res.json()).then(worldState => {
         window.worldState = worldState;
-        window.bountyCycleExpiry = parseInt(worldState.SyndicateMissions.find(x => x.Tag == "HexSyndicate").Expiry.$date.$numberLong);
-        updateDayNightCycle();
+        /*window.bountyCycleExpiry = parseInt(worldState.SyndicateMissions.find(x => x.Tag == "HexSyndicate").Expiry.$date.$numberLong);
+        updateDayNightCycle();*/
         window.events_earmark = 0;
         for (const event of worldState.Events) {
             if (event.Date) {

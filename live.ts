@@ -1,5 +1,7 @@
 import type { IChallenge, IFaction, IMissionType, IRegion, TFaction, TMissionType } from "warframe-public-export-plus";
 
+const LIVE_VERSION = 1;
+
 // Oracle
 interface IBountyCycle {
 	expiry:         number;
@@ -105,8 +107,6 @@ declare const ExportFactions: Record<TFaction, IFaction>;
 // state
 declare global {
 	interface Window {
-		LIVE_VERSION: number;
-
 		duviri_mood_index: number;
 		duviri_expiry: number;
 
@@ -627,7 +627,7 @@ async function updateNewsSources()
 		try
 		{
 			const meta: IMin = await fetch("https://oracle.browse.wf/min").then(res => res.json());
-			if (meta.version > window.LIVE_VERSION)
+			if (meta.version > LIVE_VERSION)
 			{
 				document.getElementById("update-prompt").classList.remove("d-none");
 			}
@@ -657,7 +657,7 @@ async function updateNewsSources()
 	else
 	{
 		const meta: IMin = await fetch("https://oracle.browse.wf/min").then(res => res.json());
-		if (meta.version > window.LIVE_VERSION)
+		if (meta.version > LIVE_VERSION)
 		{
 			document.getElementById("update-prompt").classList.remove("d-none");
 		}
@@ -690,12 +690,12 @@ function updateWorldStateLocalised()
 function updateWorldState()
 {
 	window.refresh_world_state_at = undefined;
-	fetch("https://oracle.browse.wf/worldState.json").then(res => res.json()).then(worldState =>
+	fetch("https://oracle.browse.wf/worldState.min.json").then(res => res.json()).then(worldState =>
 	{
 		window.worldState = worldState;
 
-		window.bountyCycleExpiry = parseInt(worldState.SyndicateMissions.find(x => x.Tag == "HexSyndicate").Expiry.$date.$numberLong);
-		updateDayNightCycle();
+		/*window.bountyCycleExpiry = parseInt(worldState.SyndicateMissions.find(x => x.Tag == "HexSyndicate").Expiry.$date.$numberLong);
+		updateDayNightCycle();*/
 
 		window.events_earmark = 0;
 		for (const event of worldState.Events)
