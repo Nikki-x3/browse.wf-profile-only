@@ -33,7 +33,7 @@
 	<div class="container pt-3">
 		<div class="alert alert-warning" role="alert">
 			<ul class="mb-0">
-				<li>As of update 38.0.8, it is no longer possible to get profile information via username. To use this tool, you now need an account id. To find your own account id, open your EE.log (<code>%localappdata%\Warframe\EE.log</code>) and look for "Logged in" — your account id will be in the parentheses.</li>
+				<li>As of update 38.0.8, it is no longer possible to get profile information via username. To use this tool, you now need an account id. To find your own account id, log in on <a href="https://www.warframe.com/" target="_blank">warframe.com</a> then visit <a href="https://www.warframe.com/api/user-data" target="_blank">https://www.warframe.com/api/user-data</a> to find it after <code>"user_id"</code>.</li>
 				<li>
 					To avoid our server getting rate-limited by DE, you need to manually retrieve your data by visiting the appropriate URL for your platform (replace <code>ACCOUNTID</code>), save the resulting JSON, and upload it below.
 					<ul>
