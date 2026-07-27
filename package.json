@@ -1,4 +1,5 @@
 {
+  "name": "wf.browse",
   "scripts": {
     "dev": "php-ts-dev",
     "lint": "eslint *.ts"
@@ -11,6 +12,6 @@
     "eslint": "^8",
     "php-ts-dev": "^0.1.1",
     "typescript": "^5.9.2",
-    "warframe-public-export-plus": "^0.5.104"
+    "warframe-public-export-plus": "^0.6.7"
   }
 }
