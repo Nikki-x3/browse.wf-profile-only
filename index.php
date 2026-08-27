@@ -15,12 +15,7 @@
 	</style>
 </head>
 <body data-bs-theme="dark">
-	<?php require "components/navbar.php"; ?>
-	<div class="container p-3">
-		<p id="results-status" class="mb-2">It's like a search engine, but for space ninjas.</p>
-		<input id="query" class="form-control" autofocus />
-		<div id="results" class="mt-3"></div>
-	</div>
+	<?php require "components/profile.php"; ?>
 	<?php require "components/commonjs.html"; ?>
 	<script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
 	<script src="typestripped/index.js"></script>
