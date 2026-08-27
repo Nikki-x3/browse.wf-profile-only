@@ -3,6 +3,7 @@
 <head>
 	<title>Profile Viewer | browse.wf</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="profile.css">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 	<link rel="icon" href="wf.ico">
 	<style>
@@ -30,6 +31,9 @@
 </head>
 <body data-bs-theme="dark">
 	<div class="container pt-3">
+		<form class="mb-3" sytle="display: hidden">
+			<input id="profile-file" type="file" class="form-control" accept="application/json" onchange="loadProfile(this.files[0]);" />
+		</form>
 		<div id="status" class="alert alert-light"><div class="spinner-border spinner-border-sm me-2"></div><span>Loading</span></div>
 		<h3 class="mb-0"><span id="profile-name"></span><span class="text-body-secondary" id="profile-discriminator"></span></h3>
 		<p id="mr" class="mb-1 d-none">Mastery Rank <b></b>, Registered <span></span></p>
@@ -268,8 +272,8 @@
 			<div class="row mt-3">
 				<div class="col-lg-6">
 						<h4 class="collapsible">Equipment</h4>
-						<table class="table table-hover" style="overflow-y:scroll; height:66vh; display:block;">
-						<thead style="top: 0; z-index: 2; position: sticky; background-color: rgb(48, 6, 83);">
+						<table class="table table-hover" style="overflow-y:scroll; height:50vh; display:block;">
+						<thead style="top: 0; z-index: 2; position: sticky;">
 							<tr>
 								<th>Item</th>
 								<th>Hours</th>
@@ -284,8 +288,8 @@
 				</div>
 				<div class="col-lg-6">
 						<h4 class="collapsible">Enemies</h4>
-						<table class="table table-hover" style="overflow-y:scroll; height:66vh; display:block;">
-						<thead style="top: 0; z-index: 2; position: sticky; background-color: rgb(48, 6, 83);">
+						<table class="table table-hover" style="overflow-y:scroll; height:50vh; display:block;">
+						<thead style="top: 0; z-index: 2; position: sticky;">
 							<tr>
 								<th>Enemy</th>
 								<th>Kills</th>
