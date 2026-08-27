@@ -6,12 +6,13 @@
     }
   },
   "routes": [
-    {
-      "handle": "filesystem"
+    { 
+      "src": "/(.*)\\.(png|ico|json|html|css|js|ts|map|txt)$",
+      "dest": "/$1.$2"
     },
     {
-      "src": "/(.*)",
-      "dest": "/api/index.php"
+       "src": "/(.*)",
+       "dest": "/api/index.php"
     }
   ]
 }
