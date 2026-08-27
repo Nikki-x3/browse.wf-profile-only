@@ -219,14 +219,14 @@ function loadProfile(source) {
 
     // Case 1: Fetch from API
     if (source === 'API') {
-        fetch("https://proxy.cors.sh/https://api.warframe.com/cdn/getProfileViewingData.php?playerId=51fbaece1a4d80694900000c", {
+        /*fetch("https://proxy.cors.sh/https://api.warframe.com/cdn/getProfileViewingData.php?playerId=51fbaece1a4d80694900000c", {
             method: "GET",
             headers: {
                 "Accept": "text/html",
                 "x-cors-api-key": "live_d2b733c6adbcffcd68c836b89ccf5ef6e9e3db4244bbdeea",
             },
-        })
-        .then(response => {
+        })*/
+        fetch('/api/warframe').then(response => {
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             return response.json();
         })
