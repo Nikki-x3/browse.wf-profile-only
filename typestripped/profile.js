@@ -130,7 +130,14 @@ function sanitiseName(name) {
     }
     return name;
 }
-function loadProfile(file) {
+
+
+
+
+
+
+
+/*function loadProfile(file) {
     if (!file) {
         return;
     }
@@ -154,7 +161,53 @@ function loadProfile(file) {
         document.querySelector("#status").classList.add("d-none");
     };
     reader.readAsText(file);
+}*/
+
+
+function loadProfileFromJSON(data) {
+            document.getElementById("profile-nav").classList.remove("d-none");
+            activateTab("stats");
+            renderProfile();
 }
+
+// 2. Legacy file loader compatibility
+function loadProfile(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const data = JSON.parse(e.target.result);
+        loadProfileFromJSON(data); // Pass it to the core logic
+    };
+    reader.readAsText(file);
+}
+
+
+function fetchProfileFromAPI() {
+    const apiURL = 'https://api.warframe.com/cdn/getProfileViewingData.php?playerId=51fbaece1a4d80694900000c'; 
+
+    fetch(apiURL)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(jsonData => {
+            // Check if your loadProfile function needs raw JSON or a mock file object
+            if (typeof loadProfileFromJSON === 'function') {
+                loadProfileFromJSON(jsonData);
+            } else {
+                loadProfile(jsonData);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching profile:', error);
+            alert('Failed to load profile from the public API.');
+        });
+}
+
+
+
+
 function renderProfile() {
     document.querySelector("#status").classList.add("d-none");
     const sanitisedName = sanitiseName(profile.Results[0].DisplayName);
