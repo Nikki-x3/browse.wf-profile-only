@@ -266,7 +266,7 @@
 				</div>
 			</div>
 			<div class="row mt-3">
-				<div class="col-lg-6">
+				<div class="col-lg-6 dropdown">
 					<h4>Equipment</h4>
 					<table class="table table-hover">
 						<thead>
@@ -282,7 +282,7 @@
 						<tbody id="equipment-stats"></tbody>
 					</table>
 				</div>
-				<div class="col-lg-6">
+				<div class="col-lg-6 dropdown">
 					<h4>Enemies</h4>
 					<table class="table table-hover">
 						<thead>
