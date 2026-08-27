@@ -226,7 +226,7 @@ function loadProfile(source) {
                 "x-cors-api-key": "live_d2b733c6adbcffcd68c836b89ccf5ef6e9e3db4244bbdeea",
             },
         })*/
-        fetch('/api/warframe').then(response => {
+        fetch('/api/wfapi').then(response => {
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             return response.json();
         })
