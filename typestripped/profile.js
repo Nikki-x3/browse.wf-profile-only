@@ -74,7 +74,6 @@ function makeSyndicateLogoElement(syndicate) {
     }
     return div;
 }
-const params = new URLSearchParams(location.hash.replace("#", ""));
 Promise.all([
     getDictPromise(),
     fetch("https://browse.wf/warframe-public-export-plus/ExportAchievements.json").then(res => res.json()),
@@ -207,7 +206,7 @@ function fetchProfileFromAPI() {
         });
 }
 
-
+fetchProfileFromAPI();
 
 
 function renderProfile() {
