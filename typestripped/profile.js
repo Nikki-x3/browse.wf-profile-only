@@ -183,7 +183,7 @@ function loadProfile(file) {
 
 
 function fetchProfileFromAPI() {
-    const apiURL = 'https://api.warframe.com/cdn/getProfileViewingData.php?playerId=51fbaece1a4d80694900000c'; 
+    const apiURL = 'https://api.allorigins.win/raw?url=https://api.warframe.com/cdn/getProfileViewingData.php?playerId=51fbaece1a4d80694900000c'; 
 
     fetch(apiURL)
         .then(response => {
