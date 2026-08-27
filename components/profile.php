@@ -29,24 +29,7 @@
 	</style>
 </head>
 <body data-bs-theme="dark">
-	<?php require "components/navbar.php"; ?>
 	<div class="container pt-3">
-		<div class="alert alert-warning" role="alert">
-			<ul class="mb-0">
-				<li>As of update 38.0.8, it is no longer possible to get profile information via username. To use this tool, you now need an account id. To find your own account id, log in on <a href="https://www.warframe.com/" target="_blank">warframe.com</a> then visit <a href="https://www.warframe.com/api/user-data" target="_blank">https://www.warframe.com/api/user-data</a> to find it after <code>"user_id"</code>.</li>
-				<li>
-					To avoid our server getting rate-limited by DE, you need to manually retrieve your data by visiting the appropriate URL for your platform (replace <code>ACCOUNTID</code>), save the resulting JSON, and upload it below.
-					<ul>
-						<li>PC: <code>https://api.warframe.com/cdn/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
-						<li>PlayStation: <code>https://api-ps4.warframe.com/cdn/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
-						<li>Xbox: <code>https://api-xb1.warframe.com/cdn/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
-						<li>Switch: <code>https://api-swi.warframe.com/cdn/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
-						<li>iOS: <code>https://api-mob.warframe.com/cdn/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
-						<li>Android: <code>https://api-and.warframe.com/cdn/getProfileViewingData.php?playerId=ACCOUNTID</code></li>
-					</ul>
-				</li>
-			</ul>
-		</div>
 		<form class="mb-3">
 			<input id="profile-file" type="file" class="form-control" accept="application/json" onchange="loadProfile(this.files[0]);" />
 		</form>
