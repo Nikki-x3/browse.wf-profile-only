@@ -281,6 +281,7 @@
 						</thead>
 						<tbody id="equipment-stats"></tbody>
 						</table>
+				</div>
 				<div class="col-lg-6">
 						<h4 class="collapsible">Enemies</h4>
 						<table class="table table-hover" style="display: none>
