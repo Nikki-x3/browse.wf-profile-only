@@ -1,29 +1,26 @@
-<!doctype html>
-<html lang="en" data-bs-theme="dark">
-<head>
-	<title>browse.wf</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-	<link rel="icon" href="https://browse.wf/Lotus/Interface/Icons/Categories/GrimoireModIcon.png">
-	<style>
-		.glyph-socials svg
-		{
-			fill: currentColor;
-			height: 26px;
-			margin-right: 5px;
-		}
-	</style>
-</head>
-<body data-bs-theme="dark">
-	<?php require "components/navbar.php"; ?>
-	<div class="container p-3">
-		<p id="results-status" class="mb-2">It's like a search engine, but for space ninjas.</p>
-		<input id="query" class="form-control" autofocus />
-		<div id="results" class="mt-3"></div>
-	</div>
-	<?php require "components/commonjs.html"; ?>
-	<script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
-	<script src="typestripped/index.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</body>
-</html>
+<?php
+// Capture the incoming URL path requested by the user
+$request = $_SERVER['REQUEST_URI'] ?? '/';
+$path = parse_url($request, PHP_URL_PATH);
+
+// 1. Root route fallback
+if ($path === '/' || $path === '/index.php' || $path === '/api/index.php') {
+    require __DIR__ . '/../index.php';
+    exit;
+}
+
+// 2. Dynamic file path resolution
+$localFile = dirname(__DIR__) . $path;
+
+// Append .php if the requested route is clean (e.g. /about -> /about.php)
+if (!file_exists($localFile) && file_exists($localFile . '.php')) {
+    $localFile .= '.php';
+}
+
+// 3. Execution or 404 block
+if (file_exists($localFile) && substr($localFile, -4) === '.php') {
+    require $localFile;
+} else {
+    http_response_code(404);
+    echo "404 Not Found";
+}
