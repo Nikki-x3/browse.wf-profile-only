@@ -15,7 +15,7 @@
 	</style>
 </head>
 <body data-bs-theme="dark">
-	<?php require "components/profile.php"; ?>
+	<?php require "profile.php"; ?>
 	<?php require "components/commonjs.html"; ?>
 	<script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
 	<script src="typestripped/index.js"></script>
