@@ -36,11 +36,11 @@
 		<p id="accolades" class="mb-1 d-none"><b>Accolades:</b> <span></span></p>
 		<p id="clan" class="mb-1 d-none"><b>Clan:</b> <span></span></p>
 		<ul id="profile-nav" class="nav nav-underline d-none">
-			<li class="nav-item"><a class="nav-link" href="#" data-tab="fashion" onclick="tabulate(this, event)">Fashion</a></li>
-			<li class="nav-item"><a class="nav-link" href="#" data-tab="syndicates" onclick="tabulate(this, event)">Syndicates</a></li>
-			<li class="nav-item"><a class="nav-link" href="#" data-tab="missions" onclick="tabulate(this, event)">Missions</a></li>
-			<li class="nav-item"><a class="nav-link" href="#" data-tab="achievements" onclick="tabulate(this, event)">Achievements</a></li>
 			<li class="nav-item"><a class="nav-link active" href="#" data-tab="stats" onclick="tabulate(this, event)">Stats</a></li>
+			<li class="nav-item"><a class="nav-link" href="#" data-tab="achievements" onclick="tabulate(this, event)">Achievements</a></li>
+			<li class="nav-item"><a class="nav-link" href="#" data-tab="missions" onclick="tabulate(this, event)">Missions</a></li>
+			<li class="nav-item"><a class="nav-link" href="#" data-tab="syndicates" onclick="tabulate(this, event)">Syndicates</a></li>
+			<li class="nav-item"><a class="nav-link" href="#" data-tab="fashion" onclick="tabulate(this, event)">Fashion</a></li>
 		</ul>
 		<div id="syndicates" class="tab row p-2 d-none"></div>
 		<div id="achievements" class="tab row p-2 d-none"></div>
@@ -284,7 +284,7 @@
 				</div>
 				<div class="col-lg-6">
 						<h4 class="collapsible">Enemies</h4>
-						<table class="table table-hover" style="display: none>
+						<table class="table table-hover" style="display: none">
 						<thead>
 							<tr>
 								<th>Enemy</th>
