@@ -31,7 +31,7 @@
 </head>
 <body data-bs-theme="dark">
 	<div class="container pt-3">
-		<form class="mb-3" sytle="display: hidden">
+		<form class="mb-3" sytle="display: none">
 			<input id="profile-file" type="file" class="form-control" accept="application/json" onchange="loadProfile(this.files[0]);" />
 		</form>
 		<div id="status" class="alert alert-light"><div class="spinner-border spinner-border-sm me-2"></div><span>Loading</span></div>
