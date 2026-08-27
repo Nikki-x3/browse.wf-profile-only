@@ -268,8 +268,8 @@
 			<div class="row mt-3">
 				<div class="col-lg-6">
 						<h4 class="collapsible">Equipment</h4>
-						<table class="table table-hover" style="display: none">
-						<thead>
+						<table class="table table-hover" style="overflow-y:scroll; height:650px; display:block;">
+						<thead style"top: 0; z-index: 2; position: sticky; background-color: rgba(142, 22, 240, 0.171);">
 							<tr>
 								<th>Item</th>
 								<th>Hours</th>
@@ -284,8 +284,8 @@
 				</div>
 				<div class="col-lg-6">
 						<h4 class="collapsible">Enemies</h4>
-						<table class="table table-hover" style="display: none">
-						<thead>
+						<table class="table table-hover" style="overflow-y:scroll; height:650px; display:block;">
+						<thead style"top: 0; z-index: 2; position: sticky; background-color: rgba(142, 22, 240, 0.171);">
 							<tr>
 								<th>Enemy</th>
 								<th>Kills</th>
