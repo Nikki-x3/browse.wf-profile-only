@@ -266,10 +266,9 @@
 				</div>
 			</div>
 			<div class="row mt-3">
-				<div class="col-lg-6 collapsible">
-					<div style="display: none">
-						<h4>Equipment</h4>
-						<table class="table table-hover">
+				<div class="col-lg-6">
+						<h4 class="collapsible">Equipment</h4>
+						<table class="table table-hover" style="display: none">
 						<thead>
 							<tr>
 								<th>Item</th>
@@ -282,11 +281,9 @@
 						</thead>
 						<tbody id="equipment-stats"></tbody>
 						</table>
-					</div>
-				<div class="col-lg-6 collapsible">
-					<div style="display: none">
-						<h4>Enemies</h4>
-						<table class="table table-hover">
+				<div class="col-lg-6">
+						<h4 class="collapsible">Enemies</h4>
+						<table class="table table-hover" style="display: none>
 						<thead>
 							<tr>
 								<th>Enemy</th>
@@ -300,7 +297,6 @@
 						</thead>
 						<tbody id="enemy-stats"></tbody>
 						</table>
-					</div>
 				</div>
 			</div>
 		</div>
