@@ -302,6 +302,7 @@
 			</div>
 		</div>
 	</div>
+	<?php require "components/navbar.php"; ?>
 	<?php require "components/commonjs.html"; ?>
 	<script src="https://pluto-lang.org/wasm-builds/out/libpluto/0.9.5/libpluto.js"></script>
 	<script src="https://pluto-lang.org/PlutoScript/plutoscript.js"></script>
