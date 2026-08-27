@@ -160,7 +160,7 @@ function sanitiseName(name) {
         document.querySelector("#status").classList.add("d-none");
     };
     reader.readAsText(file);
-}*/
+}
 
 
 function loadProfileFromJSON(data) {
@@ -207,9 +207,61 @@ function fetchProfileFromAPI() {
             console.error('Error fetching profile:', error);
             alert('Failed to load profile from the public API.');
         });
+}*/
+
+function loadProfile(source) {
+    // Core UI rendering steps shared across all entry points
+    const finalizeUI = () => {
+        document.getElementById("profile-nav").classList.remove("d-none");
+        activateTab("stats");
+        renderProfile();
+    };
+
+    // Case 1: Fetch from API
+    if (source === 'API') {
+        fetch("https://proxy.cors.sh/https://api.warframe.com/cdn/getProfileViewingData.php?playerId=51fbaece1a4d80694900000c", {
+            method: "GET",
+            headers: {
+                "Accept": "text/html",
+                "x-cors-api-key": "live_d2b733c6adbcffcd68c836b89ccf5ef6e9e3db4244bbdeea",
+            },
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            return response.json();
+        })
+        .then(jsonData => {
+            // If you actually use 'jsonData' inside renderProfile(), 
+            // you may want to store it globally here: window.profileData = jsonData;
+            finalizeUI();
+        })
+        .catch(error => {
+            console.error('Error fetching profile:', error);
+            alert('Failed to load profile from the public API.');
+        });
+        
+    // Case 2: Read from a local file upload
+    } else if (source instanceof File) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                // If you use 'data' inside renderProfile(), save it here
+                finalizeUI();
+                document.querySelector("#status").classList.add("d-none");
+            } catch (err) {
+                console.error("Invalid JSON file:", err);
+            }
+        };
+        reader.readAsText(source);
+
+    // Case 3: Direct JSON data passed into the function
+    } else if (typeof source === 'object' && source !== null) {
+        finalizeUI();
+    }
 }
 
-fetchProfileFromAPI();
+loadProfile('API');
 
 
 function renderProfile() {
