@@ -4,7 +4,7 @@
 	<title>Profile Viewer | browse.wf</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-	<link rel="icon" href="../wf.ico">
+	<link rel="icon" href="wf.ico">
 	<style>
 		.form-select
 		{
@@ -305,7 +305,7 @@
 	<?php require "commonjs.html"; ?>
 	<script src="https://pluto-lang.org/wasm-builds/out/libpluto/0.9.5/libpluto.js"></script>
 	<script src="https://pluto-lang.org/PlutoScript/plutoscript.js"></script>
-	<script src="../typestripped/profile.js?f"></script>
+	<script src="typestripped/profile.js?f"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

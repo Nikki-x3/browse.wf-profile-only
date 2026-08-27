@@ -5,7 +5,7 @@ $path = parse_url($request, PHP_URL_PATH);
 
 // 1. Root route fallback
 if ($path === '/' || $path === '/index.php' || $path === '/api/index.php') {
-    require __DIR__ . '/../public/index.php';
+    require __DIR__ . '/../index.php';
     exit;
 }
 
