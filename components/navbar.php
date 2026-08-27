@@ -3,8 +3,8 @@ $ext = substr($_SERVER["SERVER_SOFTWARE"] ?? "", 0, 3) == "PHP" ? ".php" : "";
 ?>
 <nav class="navbar fixed-top navbar-expand-lg bg-body-tertiary">
 	<div class="container-fluid">
-		<a class="navbar-brand" href="/" <?php if ($_SERVER["REQUEST_URI"] == "/"): ?> onclick="event.preventDefault();" <?php endif; ?>>browse.wf</a>
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+		<a class="navbar-brand" href="https://browse.wf/" <?php if ($_SERVER["REQUEST_URI"] == "/"): ?> onclick="event.preventDefault();" <?php endif; ?>>Warframe profile viewer based on browse.wf</a>
+		<!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="navbar-content">
@@ -52,7 +52,7 @@ $ext = substr($_SERVER["SERVER_SOFTWARE"] ?? "", 0, 3) == "PHP" ? ".php" : "";
 					<li><a class="dropdown-item" href="#" data-lang="tc" onclick="event.preventDefault();setLanguage('tc');">繁體中文</a></li>
 					<li><a class="dropdown-item" href="#" data-lang="th" onclick="event.preventDefault();setLanguage('th');">แบบไทย</a></li>
 				</ul>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </nav>

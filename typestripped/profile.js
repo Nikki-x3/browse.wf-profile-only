@@ -109,7 +109,7 @@ Promise.all([
         }
     }
     document.getElementById("profile-nav").classList.remove("d-none");
-    activateTab(params.has("tab") ? params.get("tab") : "fashion"); // default tab
+    activateTab(params.has("tab") ? params.get("tab") : "stats"); // default tab
     renderProfile();
     onLanguageUpdate = function () {
         renderProfile();
