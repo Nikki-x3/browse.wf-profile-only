@@ -30,9 +30,6 @@
 </head>
 <body data-bs-theme="dark">
 	<div class="container pt-3">
-		<form class="mb-3">
-			<input id="profile-file" type="file" class="form-control" accept="application/json" onchange="loadProfile(this.files[0]);" />
-		</form>
 		<div id="status" class="alert alert-light"><div class="spinner-border spinner-border-sm me-2"></div><span>Loading</span></div>
 		<h3 class="mb-0"><span id="profile-name"></span><span class="text-body-secondary" id="profile-discriminator"></span></h3>
 		<p id="mr" class="mb-1 d-none">Mastery Rank <b></b>, Registered <span></span></p>

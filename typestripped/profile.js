@@ -176,6 +176,8 @@ function loadProfile(file) {
     reader.onload = function(e) {
         const data = JSON.parse(e.target.result);
         loadProfileFromJSON(data); // Pass it to the core logic
+        
+        document.querySelector("#status").classList.add("d-none");
     };
     reader.readAsText(file);
 }

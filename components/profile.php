@@ -30,9 +30,6 @@
 </head>
 <body data-bs-theme="dark">
 	<div class="container pt-3">
-		<form class="mb-3">
-			<input id="profile-file" type="file" class="form-control" accept="application/json" onchange="loadProfile(this.files[0]);" />
-		</form>
 		<div id="status" class="alert alert-light"><div class="spinner-border spinner-border-sm me-2"></div><span>Loading</span></div>
 		<h3 class="mb-0"><span id="profile-name"></span><span class="text-body-secondary" id="profile-discriminator"></span></h3>
 		<p id="mr" class="mb-1 d-none">Mastery Rank <b></b>, Registered <span></span></p>
@@ -308,7 +305,7 @@
 	<?php require "commonjs.html"; ?>
 	<script src="https://pluto-lang.org/wasm-builds/out/libpluto/0.9.5/libpluto.js"></script>
 	<script src="https://pluto-lang.org/PlutoScript/plutoscript.js"></script>
-	<script src="typestripped/profile.js?f"></script>
+	<script src="../typestripped/profile.js?f"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
