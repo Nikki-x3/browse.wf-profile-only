@@ -7,7 +7,7 @@
   },
   "routes": [
     { 
-      "src": "/(.*)\\.(png|ico|json|html|css|js|ts|map|txt|pluto)$",
+      "src": "/(.*)\\.(png|ico|json|html|css|js|ts|map|txt|pluto|launcher)$",
       "dest": "/$1.$2"
     },
     {
