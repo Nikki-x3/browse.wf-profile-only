@@ -311,7 +311,7 @@
 	<script src="https://pluto-lang.org/wasm-builds/out/libpluto/0.9.5/libpluto.js"></script>
 	<script src="https://pluto-lang.org/PlutoScript/plutoscript.js"></script>
 	<script src="typestripped/profile.js?f"></script>
-	<script type="module" src="components/reverseparse.js"></script>
+	<script src="components/reverseparse.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

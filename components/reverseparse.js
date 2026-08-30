@@ -1,9 +1,9 @@
-import { RawProfile } from '../node_modules/@wfcd/profile-parser/dist/Profile.mjs'; // Adjust path as necessary
+const { RawProfile } = require('../node_modules/@wfcd/profile-parser/dist/Profile.mjs'); // Adjust path as necessary
 
 /**
  * Serializes a clean Profile object back into its original RawProfile JSON format.
  */
-export function serializeProfile(profile: any): RawProfile {
+function serializeProfile(profile: any): RawProfile {
   return {
     AccountId: { $oid: profile.accountId },
     DisplayName: profile.displayName,
