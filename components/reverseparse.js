@@ -3,7 +3,7 @@ const { RawProfile } = require('../node_modules/@wfcd/profile-parser/dist/Profil
 /**
  * Serializes a clean Profile object back into its original RawProfile JSON format.
  */
-function serializeProfile(profile: any): RawProfile {
+function serializeProfile(profile) {
   return {
     AccountId: { $oid: profile.accountId },
     DisplayName: profile.displayName,
