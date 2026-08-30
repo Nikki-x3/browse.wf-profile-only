@@ -1,0 +1,26 @@
+//#region src/Polarity.d.ts
+interface RawPolarity {
+  Value: string;
+  Slot: number;
+}
+/**
+ * A polarity in a LoadOutItem
+ * @module
+ */
+declare class Polarity {
+  /**
+   * Polarity name
+   */
+  polarity: string;
+  /**
+   * Polarized slot
+   */
+  slot: number;
+  /**
+   *
+   * @param {Object} raw The polarity to parse
+   */
+  constructor(raw: RawPolarity);
+}
+//#endregion
+export { RawPolarity as n, Polarity as t };
