@@ -1,4 +1,4 @@
-import type { RawProfile } from './Profile.mjs'; // Adjust path as necessary
+import type { RawProfile } from '../node_modules/@wfcd/profile-parser/dist/Profile.mjs'; // Adjust path as necessary
 
 /**
  * Serializes a clean Profile object back into its original RawProfile JSON format.
