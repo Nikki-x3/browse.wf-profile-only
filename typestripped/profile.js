@@ -228,7 +228,7 @@ async function getprofilejson() {
   }
 }
 
-function loadProfile(source) {
+async function loadProfile(source) {
     // Core UI rendering steps shared across all entry points
     const finalizeUI = () => {
         document.getElementById("profile-nav").classList.remove("d-none");
