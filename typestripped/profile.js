@@ -209,6 +209,26 @@ function fetchProfileFromAPI() {
         });
 }*/
 
+
+async function getprofilejson() {
+  try {
+    const response = await fetch('https://api.warframestat.us/profile/51fbaece1a4d80694900000c', {});
+    
+    // Checks if HTTP status is between 200-299
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const json = await response.json();
+    const profile = serializeProfileFromJson(json);
+    return profile;
+    
+  } catch (error) {
+    console.error("Failed to fetch profile:", error);
+    return null; // Return a fallback value so your app doesn't crash
+  }
+}
+
 function loadProfile(source) {
     // Core UI rendering steps shared across all entry points
     const finalizeUI = () => {
@@ -219,29 +239,8 @@ function loadProfile(source) {
 
     // Case 1: Fetch from API
     if (source === 'API') {
-        /*fetch("https://proxy.cors.sh/https://api.warframe.com/cdn/getProfileViewingData.php?playerId=51fbaece1a4d80694900000c", {
-            method: "GET",
-            headers: {
-                "Accept": "text/html",
-                "x-cors-api-key": "live_d2b733c6adbcffcd68c836b89ccf5ef6e9e3db4244bbdeea",
-            },
-        })*/
-        fetch('https://api.warframestat.us/profile/51fbaece1a4d80694900000c').then(response => {
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            
-            return serializeProfileFromJson(response.json());
-        })
-        .then(jsonData => {
-            // If you actually use 'jsonData' inside renderProfile(), 
-            // you may want to store it globally here: window.profileData = jsonData;
-            finalizeUI();
-        })
-        .catch(error => {
-            console.error('Error fetching profile:', error);
-            alert('Failed to load profile from the public API.');
-        });
-        
-        
+       await getprofilejson();
+       await finalizeUI();
         
     // Case 2: Read from a local file upload
     } else if (source instanceof File) {
