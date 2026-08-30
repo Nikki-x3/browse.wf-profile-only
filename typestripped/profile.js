@@ -226,9 +226,10 @@ function loadProfile(source) {
                 "x-cors-api-key": "live_d2b733c6adbcffcd68c836b89ccf5ef6e9e3db4244bbdeea",
             },
         })*/
-        fetch('/api/wfapi.js').then(response => {
+        fetch('https://api.warframestat.us/profile/51fbaece1a4d80694900000c').then(response => {
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            return response.json();
+            
+            return serializeProfileFromJson(response.json());
         })
         .then(jsonData => {
             // If you actually use 'jsonData' inside renderProfile(), 
@@ -239,6 +240,8 @@ function loadProfile(source) {
             console.error('Error fetching profile:', error);
             alert('Failed to load profile from the public API.');
         });
+        
+        
         
     // Case 2: Read from a local file upload
     } else if (source instanceof File) {
