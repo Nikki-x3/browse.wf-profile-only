@@ -220,12 +220,11 @@ async function getprofilejson() {
     }
 
     const json = await response.json();
-    const profile = serializeProfileFromJson(json);
-    return profile;
+    const newprofile = serializeProfileFromJson(json);
+    window.profile = newprofile;
     
   } catch (error) {
     console.error("Failed to fetch profile:", error);
-    return null; // Return a fallback value so your app doesn't crash
   }
 }
 
@@ -240,7 +239,7 @@ function loadProfile(source) {
     // Case 1: Fetch from API
     if (source === 'API') {
        await getprofilejson();
-       await finalizeUI();
+       finalizeUI();
         
     // Case 2: Read from a local file upload
     } else if (source instanceof File) {
