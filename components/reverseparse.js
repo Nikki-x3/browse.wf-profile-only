@@ -15,7 +15,7 @@ function serializeProfile(profile) {
     LoadOutInventory: profile.loadout ? profile.loadout.toJSON() : undefined,
     PlayerSkills: profile.intrinsics ? profile.intrinsics.toJSON() : {},
     
-    ChallengeProgress: (profile.challengeProgress || []).map((c: any) => c.toJSON()),
+    ChallengeProgress: (profile.challengeProgress || []).map((c) => c.toJSON()),
     
     GuildId: profile.guildId ? { $oid: profile.guildId } : undefined,
     GuildName: profile.guildName ?? '',
@@ -31,14 +31,14 @@ function serializeProfile(profile) {
     
     // Reverse parseDate: adjustments may be needed based on your explicit RawDate definition
     Created: profile.created instanceof Date 
-      ? { $date: { $numberLong: profile.created.getTime().toString() } } as any
+      ? { $date: { $numberLong: profile.created.getTime().toString() } }
       : profile.created,
       
     MigratedToConsole: profile.migratedToConsole ?? false,
-    Missions: (profile.missions || []).map((m: any) => m.toJSON()),
+    Missions: (profile.missions || []).map((m) => m.toJSON()),
     
     // Maps back Syndicates into the Affiliations key
-    Affiliations: (profile.syndicates || []).map((s: any) => s.toJSON()),
+    Affiliations: (profile.syndicates || []).map((s) => s.toJSON()),
     
     // Unpacking dailyStanding container
     DailyAffiliation: profile.dailyStanding?.daily,
@@ -61,7 +61,7 @@ function serializeProfile(profile) {
     UnlockedOperator: profile.unlockedOperator ?? false,
     UnlockedAlignment: profile.unlockedAlignment ?? false,
     
-    OperatorLoadOuts: (profile.operatorLoadouts || []).map((ol: any) => ol.toJSON()),
+    OperatorLoadOuts: (profile.operatorLoadouts || []).map((ol) => ol.toJSON()),
     
     Alignment: profile.alignment ? {
       Wisdom: profile.alignment.wisdom,
